@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
@@ -22,4 +23,9 @@ public class Rating {
     private String comment;
     private float ratingStar;
     private LocalDate ratingDate;
+
+    @ManyToOne
+    DesignedProduct designedProduct;
+    @ManyToOne
+    User user;
 }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDate;
 
 @Entity
@@ -23,4 +24,7 @@ public class DiscountTime {
     private LocalDate startDate;
     private LocalDate endDate;
     private boolean isExpired;
+
+    @ManyToOne
+    Discount discount;
 }

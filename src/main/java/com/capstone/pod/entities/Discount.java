@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Collection;
 
 @Entity
 @Builder
@@ -20,4 +22,10 @@ public class Discount {
     private int id;
     private String name;
     private float discountPercent;
+
+    @OneToMany(mappedBy = "discount")
+    private Collection<Product> products;
+
+    @OneToMany(mappedBy = "discount")
+    private Collection<DiscountTime> discountTimes;
 }

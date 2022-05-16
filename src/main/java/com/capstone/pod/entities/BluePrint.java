@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Builder
@@ -20,7 +21,12 @@ public class BluePrint {
     private String frameImage;
     private String position;
 
-    @OneToOne
-    @JoinColumn(name = "placeholderId",referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "bluePrint")
     Placeholder placeholder;
+
+    @ManyToOne
+    Product product;
+
+    @OneToMany(mappedBy = "bluePrint")
+    Collection<DesignBluePrint> designBluePrints;
 }

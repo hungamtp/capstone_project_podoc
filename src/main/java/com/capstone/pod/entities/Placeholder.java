@@ -4,25 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+
+import javax.persistence.*;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "placeholder")
 public class Placeholder {
     @Id
     @GeneratedValue
     private int id;
-    private double top;
-    private double left;
+    private double topCoordinate;
+    private double leftCoordinate;
     private double width;
     private double height;
 
-    @OneToOne(mappedBy = "placeholder")
+    @OneToOne
     BluePrint bluePrint;
 }

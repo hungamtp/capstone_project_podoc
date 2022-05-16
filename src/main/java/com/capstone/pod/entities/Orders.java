@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Entity
 @Builder
@@ -24,4 +23,11 @@ public class Orders {
     private String address;
     private String phone;
     private String customerName;
+    @ManyToOne
+    User user;
+    @ManyToOne
+    OrderStatus orderStatus;
+
+    @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
+    Collection<OrderDetail> orderDetails;
 }

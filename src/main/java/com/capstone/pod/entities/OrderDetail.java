@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Builder
@@ -19,4 +20,8 @@ public class OrderDetail {
     @GeneratedValue
     private String id;
     private String quantity;
+    @ManyToOne
+    private Orders orders;
+    @ManyToOne
+    private DesignedProduct designedProduct;
 }

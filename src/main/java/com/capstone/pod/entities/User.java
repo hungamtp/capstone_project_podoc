@@ -5,16 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class User {
     @Id
     @GeneratedValue
     private int id;
@@ -27,4 +26,16 @@ public class Customer {
     private String email;
     private boolean isMailVerified;
     private boolean isActive;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    Collection<Rating> ratings;
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    Collection<ShippingInfo> shippingInfos;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    Role role;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    Collection<Orders> orders;
+
 }

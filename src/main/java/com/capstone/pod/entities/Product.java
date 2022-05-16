@@ -5,10 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Entity
 @Builder
@@ -25,4 +24,25 @@ public class Product {
     private LocalDate createDate;
     private LocalDate  modifiedDate;
     private String description;
+    private boolean isDeleted;
+
+    @OneToMany(mappedBy = "product")
+    private Collection<BluePrint> bluePrints;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private Collection<DesignedProduct> designedProducts;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private Collection<ProductImages> productImages;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private Collection<SizeColor> sizeColors;
+
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
+    private Collection<ProductTag> productTags;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Discount discount;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Category category;
 }

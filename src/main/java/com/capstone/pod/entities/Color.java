@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Collection;
 
 @Entity
 @Builder
@@ -19,5 +21,8 @@ public class Color {
     @GeneratedValue
     private int id;
     private String name;
+
+    @OneToMany(mappedBy = "color")
+    private Collection<SizeColor> sizeColors;
 
 }

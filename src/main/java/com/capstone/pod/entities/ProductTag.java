@@ -8,20 +8,20 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.time.LocalDate;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Design {
-    @GeneratedValue
+public class ProductTag {
     @Id
+    @GeneratedValue
     private int id;
-    private LocalDate createDate;
-    private String name;
-    private double designedPrice;
-    private String image;
 
+    @ManyToOne
+    private Product product;
+    @ManyToOne
+    private Tag tag;
 }

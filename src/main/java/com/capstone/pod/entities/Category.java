@@ -6,9 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Builder
@@ -20,5 +19,10 @@ public class Category {
     @GeneratedValue
     private int id;
     private String name;
+    private String image;
+    private boolean isDeleted;
+
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private Collection<Product> products;
 
 }
