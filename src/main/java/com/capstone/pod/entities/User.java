@@ -24,8 +24,10 @@ public class User {
     private String address;
     private String phone;
     private String email;
+    private String avatar;
     private boolean isMailVerified;
     private boolean isActive;
+    private String status;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     Collection<Rating> ratings;
