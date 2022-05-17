@@ -36,7 +36,7 @@ public class ExceptionHandlers extends RuntimeException {
     @ExceptionHandler(value = {UsernameOrPasswordNotFoundException.class, AuthenticationException.class})
     public ResponseEntity<Object> usernameOrPasswordNotFound(AuthenticationException exception) {
         ResponseDto dto = new ResponseDto();
-        dto.setErrorMessage("USER NAME OR PASSWORD IS INCORRECT");
+        dto.setErrorMessage("EMAIL OR PASSWORD IS INCORRECT");
         return ResponseEntity.badRequest().body(dto);
     }
 
@@ -56,6 +56,12 @@ public class ExceptionHandlers extends RuntimeException {
 
     @ExceptionHandler(value = {UserNameExistException.class})
     public ResponseEntity<Object> userNameExistException(UserNameExistException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = EmailExistException.class)
+    public ResponseEntity<Object> userNameExistException(EmailExistException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);

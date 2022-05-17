@@ -21,9 +21,6 @@ public class Role {
     @GeneratedValue
     private int id;
     private String name;
-    private boolean isExist;
-
     @OneToMany(mappedBy="role")
     Collection<User> users;
-
 }

@@ -1,19 +1,22 @@
 package com.capstone.pod.entities;
 
+import com.capstone.pod.dto.support.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
+@Table
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends Auditable {
     @Id
     @GeneratedValue
     private int id;
@@ -33,7 +36,6 @@ public class User {
     Collection<Rating> ratings;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     Collection<ShippingInfo> shippingInfos;
-
     @ManyToOne(cascade = CascadeType.ALL)
     Role role;
 

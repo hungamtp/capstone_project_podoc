@@ -1,5 +1,6 @@
 package com.capstone.pod.entities;
 
+import com.capstone.pod.dto.support.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,12 +18,11 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderStatus {
+public class OrderStatus extends Auditable {
     @Id
     @GeneratedValue
     private int id;
     private String statusName;
-    private LocalDate updateStatusDate;
 
     @OneToMany(mappedBy = "orderStatus")
     Collection<Orders> orders;

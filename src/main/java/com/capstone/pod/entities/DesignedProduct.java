@@ -1,5 +1,6 @@
 package com.capstone.pod.entities;
 
+import com.capstone.pod.dto.support.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,11 +15,10 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DesignedProduct {
+public class DesignedProduct  extends Auditable {
     @GeneratedValue
     @Id
     private int id;
-    private LocalDate createDate;
     private String name;
     private double designedPrice;
     private String image;

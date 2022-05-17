@@ -1,6 +1,7 @@
 package com.capstone.pod.entities;
 
 
+import com.capstone.pod.dto.support.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DiscountTime {
+public class DiscountTime extends Auditable {
     @Id
     @GeneratedValue
     private int id;
