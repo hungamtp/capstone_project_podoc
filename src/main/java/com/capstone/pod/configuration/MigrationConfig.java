@@ -7,7 +7,6 @@ import javax.sql.DataSource;
 
 @Configuration
 public class MigrationConfig {
-
     @Autowired
     public MigrationConfig(DataSource dataSource) {
         Flyway.configure().baselineOnMigrate(true).dataSource(dataSource).load().migrate();

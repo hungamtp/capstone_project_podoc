@@ -1,11 +1,14 @@
 package com.capstone.pod.controller.auth;
 
+import com.capstone.pod.constant.auth.AuthFailMessage;
+import com.capstone.pod.constant.auth.AuthSuccessMessage;
 import com.capstone.pod.dto.auth.LoginDto;
 import com.capstone.pod.dto.auth.LoginResponseDto;
 import com.capstone.pod.dto.auth.RegisterResponseDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.RegisterUserDto;
 import com.capstone.pod.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,17 +21,16 @@ import javax.management.relation.RoleNotFoundException;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginDto user) {
         ResponseDto<LoginResponseDto> responseDTO = new ResponseDto();
-        LoginResponseDto loginResponseDTO = null;
-        loginResponseDTO = userService.login(user);
+        LoginResponseDto loginResponseDTO = userService.login(user);
         responseDTO.setData(loginResponseDTO);
-        responseDTO.setSuccessMessage("LOGIN_SUCCESS");
+        responseDTO.setSuccessMessage(AuthSuccessMessage.LOGIN_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PostMapping("/register")
@@ -36,7 +38,7 @@ public class AuthController {
         ResponseDto<RegisterResponseDto> responseDTO = new ResponseDto();
         RegisterResponseDto registerResponseDto = userService.register(user);
         responseDTO.setData(registerResponseDto);
-        responseDTO.setSuccessMessage("REGISTER_SUCCESS");
+        responseDTO.setSuccessMessage(AuthFailMessage.LOGIN_FAIL);
         return ResponseEntity.ok().body(responseDTO);
     }
 

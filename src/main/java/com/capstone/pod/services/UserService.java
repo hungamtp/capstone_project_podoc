@@ -3,6 +3,7 @@ package com.capstone.pod.services;
 import com.capstone.pod.dto.auth.LoginDto;
 import com.capstone.pod.dto.auth.LoginResponseDto;
 import com.capstone.pod.dto.auth.RegisterResponseDto;
+import com.capstone.pod.dto.user.AddUserDto;
 import com.capstone.pod.dto.user.RegisterUserDto;
 import com.capstone.pod.dto.user.UserDto;
 import org.springframework.data.domain.Page;
@@ -23,4 +24,6 @@ public interface UserService {
     public Page<UserDto> getAllUser(int pageNum, int pageSize);
 
     public UserDto getUserById(int userId);
+
+    public UserDto addUser(AddUserDto user);
 }

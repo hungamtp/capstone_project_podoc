@@ -108,6 +108,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = EmailNotFoundException.class)
+    public ResponseEntity<Object> notFoundException(EmailNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
 
 
 }

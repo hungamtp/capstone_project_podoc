@@ -4,8 +4,10 @@ import com.capstone.pod.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    public User findUserByUsername(String username);
-    public User findUserByEmail(String email);
+    public Optional<User> findUserByUsername(String username);
+    public Optional<User> findUserByEmail(String email);
 }
