@@ -13,7 +13,7 @@ import com.capstone.pod.entities.User;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.constant.user.UserErrorMessage;
-import com.capstone.pod.constant.user.UserStatusMessage;
+import com.capstone.pod.constant.user.UserStatus;
 import com.capstone.pod.repositories.RoleRepository;
 import com.capstone.pod.repositories.UserRepository;
 import com.capstone.pod.services.UserService;
@@ -31,7 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -61,7 +60,7 @@ public class UserServiceImplement implements UserService {
         Optional<Role> role = Optional.ofNullable(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new com.capstone.pod.exceptions.RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND)));
         User userTmp = User.builder().username(user.getUsername())
                 .email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).role(role.get()).avatar(user.getAvatar()).phone(user.getPhone())
-                .password(passwordEncoder.encode(user.getPassword())).status(UserStatusMessage.ACTIVE).isActive(true).isMailVerified(false).address(user.getAddress()).build();
+                .password(passwordEncoder.encode(user.getPassword())).status(UserStatus.ACTIVE).isActive(true).isMailVerified(false).address(user.getAddress()).build();
         userRepository.save(userTmp);
         RegisterResponseDto registerResponseDto = modelMapper.map(userTmp,RegisterResponseDto.class);
         return registerResponseDto;
@@ -75,7 +74,7 @@ public class UserServiceImplement implements UserService {
         if (authenticate.isAuthenticated()) {
             Optional<User> userAuthenticatedOptional = userRepository.findUserByEmail(user.getEmail());
             User userAuthenticated = userAuthenticatedOptional.get();
-            if (!userAuthenticated.getStatus().equals(UserStatusMessage.ACTIVE)) {
+            if (!userAuthenticated.getStatus().equals(UserStatus.ACTIVE)) {
                 throw new UserDisableException(UserErrorMessage.USER_UNAVAILABLE);
             }
             String token = Utils.buildJWT(authenticate, userAuthenticated, secretKey, jwtConfig);
@@ -97,7 +96,7 @@ public class UserServiceImplement implements UserService {
     @Override
     public UserDto deleteUserById(int userId) {
         Optional<User> user = userRepository.findById(userId);
-        user.get().setStatus(UserStatusMessage.INACTIVE);
+        user.get().setStatus(UserStatus.INACTIVE);
         user.get().setActive(false);
         userRepository.save(user.get());
         UserDto userDto = modelMapper.map(user.get(), UserDto.class);
@@ -127,7 +126,7 @@ public class UserServiceImplement implements UserService {
         }
         Optional<Role> role = Optional.ofNullable(roleRepository.findByName(user.getRoleName()).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND)));
         User userBuild = User.builder()
-                .status("ACTIVE")
+                .status(UserStatus.ACTIVE)
                 .isActive(true)
                 .address(user.getAddress())
                 .role(role.get())

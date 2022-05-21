@@ -1,6 +1,6 @@
 package com.capstone.pod.constant.user;
 
-public final class UserStatusMessage {
+public final class UserStatus {
     public static final String INACTIVE="INACTIVE";
     public static final String ACTIVE="ACTIVE";
 }
