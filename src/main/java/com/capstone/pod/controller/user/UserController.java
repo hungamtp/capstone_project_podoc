@@ -4,10 +4,7 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.user.UserSuccessMessage;
 import com.capstone.pod.dto.http.ResponseDto;
-import com.capstone.pod.dto.user.AddUserDto;
-import com.capstone.pod.dto.user.UpdateUserDto;
-import com.capstone.pod.dto.user.UpdateUserDtoByAdmin;
-import com.capstone.pod.dto.user.UserDto;
+import com.capstone.pod.dto.user.*;
 import com.capstone.pod.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -69,6 +66,24 @@ public class UserController {
         responseDTO.setData(checkDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PostMapping("email/{id}")
+    public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") int id) {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.updatePassword(user, id);
+        responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
+        responseDTO.setData(checkDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PostMapping("password-change/{id}")
+    public ResponseEntity<ResponseDto> updateEmail(@Validated @RequestBody UpdateEmailDto user, @PathVariable(name = "id") int id) {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.updateEmail(user, id);
+        responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
+        responseDTO.setData(checkDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @GetMapping()
     public ResponseEntity<ResponseDto> findAll(@RequestParam int pageNumber, @RequestParam int pageSize) {
@@ -76,6 +91,15 @@ public class UserController {
         Page<UserDto> users = userService.getAllUser(pageNumber, pageSize);
         responseDTO.setData(users);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_USER_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @GetMapping("email/{email}")
+    public ResponseEntity<ResponseDto> findByEmail(@PathVariable(name = "email") String email) {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto user = userService.findByEmail(email);
+        responseDTO.setData(user);
+        responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

@@ -3,6 +3,8 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.role.RoleErrorMessage;
 import com.capstone.pod.constant.role.RoleName;
+import com.capstone.pod.constant.user.UserErrorMessage;
+import com.capstone.pod.constant.user.UserStatus;
 import com.capstone.pod.dto.auth.LoginDto;
 import com.capstone.pod.dto.auth.LoginResponseDto;
 import com.capstone.pod.dto.auth.RegisterResponseDto;
@@ -11,8 +13,6 @@ import com.capstone.pod.entities.Role;
 import com.capstone.pod.entities.User;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.jwt.JwtConfig;
-import com.capstone.pod.constant.user.UserErrorMessage;
-import com.capstone.pod.constant.user.UserStatus;
 import com.capstone.pod.repositories.RoleRepository;
 import com.capstone.pod.repositories.UserRepository;
 import com.capstone.pod.services.UserService;
@@ -42,6 +42,7 @@ public class UserServiceImplement implements UserService {
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
+
 
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new EmailNotFoundException(UserErrorMessage.EMAIL_NOT_FOUND));
@@ -143,10 +144,9 @@ public class UserServiceImplement implements UserService {
     public UserDto updateUser(UpdateUserDto user,int userId) {
         User userRepo = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = (String) authentication.getCredentials();
-        if(!email.equals(userRepo.getEmail())){
+        String email_current = (String) authentication.getCredentials();
+        if(!email_current.equals(userRepo.getEmail())){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
         userRepo.setFirstName(user.getFirstName());
@@ -167,6 +167,31 @@ public class UserServiceImplement implements UserService {
         userRepo.setPhone(user.getPhone());
         userRepo.setStatus(user.getStatus());
         userRepo.setRole(roleRepo);
+        return modelMapper.map(userRepository.save(userRepo),UserDto.class);
+    }
+
+    @Override
+    public UserDto updatePassword(UpdatePasswordDto user, int userId) {
+        User userRepo = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email_current = (String) authentication.getCredentials();
+        if(!email_current.equals(userRepo.getEmail())){
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
+        userRepo.setPassword(passwordEncoder.encode(user.getPassword()));
+        return modelMapper.map(userRepository.save(userRepo),UserDto.class);
+    }
+    @Override
+    public UserDto updateEmail(UpdateEmailDto user, int userId) {
+        User userRepo = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email_current = (String) authentication.getCredentials();
+        if(!email_current.equals(userRepo.getEmail())){
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
+        userRepo.setEmail(user.getEmail());
         return modelMapper.map(userRepository.save(userRepo),UserDto.class);
     }
 }

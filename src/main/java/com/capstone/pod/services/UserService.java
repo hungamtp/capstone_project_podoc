@@ -19,4 +19,7 @@ public interface UserService {
     public UserDto addUser(AddUserDto user);
     public UserDto updateUser(UpdateUserDto user,int userId);
     public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId);
+
+    public UserDto updatePassword(UpdatePasswordDto user,int userId);
+    public UserDto updateEmail(UpdateEmailDto user,int userId);
 }
