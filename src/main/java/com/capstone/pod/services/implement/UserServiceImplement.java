@@ -145,8 +145,8 @@ public class UserServiceImplement implements UserService {
         User userRepo = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email_current = (String) authentication.getCredentials();
-        if(!email_current.equals(userRepo.getEmail())){
+        Integer currentUserId = (Integer) authentication.getCredentials();
+        if(!currentUserId.equals(userRepo.getId())){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
         userRepo.setFirstName(user.getFirstName());
@@ -175,8 +175,8 @@ public class UserServiceImplement implements UserService {
         User userRepo = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email_current = (String) authentication.getCredentials();
-        if(!email_current.equals(userRepo.getEmail())){
+        Integer currentUserId = (Integer) authentication.getCredentials();
+        if(!currentUserId.equals(userRepo.getId())){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
         userRepo.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -187,8 +187,8 @@ public class UserServiceImplement implements UserService {
         User userRepo = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email_current = (String) authentication.getCredentials();
-        if(!email_current.equals(userRepo.getEmail())){
+        Integer currentUserId = (Integer) authentication.getCredentials();
+        if(!currentUserId.equals(userRepo.getId())){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
         userRepo.setEmail(user.getEmail());

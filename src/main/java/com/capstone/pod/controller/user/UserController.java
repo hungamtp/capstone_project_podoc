@@ -67,7 +67,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping("email/{id}")
+    @PostMapping("password-change/{id}")
     public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updatePassword(user, id);
@@ -76,7 +76,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping("password-change/{id}")
+    @PostMapping("email/{id}")
     public ResponseEntity<ResponseDto> updateEmail(@Validated @RequestBody UpdateEmailDto user, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateEmail(user, id);
