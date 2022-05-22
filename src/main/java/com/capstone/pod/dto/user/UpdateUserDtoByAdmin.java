@@ -4,11 +4,10 @@ import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.constant.validation_size.ValidationSize;
 import lombok.Data;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 @Data
-public class UpdateUserDto {
+public class UpdateUserDtoByAdmin {
     @NotBlank(message = ValidationMessage.FIRSTNAME_VALID_MESSAGE)
     private String firstName;
     @NotBlank(message = ValidationMessage.LASTNAME_VALID_MESSAGE)
@@ -21,4 +20,6 @@ public class UpdateUserDto {
     private String phone;
     @NotBlank(message = ValidationMessage.ROLE_VALID_MESSAGE)
     private String roleName;
+    @NotBlank(message = ValidationMessage.STATUS_VALID_MESSAGE)
+    private String status;
 }

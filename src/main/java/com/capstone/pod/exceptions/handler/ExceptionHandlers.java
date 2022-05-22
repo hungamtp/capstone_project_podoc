@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -111,6 +110,12 @@ public class ExceptionHandlers extends RuntimeException {
     }
     @ExceptionHandler(value = EmailNotFoundException.class)
     public ResponseEntity<Object> notFoundException(EmailNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = PermissionException.class)
+    public ResponseEntity<Object> notFoundException(PermissionException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);

@@ -22,7 +22,6 @@ import javax.management.relation.RoleNotFoundException;
 @RequiredArgsConstructor
 public class AuthController {
     private final UserService userService;
-
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(@Validated @RequestBody LoginDto user) {
         ResponseDto<LoginResponseDto> responseDTO = new ResponseDto();

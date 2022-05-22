@@ -17,8 +17,6 @@ public class RegisterUserDto {
     private String firstName;
     @NotBlank(message = ValidationMessage.LASTNAME_VALID_MESSAGE)
     private String lastName;
-    @NotBlank(message = ValidationMessage.USERNAME_VALID_MESSAGE)
-    private String username;
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     @Size(min = ValidationSize.PASSWORD_MIN,message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
     private String password;

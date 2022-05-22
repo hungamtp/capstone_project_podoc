@@ -21,6 +21,7 @@ public class Utils {
         String token = Jwts.builder().setSubject(authenticate.getName())
                 .claim("authorities", authenticate.getAuthorities())
                 .claim("userId", userAuthenticated.getId())
+                .claim("email",userAuthenticated.getEmail())
                 .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()))).signWith(secretKey).compact();
         return token;
     }

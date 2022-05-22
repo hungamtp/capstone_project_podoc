@@ -1,13 +1,12 @@
 package com.capstone.pod.services.implement;
 
+import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.role.RoleErrorMessage;
 import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.dto.auth.LoginDto;
 import com.capstone.pod.dto.auth.LoginResponseDto;
 import com.capstone.pod.dto.auth.RegisterResponseDto;
-import com.capstone.pod.dto.user.AddUserDto;
-import com.capstone.pod.dto.user.RegisterUserDto;
-import com.capstone.pod.dto.user.UserDto;
+import com.capstone.pod.dto.user.*;
 import com.capstone.pod.entities.Role;
 import com.capstone.pod.entities.User;
 import com.capstone.pod.exceptions.*;
@@ -26,7 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,23 +42,21 @@ public class UserServiceImplement implements UserService {
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
-    @Override
-    public UserDto findByUserName(String username) {
-        Optional<User> user = Optional.ofNullable(userRepository.findUserByUsername(username)).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USERNAME_NOT_FOUND));
-        return modelMapper.map(user.get(), UserDto.class);
-    }
 
     public UserDto findByEmail(String email) {
-        Optional<User> user = Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(() -> new EmailNotFoundException(UserErrorMessage.EMAIL_NOT_FOUND));
-        return modelMapper.map(user.get(), UserDto.class);
+        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new EmailNotFoundException(UserErrorMessage.EMAIL_NOT_FOUND));
+        return modelMapper.map(user, UserDto.class);
     }
 
     @Override
     public RegisterResponseDto register(RegisterUserDto user){
-        Optional.ofNullable(userRepository.findUserByEmail(user.getEmail())).orElseThrow(() -> new UserNameExistException(UserErrorMessage.EMAIL_EXIST));
-        Optional<Role> role = Optional.ofNullable(roleRepository.findByName(RoleName.ROLE_USER)).orElseThrow(() -> new com.capstone.pod.exceptions.RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
-        User userTmp = User.builder().username(user.getUsername())
-                .email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).role(role.get()).avatar(user.getAvatar()).phone(user.getPhone())
+       Optional<User> optionalUser= userRepository.findUserByEmail(user.getEmail());
+        if(optionalUser.isPresent()){
+            throw new EmailExistException(UserErrorMessage.EMAIL_EXIST);
+        }
+        Role role = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new com.capstone.pod.exceptions.RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        User userTmp = User.builder()
+                .email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).role(role).avatar(user.getAvatar()).phone(user.getPhone())
                 .password(passwordEncoder.encode(user.getPassword())).status(UserStatus.ACTIVE).isActive(true).isMailVerified(false).address(user.getAddress()).build();
         userRepository.save(userTmp);
         RegisterResponseDto registerResponseDto = modelMapper.map(userTmp,RegisterResponseDto.class);
@@ -81,7 +78,6 @@ public class UserServiceImplement implements UserService {
                     .userId(userAuthenticated.getId())
                     .firstName(userAuthenticated.getFirstName())
                     .lastName(userAuthenticated.getLastName())
-                    .username(userAuthenticated.getUsername())
                     .email(userAuthenticated.getEmail())
                     .phone(userAuthenticated.getPhone())
                     .address(userAuthenticated.getAddress())
@@ -94,11 +90,12 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDto deleteUserById(int userId) {
-        Optional<User> user = userRepository.findById(userId);
-        user.get().setStatus(UserStatus.INACTIVE);
-        user.get().setActive(false);
-        userRepository.save(user.get());
-        UserDto userDto = modelMapper.map(user.get(), UserDto.class);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        user.setStatus(UserStatus.INACTIVE);
+        user.setActive(false);
+        userRepository.save(user);
+        UserDto userDto = modelMapper.map(user, UserDto.class);
         return userDto;
     }
     @Override
@@ -111,33 +108,67 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDto getUserById(int userId) {
-        Optional<User> user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        UserDto userDto = modelMapper.map(user.get(), UserDto.class);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        UserDto userDto = modelMapper.map(user, UserDto.class);
         return userDto;
     }
 
     @Override
-    public UserDto addUser(AddUserDto user) {
+    public UserDto addUser(AddUserDto user)
+    throws RoleNotFoundException{
         Optional<User> userTmp = userRepository.findUserByEmail(user.getEmail());
         if (userTmp.isPresent()) {
-            throw new UserNameExistException(UserErrorMessage.USER_NAME_EXIST);
+            throw new UserNameExistException(UserErrorMessage.EMAIL_EXIST);
         }
-        Optional<Role> role = Optional.ofNullable(roleRepository.findByName(user.getRoleName())).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        Role role =roleRepository.findByName(user.getRoleName()).orElseThrow(
+                () -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         User userBuild = User.builder()
                 .status(UserStatus.ACTIVE)
                 .isActive(true)
                 .address(user.getAddress())
-                .role(role.get())
+                .role(role)
                 .phone(user.getPhone())
                 .email(user.getEmail())
                 .avatar(user.getAvatar())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .build();
         User inRepo = userRepository.save(userBuild);
         UserDto userDTO = modelMapper.map(inRepo, UserDto.class);
         return userDTO;
+    }
+    @Override
+    public UserDto updateUser(UpdateUserDto user,int userId) {
+        User userRepo = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = (String) authentication.getCredentials();
+        if(email.equals(userRepo.getEmail())){
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
+        Role role = roleRepository.findByName(user.getRoleName())
+                .orElseThrow(() -> new UserNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        userRepo.setFirstName(user.getFirstName());
+        userRepo.setLastName(user.getLastName());
+        userRepo.setAddress(user.getAddress());
+        userRepo.setPhone(user.getPhone());
+        userRepo.setRole(role);
+        return modelMapper.map(userRepository.save(userRepo),UserDto.class);
+    }
+    @Override
+    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId) {
+        User userRepo = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        Role roleRepo = roleRepository.findByName(user.getRoleName())
+                .orElseThrow(() -> new UserNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        userRepo.setFirstName(user.getFirstName());
+        userRepo.setLastName(user.getLastName());
+        userRepo.setAddress(user.getAddress());
+        userRepo.setPhone(user.getPhone());
+        userRepo.setStatus(user.getStatus());
+        userRepo.setRole(roleRepo);
+        return modelMapper.map(userRepository.save(userRepo),UserDto.class);
     }
 }

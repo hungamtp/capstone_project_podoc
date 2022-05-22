@@ -1,9 +1,12 @@
 package com.capstone.pod.controller.user;
 
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.user.UserSuccessMessage;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.AddUserDto;
+import com.capstone.pod.dto.user.UpdateUserDto;
+import com.capstone.pod.dto.user.UpdateUserDtoByAdmin;
 import com.capstone.pod.dto.user.UserDto;
 import com.capstone.pod.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +42,8 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("/add")
-    public ResponseEntity<ResponseDto> add(@Validated @RequestBody AddUserDto user) {
+    public ResponseEntity<ResponseDto> add(@Validated @RequestBody AddUserDto user)
+    {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.addUser(user);
         if (checkDTO != null) {
@@ -47,21 +51,24 @@ public class UserController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
-
-//    @PreAuthorize("hasRole('ADMIN')")
-//    @PostMapping("/update/{id}")
-//    public ResponseEntity<ResponseDto> update(@Validated @RequestBody User user, @PathVariable(name = "id") int id) {
-//        ResponseDto<UserDto> responseDTO = new ResponseDto();
-//        UserDto checkDTO = userService.updateUser(user, id);
-//        if (checkDTO != null) {
-//            responseDTO.setSuccessMessage("UPDATE SUCCESSFULLY");
-//            return ResponseEntity.ok().body(responseDTO);
-//        } else {
-//            responseDTO.setErrorMessage("UPDATE FAIL");
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDTO);
-//        }
-//    }
-
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PostMapping("/{id}")
+    public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateUserDto user, @PathVariable(name = "id") int id) {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.updateUser(user, id);
+        responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
+        responseDTO.setData(checkDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PostMapping("update-by-admin/{id}")
+    public ResponseEntity<ResponseDto> updateByAdmin(@Validated @RequestBody UpdateUserDtoByAdmin user, @PathVariable(name = "id") int id) {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto checkDTO = userService.updateUserByAdmin(user, id);
+        responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
+        responseDTO.setData(checkDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @GetMapping()
     public ResponseEntity<ResponseDto> findAll(@RequestParam int pageNumber, @RequestParam int pageSize) {
@@ -69,17 +76,6 @@ public class UserController {
         Page<UserDto> users = userService.getAllUser(pageNumber, pageSize);
         responseDTO.setData(users);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_USER_SUCCESS);
-        return ResponseEntity.ok().body(responseDTO);
-
-    }
-
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    @GetMapping("/username/{username}")
-    public ResponseEntity<ResponseDto> findByUsername(@PathVariable(name = "username") String username) {
-        ResponseDto<UserDto> responseDTO = new ResponseDto();
-        UserDto user = userService.findByUserName(username);
-        responseDTO.setData(user);
-        responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_NAME_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

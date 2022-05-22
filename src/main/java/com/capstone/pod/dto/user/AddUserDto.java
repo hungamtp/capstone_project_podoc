@@ -14,8 +14,6 @@ public class AddUserDto {
     private String firstName;
     @NotBlank(message = ValidationMessage.LASTNAME_VALID_MESSAGE)
     private String lastName;
-    @NotBlank(message = ValidationMessage.USERNAME_VALID_MESSAGE)
-    private String username;
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     private String password;
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)

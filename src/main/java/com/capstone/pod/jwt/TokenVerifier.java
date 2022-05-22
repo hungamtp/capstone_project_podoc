@@ -38,12 +38,13 @@ public class TokenVerifier extends OncePerRequestFilter {
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes())).build().parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
+            Object email = body.get("email");
+            System.out.println(email+"HIHIHIHI");
             var authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority("ROLE_" + m.get("authority"))).collect(Collectors.toSet());
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, simpleGrantedAuthorities);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(username, email, simpleGrantedAuthorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
         } catch (JwtException e) {
             throw new IllegalStateException("Token can not be trusted");
         }
