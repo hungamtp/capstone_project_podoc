@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-
     @GetMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
     public ResponseEntity<ResponseDto> getUserById(@PathVariable(name = "id") int userId)  {
@@ -39,7 +37,6 @@ public class UserController {
         }
         return ResponseEntity.ok().body(responseDTO);
     }
-
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("/add")
     public ResponseEntity<ResponseDto> add(@Validated @RequestBody AddUserDto user) {

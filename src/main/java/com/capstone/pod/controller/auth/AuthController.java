@@ -1,6 +1,5 @@
 package com.capstone.pod.controller.auth;
 
-import com.capstone.pod.constant.auth.AuthFailMessage;
 import com.capstone.pod.constant.auth.AuthSuccessMessage;
 import com.capstone.pod.dto.auth.LoginDto;
 import com.capstone.pod.dto.auth.LoginResponseDto;
@@ -9,7 +8,6 @@ import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.RegisterUserDto;
 import com.capstone.pod.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,8 +36,7 @@ public class AuthController {
         ResponseDto<RegisterResponseDto> responseDTO = new ResponseDto();
         RegisterResponseDto registerResponseDto = userService.register(user);
         responseDTO.setData(registerResponseDto);
-        responseDTO.setSuccessMessage(AuthFailMessage.LOGIN_FAIL);
+        responseDTO.setSuccessMessage(AuthSuccessMessage.LOGIN_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
 }

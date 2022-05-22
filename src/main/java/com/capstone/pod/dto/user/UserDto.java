@@ -14,11 +14,11 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String username;
-    private String password;
     private String address;
     private String phone;
     private String email;
     private boolean isMailVerified;
     private boolean isActive;
     private String roleName;
+    private String status;
 }

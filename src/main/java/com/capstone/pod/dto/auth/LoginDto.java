@@ -1,5 +1,6 @@
 package com.capstone.pod.dto.auth;
 
+import com.capstone.pod.constant.validation_message.ValidationMessage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,9 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class LoginDto {
 
-    @Email(message = "Wrong email address, please try again!")
+    @Email(message = ValidationMessage.EMAIL_VALID_MESSAGE_WHEN_LOGIN)
     private String email;
 
-    @Size(min = 6, message = "Password length must be greater than 6 characters")
+    @Size(min = 6, message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
     private String password;
 }

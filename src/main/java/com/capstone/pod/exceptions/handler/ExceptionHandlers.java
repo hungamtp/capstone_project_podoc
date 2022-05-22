@@ -1,5 +1,6 @@
 package com.capstone.pod.exceptions.handler;
 
+import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.exceptions.*;
 import org.springframework.http.HttpStatus;
@@ -36,7 +37,7 @@ public class ExceptionHandlers extends RuntimeException {
     @ExceptionHandler(value = {UsernameOrPasswordNotFoundException.class, AuthenticationException.class})
     public ResponseEntity<Object> usernameOrPasswordNotFound(AuthenticationException exception) {
         ResponseDto dto = new ResponseDto();
-        dto.setErrorMessage("EMAIL OR PASSWORD IS INCORRECT");
+        dto.setErrorMessage(UserErrorMessage.EMAIL_OR_PASSWORD_INCORRECT);
         return ResponseEntity.badRequest().body(dto);
     }
 
@@ -98,7 +99,7 @@ public class ExceptionHandlers extends RuntimeException {
     @ExceptionHandler(value = {NoSuchElementException.class})
     public ResponseEntity<Object> notFoundException(NoSuchElementException exception) {
         ResponseDto dto = new ResponseDto();
-        dto.setErrorMessage("ID NOT FOUND!");
+        dto.setErrorMessage("Object not found");
         return ResponseEntity.badRequest().body(dto);
     }
 

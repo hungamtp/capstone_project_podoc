@@ -45,19 +45,19 @@ public class UserServiceImplement implements UserService {
     private final ModelMapper modelMapper;
     @Override
     public UserDto findByUserName(String username) {
-        Optional<User> user = Optional.ofNullable(userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(UserErrorMessage.USERNAME_NOT_FOUND)));
-        return modelMapper.map(user, UserDto.class);
+        Optional<User> user = Optional.ofNullable(userRepository.findUserByUsername(username)).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USERNAME_NOT_FOUND));
+        return modelMapper.map(user.get(), UserDto.class);
     }
 
     public UserDto findByEmail(String email) {
-        Optional<User> user = Optional.ofNullable(userRepository.findUserByEmail(email).orElseThrow(() -> new EmailNotFoundException(UserErrorMessage.EMAIL_NOT_FOUND)));
+        Optional<User> user = Optional.ofNullable(userRepository.findUserByEmail(email)).orElseThrow(() -> new EmailNotFoundException(UserErrorMessage.EMAIL_NOT_FOUND));
         return modelMapper.map(user.get(), UserDto.class);
     }
 
     @Override
     public RegisterResponseDto register(RegisterUserDto user){
-        Optional.ofNullable(userRepository.findUserByEmail(user.getEmail()).orElseThrow(() -> new UserNameExistException(UserErrorMessage.EMAIL_EXIST)));
-        Optional<Role> role = Optional.ofNullable(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new com.capstone.pod.exceptions.RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND)));
+        Optional.ofNullable(userRepository.findUserByEmail(user.getEmail())).orElseThrow(() -> new UserNameExistException(UserErrorMessage.EMAIL_EXIST));
+        Optional<Role> role = Optional.ofNullable(roleRepository.findByName(RoleName.ROLE_USER)).orElseThrow(() -> new com.capstone.pod.exceptions.RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         User userTmp = User.builder().username(user.getUsername())
                 .email(user.getEmail()).firstName(user.getFirstName()).lastName(user.getLastName()).role(role.get()).avatar(user.getAvatar()).phone(user.getPhone())
                 .password(passwordEncoder.encode(user.getPassword())).status(UserStatus.ACTIVE).isActive(true).isMailVerified(false).address(user.getAddress()).build();
@@ -65,7 +65,6 @@ public class UserServiceImplement implements UserService {
         RegisterResponseDto registerResponseDto = modelMapper.map(userTmp,RegisterResponseDto.class);
         return registerResponseDto;
     }
-
     @Override
     public LoginResponseDto login(LoginDto user) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
@@ -102,7 +101,6 @@ public class UserServiceImplement implements UserService {
         UserDto userDto = modelMapper.map(user.get(), UserDto.class);
         return userDto;
     }
-
     @Override
     public Page<UserDto> getAllUser(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
@@ -113,7 +111,7 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDto getUserById(int userId) {
-        Optional<User> user = Optional.ofNullable(userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND)));
+        Optional<User> user = Optional.ofNullable(userRepository.findById(userId)).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         UserDto userDto = modelMapper.map(user.get(), UserDto.class);
         return userDto;
     }
@@ -124,7 +122,7 @@ public class UserServiceImplement implements UserService {
         if (userTmp.isPresent()) {
             throw new UserNameExistException(UserErrorMessage.USER_NAME_EXIST);
         }
-        Optional<Role> role = Optional.ofNullable(roleRepository.findByName(user.getRoleName()).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND)));
+        Optional<Role> role = Optional.ofNullable(roleRepository.findByName(user.getRoleName())).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         User userBuild = User.builder()
                 .status(UserStatus.ACTIVE)
                 .isActive(true)
