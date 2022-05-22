@@ -143,18 +143,16 @@ public class UserServiceImplement implements UserService {
     public UserDto updateUser(UpdateUserDto user,int userId) {
         User userRepo = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = (String) authentication.getCredentials();
-        if(email.equals(userRepo.getEmail())){
+        if(!email.equals(userRepo.getEmail())){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
-        Role role = roleRepository.findByName(user.getRoleName())
-                .orElseThrow(() -> new UserNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         userRepo.setFirstName(user.getFirstName());
         userRepo.setLastName(user.getLastName());
         userRepo.setAddress(user.getAddress());
         userRepo.setPhone(user.getPhone());
-        userRepo.setRole(role);
         return modelMapper.map(userRepository.save(userRepo),UserDto.class);
     }
     @Override

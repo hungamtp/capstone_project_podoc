@@ -11,7 +11,7 @@ public final class ValidationMessage {
     public static final String PASSWORD_VALID_MESSAGE ="Password must be filled";
     public static final String STATUS_VALID_MESSAGE ="Status must be filled";
 
-    public static final String PASSWORD_SIZE_VALID_MESSAGE ="Password length must be greater than 8 characters";
+    public static final String PASSWORD_SIZE_VALID_MESSAGE ="Password length must be greater than 7 and less than 20 characters";
 
     public static final String ADDRESS_VALID_MESSAGE ="Address must be filled";
 

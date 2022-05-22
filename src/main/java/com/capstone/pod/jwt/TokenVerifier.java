@@ -39,7 +39,6 @@ public class TokenVerifier extends OncePerRequestFilter {
             Claims body = claimsJws.getBody();
             String username = body.getSubject();
             Object email = body.get("email");
-            System.out.println(email+"HIHIHIHI");
             var authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority("ROLE_" + m.get("authority"))).collect(Collectors.toSet());

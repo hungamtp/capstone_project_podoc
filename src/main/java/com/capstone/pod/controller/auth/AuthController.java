@@ -35,7 +35,7 @@ public class AuthController {
         ResponseDto<RegisterResponseDto> responseDTO = new ResponseDto();
         RegisterResponseDto registerResponseDto = userService.register(user);
         responseDTO.setData(registerResponseDto);
-        responseDTO.setSuccessMessage(AuthSuccessMessage.LOGIN_SUCCESS);
+        responseDTO.setSuccessMessage(AuthSuccessMessage.REGISTER_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

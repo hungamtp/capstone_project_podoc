@@ -19,6 +19,4 @@ public class UpdateUserDto {
     @Size(min = ValidationSize.PHONE_MIN,max = ValidationSize.PHONE_MAX,message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     private String phone;
-    @NotBlank(message = ValidationMessage.ROLE_VALID_MESSAGE)
-    private String roleName;
 }
