@@ -19,10 +19,19 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     @GetMapping("/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<ResponseDto> getUserById(@PathVariable(name = "id") int userId)  {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto userDto = userService.getUserById(userId);
+        responseDTO.setData(userDto);
+        responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_ID_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    };
+    @GetMapping("admin/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> getUserByIdRoleAdmin(@PathVariable(name = "id") int userId)  {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto userDto = userService.getUserByIdRoleAdmin(userId);
         responseDTO.setData(userDto);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

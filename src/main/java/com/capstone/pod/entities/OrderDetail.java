@@ -19,7 +19,7 @@ public class OrderDetail {
     @Id
     @GeneratedValue
     private String id;
-    private String quantity;
+    private int quantity;
     @ManyToOne
     private Orders orders;
     @ManyToOne

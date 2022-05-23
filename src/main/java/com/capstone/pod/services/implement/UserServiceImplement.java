@@ -44,6 +44,17 @@ public class UserServiceImplement implements UserService {
     private final ModelMapper modelMapper;
 
 
+    private User getPermittedUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer currentUserId = (Integer) authentication.getCredentials();
+        if(!currentUserId.equals(user.getId())){
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
+        return user;
+    }
+    @Override
     public UserDto findByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new EmailNotFoundException(UserErrorMessage.EMAIL_NOT_FOUND));
         return modelMapper.map(user, UserDto.class);
@@ -109,12 +120,18 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDto getUserById(int userId) {
+        User user = getPermittedUser(userId);
+        UserDto userDto = modelMapper.map(user, UserDto.class);
+        return userDto;
+    }
+
+    @Override
+    public UserDto getUserByIdRoleAdmin(int userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         UserDto userDto = modelMapper.map(user, UserDto.class);
         return userDto;
     }
-
     @Override
     public UserDto addUser(AddUserDto user)
     throws RoleNotFoundException{
@@ -142,13 +159,7 @@ public class UserServiceImplement implements UserService {
     }
     @Override
     public UserDto updateUser(UpdateUserDto user,int userId) {
-        User userRepo = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentUserId = (Integer) authentication.getCredentials();
-        if(!currentUserId.equals(userRepo.getId())){
-            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
-        }
+       User userRepo =  getPermittedUser(userId);
         userRepo.setFirstName(user.getFirstName());
         userRepo.setLastName(user.getLastName());
         userRepo.setAddress(user.getAddress());
@@ -172,25 +183,13 @@ public class UserServiceImplement implements UserService {
 
     @Override
     public UserDto updatePassword(UpdatePasswordDto user, int userId) {
-        User userRepo = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentUserId = (Integer) authentication.getCredentials();
-        if(!currentUserId.equals(userRepo.getId())){
-            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
-        }
+        User userRepo = getPermittedUser(userId);
         userRepo.setPassword(passwordEncoder.encode(user.getPassword()));
         return modelMapper.map(userRepository.save(userRepo),UserDto.class);
     }
     @Override
     public UserDto updateEmail(UpdateEmailDto user, int userId) {
-        User userRepo = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentUserId = (Integer) authentication.getCredentials();
-        if(!currentUserId.equals(userRepo.getId())){
-            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
-        }
+        User userRepo = getPermittedUser(userId);
         userRepo.setEmail(user.getEmail());
         return modelMapper.map(userRepository.save(userRepo),UserDto.class);
     }

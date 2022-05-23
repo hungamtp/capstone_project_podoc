@@ -20,6 +20,7 @@ public class SizeColor {
     @Id
     @GeneratedValue
     private int id;
+    private int quantity;
 
     @ManyToOne
     private Color color;

@@ -22,7 +22,6 @@ public class Product extends Auditable {
     private String name;
     private double price;
     private boolean isPublic;
-
     private String description;
     private boolean isDeleted;
 
