@@ -1,15 +1,9 @@
-package com.capstone.pod.dto.auth;
+package com.capstone.pod.dto.credential;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class LoginResponseDto {
+public class CredentialDto {
     private int credentialId;
     private String email;
     private String roleName;

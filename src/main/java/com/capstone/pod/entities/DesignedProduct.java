@@ -23,6 +23,8 @@ public class DesignedProduct  extends Auditable {
     private double designedPrice;
     private String image;
 
+    private double price;
+
     @OneToMany(mappedBy = "designedProduct")
     Collection<DesignBluePrint> designBluePrints;
 

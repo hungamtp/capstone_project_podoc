@@ -43,6 +43,7 @@ public class UserController {
         UserDto checkDTO = userService.deleteUserById(userId);
         if (checkDTO != null) {
             responseDTO.setSuccessMessage(UserSuccessMessage.DELETE_USER_SUCCESS);
+            responseDTO.setData(checkDTO);
         }
         return ResponseEntity.ok().body(responseDTO);
     }
@@ -106,8 +107,8 @@ public class UserController {
     @GetMapping("email/{email}")
     public ResponseEntity<ResponseDto> findByEmail(@PathVariable(name = "email") String email) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
-        UserDto user = userService.findByEmail(email);
-        responseDTO.setData(user);
+//        UserDto user = userService.findByEmail(email);
+        responseDTO.setData(null);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

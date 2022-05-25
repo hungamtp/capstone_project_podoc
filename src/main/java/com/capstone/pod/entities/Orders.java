@@ -30,4 +30,7 @@ public class Orders extends Auditable {
 
     @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
     Collection<OrderDetail> orderDetails;
+
+    @ManyToOne
+    private Factory factory;
 }

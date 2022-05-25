@@ -1,6 +1,6 @@
 package com.capstone.pod.utils;
 
-import com.capstone.pod.entities.User;
+import com.capstone.pod.entities.Credential;
 import com.capstone.pod.jwt.JwtConfig;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
@@ -11,17 +11,16 @@ import org.springframework.security.core.Authentication;
 import javax.crypto.SecretKey;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.Optional;
 
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true)
 public class Utils {
-    public static String buildJWT(Authentication authenticate, User userAuthenticated, SecretKey secretKey, JwtConfig jwtConfig) {
+    public static String buildJWT(Authentication authenticate, Credential credentialAuthenticated, SecretKey secretKey, JwtConfig jwtConfig) {
         String token = Jwts.builder().setSubject(authenticate.getName())
                 .claim("authorities", authenticate.getAuthorities())
-                .claim("userId", userAuthenticated.getId())
-                .claim("email",userAuthenticated.getEmail())
+                .claim("email",credentialAuthenticated.getEmail())
+                .claim("credentialId",credentialAuthenticated.getId())
                 .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()))).signWith(secretKey).compact();
         return token;
     }

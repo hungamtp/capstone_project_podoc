@@ -120,6 +120,18 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = CredentialNotFoundException.class)
+    public ResponseEntity<Object> notFoundException(CredentialNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = CredentialDeletedAlreadyException.class)
+    public ResponseEntity<Object> notFoundException(CredentialDeletedAlreadyException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
 
 
 }
