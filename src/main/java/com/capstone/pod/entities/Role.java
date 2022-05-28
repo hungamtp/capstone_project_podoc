@@ -18,5 +18,4 @@ public class Role {
     private String name;
     @OneToMany(mappedBy= "role")
     Collection<Credential> credentials;
-
 }

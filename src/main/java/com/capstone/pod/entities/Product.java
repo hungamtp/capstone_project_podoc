@@ -43,8 +43,6 @@ public class Product extends Auditable {
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private Collection<PriceByFactory> priceByFactories;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private Discount discount;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Category category;

@@ -1,12 +1,18 @@
 package com.capstone.pod.utils;
 
+import com.capstone.pod.constant.common.CommonMessage;
+import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.entities.Credential;
+import com.capstone.pod.exceptions.CredentialNotFoundException;
+import com.capstone.pod.exceptions.PermissionException;
 import com.capstone.pod.jwt.JwtConfig;
+import com.capstone.pod.repositories.CredentialRepository;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDate;
@@ -23,9 +29,8 @@ public class Utils {
                 .claim("credentialId",credentialAuthenticated.getId())
                 .setIssuedAt((new Date())).setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()))).signWith(secretKey).compact();
         return token;
-    }
+    };
 
-    ;
 
 //    public static Specification buildProductSpecifications(String search) {
 //        ProductSpecificationBuilder builder = new ProductSpecificationBuilder();

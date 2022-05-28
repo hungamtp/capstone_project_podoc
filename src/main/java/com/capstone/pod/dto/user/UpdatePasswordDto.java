@@ -11,5 +11,8 @@ import javax.validation.constraints.Size;
 public class UpdatePasswordDto {
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     @Size(min= ValidationSize.PASSWORD_MIN,max = ValidationSize.PASSWORD_MAX,message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
-    private String password;
+    private String newPassword;
+    @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
+    @Size(min= ValidationSize.PASSWORD_MIN,max = ValidationSize.PASSWORD_MAX,message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
+    private String oldPassword;
 }

@@ -11,10 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserDto {
     private int id;
+    private String userFirstName;
+    private String userLastName;
+    private String name;
     private String email;
+    private String roleName;
     private String phone;
     private String address;
     private String image;
-    private String roleName;
     private String userStatus;
 }

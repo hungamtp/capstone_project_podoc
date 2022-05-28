@@ -1,20 +1,18 @@
-package com.capstone.pod.dto.user;
+package com.capstone.pod.dto.factory;
 
 import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.constant.validation_size.ValidationSize;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-@Data
-public class AddUserDto {
-    @NotBlank(message = ValidationMessage.FIRSTNAME_VALID_MESSAGE)
-    private String firstName;
-    @NotBlank(message = ValidationMessage.LASTNAME_VALID_MESSAGE)
-    private String lastName;
-    @Size(min = ValidationSize.PASSWORD_MIN,max = ValidationSize.PASSWORD_MAX,message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
+@Getter
+@Setter
+public class AddFactoryDto {
+    @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
+    private String name;
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     private String password;
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
@@ -25,5 +23,6 @@ public class AddUserDto {
     private String phone;
     @Email(message = ValidationMessage.EMAIL_VALID_MESSAGE)
     private String email;
-    private String avatar;
+    @NotBlank(message = ValidationMessage.LOGO_VALID_MESSAGE)
+    private String logo;
 }

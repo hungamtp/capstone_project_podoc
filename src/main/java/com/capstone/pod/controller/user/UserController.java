@@ -3,6 +3,7 @@ package com.capstone.pod.controller.user;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.user.UserSuccessMessage;
+import com.capstone.pod.dto.credential.CredentialDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.*;
 import com.capstone.pod.services.UserService;
@@ -48,18 +49,27 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<ResponseDto> add(@Validated @RequestBody AddUserDto user)
     {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
-        UserDto checkDTO = userService.addUser(user);
-        if (checkDTO != null) {
+        UserDto userDto = userService.addUser(user);
+        responseDTO.setData(userDto);
             responseDTO.setSuccessMessage(UserSuccessMessage.ADD_USER_SUCCESS);
-        }
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PostMapping("/addAdmin")
+    public ResponseEntity<ResponseDto> addAdmin(@Validated @RequestBody AddUserDto user)
+    {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto userDto = userService.addAdmin(user);
+        responseDTO.setData(userDto);
+            responseDTO.setSuccessMessage(UserSuccessMessage.ADD_ADMIN_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping("/{id}")
+    @PostMapping("update/{id}")
     public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateUserDto user, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateUser(user, id);
@@ -85,11 +95,11 @@ public class UserController {
         responseDTO.setData(checkDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping("email/{id}")
-    public ResponseEntity<ResponseDto> updateEmail(@Validated @RequestBody UpdateEmailDto user, @PathVariable(name = "id") int id) {
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
+    @PostMapping("avatar/{id}")
+    public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
-        UserDto checkDTO = userService.updateEmail(user, id);
+        UserDto checkDTO = userService.updateAvatar(avatar, id);
         responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
         responseDTO.setData(checkDTO);
         return ResponseEntity.ok().body(responseDTO);
@@ -112,4 +122,5 @@ public class UserController {
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
 }

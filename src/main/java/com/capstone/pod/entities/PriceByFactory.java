@@ -21,4 +21,6 @@ public class PriceByFactory {
     private Factory factory;
     @ManyToOne
     private Product product;
+    @ManyToOne
+    private Discount discount;
 }

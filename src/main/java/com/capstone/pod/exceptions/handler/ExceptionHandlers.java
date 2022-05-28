@@ -109,25 +109,31 @@ public class ExceptionHandlers extends RuntimeException {
         return ResponseEntity.badRequest().body(dto);
     }
     @ExceptionHandler(value = EmailNotFoundException.class)
-    public ResponseEntity<Object> notFoundException(EmailNotFoundException exception) {
+    public ResponseEntity<Object> emailNotFoundException(EmailNotFoundException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
     @ExceptionHandler(value = PermissionException.class)
-    public ResponseEntity<Object> notFoundException(PermissionException exception) {
+    public ResponseEntity<Object> permissionException(PermissionException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
     @ExceptionHandler(value = CredentialNotFoundException.class)
-    public ResponseEntity<Object> notFoundException(CredentialNotFoundException exception) {
+    public ResponseEntity<Object> credentialNotFound(CredentialNotFoundException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
     @ExceptionHandler(value = CredentialDeletedAlreadyException.class)
-    public ResponseEntity<Object> notFoundException(CredentialDeletedAlreadyException exception) {
+    public ResponseEntity<Object> credentialDeleteAlready(CredentialDeletedAlreadyException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = PasswordNotMatchException.class)
+    public ResponseEntity<Object> passwordNotMatch(PasswordNotMatchException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);

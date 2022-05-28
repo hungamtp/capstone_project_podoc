@@ -1,12 +1,9 @@
 package com.capstone.pod.services;
 
-import com.capstone.pod.dto.auth.LoginDto;
-import com.capstone.pod.dto.auth.LoginResponseDto;
-import com.capstone.pod.dto.auth.RegisterResponseDto;
+import com.capstone.pod.dto.factory.AddFactoryDto;
+import com.capstone.pod.dto.factory.AddFactoryResponse;
 import com.capstone.pod.dto.user.*;
 import org.springframework.data.domain.Page;
-
-import javax.management.relation.RoleNotFoundException;
 
 
 public interface UserService {
@@ -16,8 +13,10 @@ public interface UserService {
     public UserDto getUserById(int userId);
     public UserDto getUserByIdRoleAdmin(int userId);
     public UserDto addUser(AddUserDto user);
+    public UserDto addAdmin(AddUserDto user);
     public UserDto updateUser(UpdateUserDto user,int userId);
     public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId);
     public UserDto updatePassword(UpdatePasswordDto user,int userId);
-    public UserDto updateEmail(UpdateEmailDto user,int userId);
+    public UserDto updateAvatar(UpdateAvatarDto avatar,int userId);
+
 }

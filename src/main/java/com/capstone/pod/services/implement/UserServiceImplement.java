@@ -3,17 +3,14 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.role.RoleErrorMessage;
+import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.user.UserStatus;
-import com.capstone.pod.dto.credential.CredentialDto;
 import com.capstone.pod.dto.user.*;
 import com.capstone.pod.entities.Credential;
 import com.capstone.pod.entities.Role;
 import com.capstone.pod.entities.User;
-import com.capstone.pod.exceptions.CredentialDeletedAlreadyException;
-import com.capstone.pod.exceptions.CredentialNotFoundException;
-import com.capstone.pod.exceptions.PermissionException;
-import com.capstone.pod.exceptions.UserNotFoundException;
+import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.RoleRepository;
 import com.capstone.pod.repositories.UserRepository;
@@ -25,7 +22,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +35,8 @@ public class UserServiceImplement implements UserService {
 
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
-    private Credential getPermittedCredential(int credentialId) {
+    private final PasswordEncoder passwordEncoder;
+    private  Credential getPermittedCredential(int credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -75,70 +76,97 @@ public class UserServiceImplement implements UserService {
     }
     @Override
     public UserDto getUserByIdRoleAdmin(int userId) {
-        User user = userRepository.findById(userId)
+        Credential credential = credentialRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        UserDto userDto = modelMapper.map(user, UserDto.class);
+        UserDto userDto = modelMapper.map(credential, UserDto.class);
         return userDto;
     }
 
-    @Override
+        @Override
     public UserDto addUser(AddUserDto user) {
-        return null;
+        Optional<Credential> credentialOptional = credentialRepository.findCredentialByEmail(user.getEmail());
+        if (credentialOptional.isPresent()) {
+            throw new UserNameExistException(UserErrorMessage.EMAIL_EXIST);
+        }
+        User userBuild = User.builder()
+                .status(UserStatus.ACTIVE)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+        Role role = roleRepository.findByName(RoleName.ROLE_USER)
+                .orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        Credential credential = Credential.builder()
+                    .email(user.getEmail())
+                    .address(user.getAddress())
+                    .phone(user.getPhone())
+                    .role(role)
+                    .user(userBuild)
+                    .password(passwordEncoder.encode(user.getPassword())).build();
+        userRepository.save(userBuild);
+        Credential credentialInrepo = credentialRepository.save(credential);
+        UserDto userDTO = modelMapper.map(credentialInrepo, UserDto.class);
+        return userDTO;
+    }
+    @Override
+    public UserDto addAdmin(AddUserDto user) {
+        Optional<Credential> credentialOptional = credentialRepository.findCredentialByEmail(user.getEmail());
+        if (credentialOptional.isPresent()) {
+            throw new UserNameExistException(UserErrorMessage.EMAIL_EXIST);
+        }
+        User userBuild = User.builder()
+                .status(UserStatus.ACTIVE)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+        Role role = roleRepository.findByName(RoleName.ROLE_ADMIN)
+                .orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        Credential credential = Credential.builder()
+                    .email(user.getEmail())
+                    .address(user.getAddress())
+                    .phone(user.getPhone())
+                    .role(role)
+                    .user(userBuild)
+                    .password(passwordEncoder.encode(user.getPassword())).build();
+        userRepository.save(userBuild);
+        Credential credentialInrepo = credentialRepository.save(credential);
+        UserDto userDTO = modelMapper.map(credentialInrepo, UserDto.class);
+        return userDTO;
+    }
+    @Override
+    public UserDto updateUser(UpdateUserDto user,int credentialId) {
+        Credential credential =  getPermittedCredential(credentialId);
+        credential.setAddress(user.getAddress());
+        credential.setPhone(user.getPhone());
+        credential.getUser().setFirstName(user.getFirstName());
+        credential.getUser().setLastName(user.getLastName());
+        return modelMapper.map(credentialRepository.save(credential),UserDto.class);
+    }
+    @Override
+    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int credentialId) {
+        Credential credential = credentialRepository.findById(credentialId)
+                .orElseThrow(() -> new UserNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        credential.setAddress(user.getAddress());
+        credential.setPhone(user.getPhone());
+        credential.getUser().setFirstName(user.getFirstName());
+        credential.getUser().setLastName(user.getLastName());
+        credential.getUser().setStatus(user.getStatus());
+        return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
 
-    //    @Override
-//    public UserDto addUser(AddUserDto user)
-//    throws RoleNotFoundException{
-//        Optional<User> userTmp = userRepository.findUserByEmail(user.getEmail());
-//        if (userTmp.isPresent()) {
-//            throw new UserNameExistException(UserErrorMessage.EMAIL_EXIST);
-//        }
-//        Role role =roleRepository.findByName(user.getRoleName()).orElseThrow(
-//                () -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
-//        User userBuild = User.builder()
-//                .status(UserStatus.ACTIVE)
-//                .isActive(true)
-//                .address(user.getAddress())
-//                .role(role)
-//                .phone(user.getPhone())
-//                .email(user.getEmail())
-//                .avatar(user.getAvatar())
-//                .firstName(user.getFirstName())
-//                .lastName(user.getLastName())
-//                .password(passwordEncoder.encode(user.getPassword()))
-//                .build();
-//        User inRepo = userRepository.save(userBuild);
-//        UserDto userDTO = modelMapper.map(inRepo, UserDto.class);
-//        return userDTO;
-//    }
     @Override
-    public UserDto updateUser(UpdateUserDto user,int userId) {
-       Credential userRepo =  getPermittedCredential(userId);
-        return modelMapper.map(credentialRepository.save(userRepo),UserDto.class);
-    }
-    @Override
-    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId) {
-        User userRepo = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        Role roleRepo = roleRepository.findByName(user.getRoleName())
-                .orElseThrow(() -> new UserNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
-        userRepo.setFirstName(user.getFirstName());
-        userRepo.setLastName(user.getLastName());
-        userRepo.setStatus(user.getStatus());
-//        userRepo.setRole(roleRepo);
-        return modelMapper.map(userRepository.save(userRepo),UserDto.class);
+    public UserDto updatePassword(UpdatePasswordDto user, int credentialId) {
+        Credential credential =  getPermittedCredential(credentialId);
+        if(!passwordEncoder.matches(user.getOldPassword(),credential.getPassword())){
+            throw new PasswordNotMatchException(UserErrorMessage.PASSWORD_DOES_NOT_MATCH);
+        }
+        credential.setPassword(passwordEncoder.encode(user.getNewPassword()));
+        return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
 
     @Override
-    public UserDto updatePassword(UpdatePasswordDto user, int userId) {
-        Credential userRepo =  getPermittedCredential(userId);
-//        userRepo.setPassword(passwordEncoder.encode(user.getPassword()));
-        return modelMapper.map(credentialRepository.save(userRepo),UserDto.class);
-    }
-    @Override
-    public UserDto updateEmail(UpdateEmailDto user, int userId) {
-        Credential userRepo =  getPermittedCredential(userId);
-        userRepo.setEmail(user.getEmail());
-        return modelMapper.map(credentialRepository.save(userRepo),UserDto.class);
+    public UserDto updateAvatar(UpdateAvatarDto avatar, int userId) {
+        Credential credential =  getPermittedCredential(userId);
+        credential.setImage(avatar.getImage());
+        return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
 }
