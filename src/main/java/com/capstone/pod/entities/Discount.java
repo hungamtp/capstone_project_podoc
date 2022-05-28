@@ -24,7 +24,7 @@ public class Discount {
     private float discountPercent;
 
     @OneToMany(mappedBy = "discount")
-    private Collection<Product> products;
+    private Collection<PriceByFactory> priceByFactories;
 
     @OneToMany(mappedBy = "discount")
     private Collection<DiscountTime> discountTimes;

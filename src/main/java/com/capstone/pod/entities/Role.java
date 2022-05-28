@@ -1,16 +1,14 @@
 package com.capstone.pod.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Role {
@@ -19,5 +17,5 @@ public class Role {
     private int id;
     private String name;
     @OneToMany(mappedBy= "role")
-    Collection<User> users;
+    Collection<Credential> credentials;
 }

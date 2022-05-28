@@ -1,5 +1,6 @@
 package com.capstone.pod.auth;
 
+import com.capstone.pod.entities.Credential;
 import com.capstone.pod.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,11 +18,11 @@ import java.util.Collection;
 @Data
 @Builder
 public class UserDetail implements UserDetails {
-    private User user;
+    private Credential credential;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authorities = new SimpleGrantedAuthority(user.getRole().getName());
+        SimpleGrantedAuthority authorities = new SimpleGrantedAuthority(credential.getRole().getName());
         ArrayList<SimpleGrantedAuthority> list = new ArrayList<>();
         list.add(authorities);
         return list;
@@ -29,7 +30,7 @@ public class UserDetail implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return credential.getPassword();
     }
 
     @Override

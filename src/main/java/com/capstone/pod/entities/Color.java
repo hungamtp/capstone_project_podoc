@@ -21,8 +21,10 @@ public class Color {
     @GeneratedValue
     private int id;
     private String name;
-
+    private String imageColor;
     @OneToMany(mappedBy = "color")
     private Collection<SizeColor> sizeColors;
+
+
 
 }
