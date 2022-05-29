@@ -58,7 +58,9 @@ public class ProductServiceImplement implements ProductService {
         List<Product> listProductFiltered = pageProduct.stream().filter(product -> product.isDeleted() == false).collect(Collectors.toList());
         Page<Product> convertListToPageProduct = new PageImpl<>(listProductFiltered,pageable,listProductFiltered.size());
         Page<GetAllProductDto> pageProductDTO = convertListToPageProduct.map(product -> modelMapper.map(product, GetAllProductDto.class));
+
         return pageProductDTO;
+
     }
     @Override
     public GetProductByIdDto getProductById(Integer productId) {

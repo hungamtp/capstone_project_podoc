@@ -55,7 +55,6 @@ public class AuthServiceImplement implements AuthService {
         Role role = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         Credential credential = Credential.builder()
                 .email(registerDto.getEmail())
-                .address(registerDto.getAddress())
                 .phone(registerDto.getPhone())
                 .role(role)
                 .user(user)

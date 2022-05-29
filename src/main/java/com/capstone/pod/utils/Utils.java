@@ -40,7 +40,7 @@ public class Utils {
     public static Specification buildProductSpecifications(String search) {
         ProductSpecificationBuilder builder = new ProductSpecificationBuilder();
 
-        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\X+?),");
         Matcher matcher = pattern.matcher(search + ",");
 
         while (matcher.find()) {

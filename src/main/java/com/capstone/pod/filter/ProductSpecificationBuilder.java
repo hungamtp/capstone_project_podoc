@@ -15,9 +15,6 @@ public class ProductSpecificationBuilder {
     }
 
     public ProductSpecificationBuilder with(String key, String operation, Object value) {
-        if(key.equals("name")){
-            ((String) value).replace("_" , " ");
-        }
         params.add(new SearchCriteria(key, operation, value));
         return this;
     }
