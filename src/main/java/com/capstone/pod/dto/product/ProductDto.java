@@ -4,16 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collection;
+import java.util.List;
+
 @Setter
 @Getter
 public class ProductDto {
     private int id;
     private String name;
-    private Collection<String> productImagesImage;
+    private Collection<ProductImagesDto> productImages;
     private String categoryName;
     private String productTagsTagName;
-    private Double priceByFactoriesPrice;
-    private int numberOfSize;
-    private int numberOfColor;
-    private int numberOfFactory;
+    private List<ProductTagDto> productTags;
+    private List<PriceByFactoryDto> priceByFactories;
 }

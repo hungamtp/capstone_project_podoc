@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 public interface ProductService {
       public ProductDto addProduct(AddProductDto productDto);
       public Page<GetAllProductDto> getAllProducts(Specification<Product> specification, Pageable pageable);
+      public Page<GetAllProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
 //    public GetProductByIdDto addProduct(GetProductByIdDto dto);
 //
@@ -21,4 +22,5 @@ public interface ProductService {
 //    public GetProductByIdDto deleteProduct(Long productId);
 //
     public GetProductByIdDto getProductById(Integer id);
+    public GetProductByIdDto getProductByIdAdmin(Integer id);
 }

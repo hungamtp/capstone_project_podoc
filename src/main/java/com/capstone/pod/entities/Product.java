@@ -4,7 +4,6 @@ import com.capstone.pod.dto.support.Auditable;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.util.Collection;
 
 @Entity
@@ -39,7 +38,6 @@ public class Product extends Auditable {
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private Collection<PriceByFactory> priceByFactories;
-
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Category category;

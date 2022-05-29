@@ -13,6 +13,7 @@ import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
+import com.capstone.pod.repositories.ProductImagesRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -34,38 +35,51 @@ public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final ProductImagesRepository productImagesRepository;
 
 
     @Override
     public ProductDto addProduct(AddProductDto productDto) {
-       Optional<Product> productInRepo = productRepository.findByName(productDto.getName());
+        Optional<Product> productInRepo = productRepository.findByName(productDto.getName());
         if(productInRepo.isPresent()){
             throw new ProductNameExistException(ProductErrorMessage.PRODUCT_NAME_EXISTED);
         }
+        Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
+        Product product = Product.builder().name(productDto.getName())
+                .description(productDto.getDescription()).category(category).isDeleted(false).isPublic(false).build();
         List<ProductImages> imagesList = new ArrayList<>();
         for (int i = 0; i < productDto.getImages().size(); i++) {
-            imagesList.add(ProductImages.builder().image(productDto.getImages().get(i)).build());
+            imagesList.add(ProductImages.builder().product(product).image(productDto.getImages().get(i)).build());
         }
-        Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
-        Product product = Product.builder().productImages(imagesList).name(productDto.getName())
-                .description(productDto.getDescription()).category(category).isDeleted(false).isPublic(false).build();
+        product.setProductImages(imagesList);
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
 
     @Override
     public Page<GetAllProductDto> getAllProducts(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
-        List<Product> listProductFiltered = pageProduct.stream().filter(product -> product.isDeleted() == false).collect(Collectors.toList());
+        List<Product> listProductFiltered = pageProduct.stream().filter(product -> {return !product.isDeleted() && product.isPublic();}).collect(Collectors.toList());
         Page<Product> convertListToPageProduct = new PageImpl<>(listProductFiltered,pageable,listProductFiltered.size());
         Page<GetAllProductDto> pageProductDTO = convertListToPageProduct.map(product -> modelMapper.map(product, GetAllProductDto.class));
+        return pageProductDTO;
 
+    }
+    @Override
+    public Page<GetAllProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
+        Page<Product> pageProduct = productRepository.findAll(specification, pageable);
+        Page<GetAllProductDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, GetAllProductDto.class));
         return pageProductDTO;
 
     }
     @Override
     public GetProductByIdDto getProductById(Integer productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        if(!product.isPublic()||product.isDeleted()) return null;
         return modelMapper.map(product,GetProductByIdDto.class);
     }
-
+    @Override
+    public GetProductByIdDto getProductByIdAdmin(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        return modelMapper.map(product,GetProductByIdDto.class);
+    }
 }
