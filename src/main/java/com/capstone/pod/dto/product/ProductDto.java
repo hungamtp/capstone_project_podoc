@@ -1,17 +1,14 @@
 package com.capstone.pod.dto.product;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collection;
-
-@Getter
 @Setter
-public class GetAllProductDto {
+@Getter
+public class ProductDto {
     private int id;
     private String name;
-    private double price;
     private Collection<String> productImagesImage;
     private String categoryName;
     private String productTagsTagName;

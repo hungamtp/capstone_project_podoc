@@ -12,6 +12,10 @@ import javax.validation.constraints.Size;
 @Data
 @Builder
 public class RegisterDto {
+    @NotBlank(message = ValidationMessage.FIRSTNAME_VALID_MESSAGE)
+    private String firstName;
+    @NotBlank(message = ValidationMessage.LASTNAME_VALID_MESSAGE)
+    private String lastName;
     @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
     @Size(min = ValidationSize.PASSWORD_MIN,message = ValidationMessage.PASSWORD_SIZE_VALID_MESSAGE)
     private String password;
@@ -22,5 +26,4 @@ public class RegisterDto {
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)
     @Size(min = ValidationSize.PHONE_MIN,max = ValidationSize.PHONE_MAX, message = ValidationMessage.PHONE_SIZE_VALID_MESSAGE)
     private String phone;
-    private String image;
 }

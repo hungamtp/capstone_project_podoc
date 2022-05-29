@@ -51,7 +51,7 @@ public class AuthServiceImplement implements AuthService {
         if(optionalUser.isPresent()){
             throw new EmailExistException(UserErrorMessage.EMAIL_EXIST);
         }
-        User user = User.builder().status(UserStatus.ACTIVE).build();
+        User user = User.builder().lastName(registerDto.getLastName()).firstName(registerDto.getFirstName()).status(UserStatus.ACTIVE).build();
         Role role = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         Credential credential = Credential.builder()
                 .email(registerDto.getEmail())

@@ -18,5 +18,4 @@ public interface UserService {
     public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId);
     public UserDto updatePassword(UpdatePasswordDto user,int userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar,int userId);
-
 }

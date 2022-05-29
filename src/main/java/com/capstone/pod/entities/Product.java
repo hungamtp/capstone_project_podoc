@@ -20,10 +20,9 @@ public class Product extends Auditable {
     @GeneratedValue
     private int id;
     private String name;
-    private double price;
-    private boolean isPublic;
     private String description;
     private boolean isDeleted;
+    private boolean isPublic;
 
     @OneToMany(mappedBy = "product")
     private Collection<BluePrint> bluePrints;

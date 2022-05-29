@@ -16,7 +16,7 @@ public class PriceByFactory {
     @Id
     @GeneratedValue
     private int id;
-    private double Price;
+    private double price;
     @ManyToOne
     private Factory factory;
     @ManyToOne
