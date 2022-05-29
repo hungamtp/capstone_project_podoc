@@ -10,7 +10,7 @@ import java.util.List;
 public class AddProductDto {
     private String name;
     private String description;
-    private List<String> productImagesImage;
+    private List<String> images;
     private String categoryName;
     private boolean isDeleted;
     private boolean isPublic;

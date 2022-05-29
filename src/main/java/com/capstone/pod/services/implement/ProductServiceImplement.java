@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,12 +38,15 @@ public class ProductServiceImplement implements ProductService {
 
     @Override
     public ProductDto addProduct(AddProductDto productDto) {
-        productRepository.findByName(productDto.getName()).orElseThrow(() -> new ProductNameExistException(ProductErrorMessage.PRODUCT_NAME_EXISTED));
-        List<ProductImages> imagesList = new ArrayList<>();
-        for (int i = 0; i < productDto.getProductImagesImage().size(); i++) {
-            imagesList.add(ProductImages.builder().image(productDto.getProductImagesImage().get(i)).build());
+       Optional<Product> productInRepo = productRepository.findByName(productDto.getName());
+        if(productInRepo.isPresent()){
+            throw new ProductNameExistException(ProductErrorMessage.PRODUCT_NAME_EXISTED);
         }
-        Category category = categoryRepository.findByName(productDto.getName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
+        List<ProductImages> imagesList = new ArrayList<>();
+        for (int i = 0; i < productDto.getImages().size(); i++) {
+            imagesList.add(ProductImages.builder().image(productDto.getImages().get(i)).build());
+        }
+        Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
         Product product = Product.builder().productImages(imagesList).name(productDto.getName())
                 .description(productDto.getDescription()).category(category).isDeleted(false).isPublic(false).build();
         return modelMapper.map(productRepository.save(product),ProductDto.class);
