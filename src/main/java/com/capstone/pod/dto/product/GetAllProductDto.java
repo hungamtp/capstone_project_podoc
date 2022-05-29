@@ -5,17 +5,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 public class GetAllProductDto {
     private int id;
     private String name;
-    private double price;
     private Collection<String> productImagesImage;
     private String categoryName;
     private String productTagsTagName;
-    private Double priceByFactoriesPrice;
+    private List<Double> priceByFactoriesPrice;
     private int numberOfSize;
     private int numberOfColor;
     private int numberOfFactory;

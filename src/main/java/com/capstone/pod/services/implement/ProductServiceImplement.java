@@ -56,7 +56,7 @@ public class ProductServiceImplement implements ProductService {
     public Page<GetAllProductDto> getAllProducts(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
         List<Product> listProductFiltered = pageProduct.stream().filter(product -> product.isDeleted() == false).collect(Collectors.toList());
-        Page<Product> convertListToPageProduct = new PageImpl<>(listProductFiltered,pageable,pageable.getPageSize());
+        Page<Product> convertListToPageProduct = new PageImpl<>(listProductFiltered,pageable,listProductFiltered.size());
         Page<GetAllProductDto> pageProductDTO = convertListToPageProduct.map(product -> modelMapper.map(product, GetAllProductDto.class));
         return pageProductDTO;
     }

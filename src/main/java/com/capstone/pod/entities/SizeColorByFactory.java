@@ -8,7 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-@Data
+@Setter
+@Getter
 @Builder
 @EqualsAndHashCode
 @AllArgsConstructor

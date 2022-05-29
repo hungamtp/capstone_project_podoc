@@ -2,10 +2,7 @@ package com.capstone.pod.entities;
 
 
 import com.capstone.pod.dto.support.Auditable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +12,8 @@ import java.time.LocalDate;
 
 @Entity
 @Builder
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiscountTime extends Auditable {
