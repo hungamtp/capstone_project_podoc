@@ -16,4 +16,7 @@ public class GetAllProductDto {
     private String categoryName;
     private List<ProductTagDto> productTags;
     private List<PriceByFactoryDto> priceByFactories;
+    private int numberOfSize;
+    private int numberOfColor;
+    private int numberOfFactory;
 }
