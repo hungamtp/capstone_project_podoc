@@ -68,6 +68,16 @@ public class UserController {
             responseDTO.setSuccessMessage(UserSuccessMessage.ADD_ADMIN_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PostMapping("/addFactory")
+    public ResponseEntity<ResponseDto> addFactory(@Validated @RequestBody AddUserDto user)
+    {
+        ResponseDto<UserDto> responseDTO = new ResponseDto();
+        UserDto userDto = userService.addFactory(user);
+        responseDTO.setData(userDto);
+            responseDTO.setSuccessMessage(UserSuccessMessage.ADD_ADMIN_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PostMapping("update/{id}")
     public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateUserDto user, @PathVariable(name = "id") int id) {

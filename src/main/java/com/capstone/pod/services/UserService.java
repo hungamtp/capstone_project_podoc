@@ -14,6 +14,7 @@ public interface UserService {
     public UserDto getUserByIdRoleAdmin(int userId);
     public UserDto addUser(AddUserDto user);
     public UserDto addAdmin(AddUserDto user);
+    public UserDto addFactory(AddUserDto user);
     public UserDto updateUser(UpdateUserDto user,int userId);
     public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId);
     public UserDto updatePassword(UpdatePasswordDto user,int userId);

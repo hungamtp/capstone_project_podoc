@@ -133,6 +133,31 @@ public class UserServiceImplement implements UserService {
         return userDTO;
     }
     @Override
+    public UserDto addFactory(AddUserDto user) {
+        Optional<Credential> credentialOptional = credentialRepository.findCredentialByEmail(user.getEmail());
+        if (credentialOptional.isPresent()) {
+            throw new UserNameExistException(UserErrorMessage.EMAIL_EXIST);
+        }
+        User userBuild = User.builder()
+                .status(UserStatus.ACTIVE)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+        Role role = roleRepository.findByName(RoleName.ROLE_FACTORY)
+                .orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
+        Credential credential = Credential.builder()
+                    .email(user.getEmail())
+                    .address(user.getAddress())
+                    .phone(user.getPhone())
+                    .role(role)
+                    .user(userBuild)
+                    .password(passwordEncoder.encode(user.getPassword())).build();
+        userRepository.save(userBuild);
+        Credential credentialInrepo = credentialRepository.save(credential);
+        UserDto userDTO = modelMapper.map(credentialInrepo, UserDto.class);
+        return userDTO;
+    }
+    @Override
     public UserDto updateUser(UpdateUserDto user,int credentialId) {
         Credential credential =  getPermittedCredential(credentialId);
         credential.setAddress(user.getAddress());
