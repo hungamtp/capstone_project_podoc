@@ -37,7 +37,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     };
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ResponseDto> delete(@PathVariable(name = "id") int userId) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.deleteUserById(userId);
@@ -78,7 +78,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping("update/{id}")
+    @PutMapping("update/{id}")
     public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateUserDto user, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateUser(user, id);
@@ -87,7 +87,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    @PostMapping("update-by-admin/{id}")
+    @PutMapping("update-by-admin/{id}")
     public ResponseEntity<ResponseDto> updateByAdmin(@Validated @RequestBody UpdateUserDtoByAdmin user, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateUserByAdmin(user, id);
@@ -96,7 +96,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping("password-change/{id}")
+    @PatchMapping("password-change/{id}")
     public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updatePassword(user, id);
@@ -105,7 +105,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
-    @PostMapping("avatar/{id}")
+    @PatchMapping("avatar/{id}")
     public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") int id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateAvatar(avatar, id);
