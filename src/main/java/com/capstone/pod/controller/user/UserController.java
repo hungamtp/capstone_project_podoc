@@ -1,9 +1,8 @@
 package com.capstone.pod.controller.user;
 
+import com.capstone.pod.constant.factory.FactorySuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.user.UserSuccessMessage;
-import com.capstone.pod.dto.credential.CredentialDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.*;
 import com.capstone.pod.services.UserService;
@@ -75,7 +74,7 @@ public class UserController {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto userDto = userService.addFactory(user);
         responseDTO.setData(userDto);
-            responseDTO.setSuccessMessage(UserSuccessMessage.ADD_ADMIN_SUCCESS);
+            responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_FACTORY_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
@@ -127,9 +126,18 @@ public class UserController {
     @GetMapping("email/{email}")
     public ResponseEntity<ResponseDto> findByEmail(@PathVariable(name = "email") String email) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
-//        UserDto user = userService.findByEmail(email);
-        responseDTO.setData(null);
+        UserDto user = userService.findByEmail(email);
+        responseDTO.setData(user);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_EMAIL_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @GetMapping("role")
+    public ResponseEntity<ResponseDto> findByRoleName(@RequestParam int pageNumber, @RequestParam int pageSize, @RequestParam String roleName) {
+        ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
+        Page<UserDto> userPage = userService.getAllByRoleName(pageNumber, pageSize, roleName);
+        responseDTO.setData(userPage);
+        responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_USER_BY_ROLE_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
