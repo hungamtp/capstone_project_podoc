@@ -11,9 +11,11 @@ import java.util.List;
 public class ProductDto {
     private int id;
     private String name;
+    private String description;
+    private boolean isPublic;
+    private boolean isDeleted;
     private Collection<ProductImagesDto> productImages;
     private String categoryName;
-    private String productTagsTagName;
     private List<ProductTagDto> productTags;
     private List<PriceByFactoryDto> priceByFactories;
 }

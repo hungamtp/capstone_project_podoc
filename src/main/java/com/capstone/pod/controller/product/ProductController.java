@@ -4,10 +4,8 @@ import com.capstone.pod.constant.product.ProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.AddProductDto;
-import com.capstone.pod.dto.product.GetAllProductDto;
-import com.capstone.pod.dto.product.GetProductByIdDto;
 import com.capstone.pod.dto.product.ProductDto;
-import com.capstone.pod.entities.Product;
+import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +33,15 @@ public class ProductController {
         ProductDto productDto = productService.addProduct(addProductDto);
         responseDto.setData(productDto);
         responseDto.setSuccessMessage(ProductSuccessMessage.ADD_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PutMapping("{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody UpdateProductDto updateProductDto, @PathVariable(name="id") int productId){
+        ResponseDto<ProductDto> responseDto = new ResponseDto();
+        ProductDto productDto = productService.updateProduct(updateProductDto, productId);
+        responseDto.setData(productDto);
+        responseDto.setSuccessMessage(ProductSuccessMessage.UPDATE_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
     @GetMapping
@@ -76,7 +83,7 @@ public class ProductController {
     @GetMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<ResponseDto> getProductById(@PathVariable(name = "id") int productId){
-        ResponseDto<GetProductByIdDto> responseDTO = new ResponseDto();
+        ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductById(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
@@ -84,9 +91,18 @@ public class ProductController {
     @GetMapping("/admin/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> getProductByIdAdmin(@PathVariable(name = "id") int productId){
-        ResponseDto<GetProductByIdDto> responseDTO = new ResponseDto();
-        responseDTO.setData(productService.getProductById(productId));
+        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.getProductByIdAdmin(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PatchMapping("/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> deleteProductById(@PathVariable(name="id") int productId){
+        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.deleteProduct(productId));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.DELETE_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
 }
