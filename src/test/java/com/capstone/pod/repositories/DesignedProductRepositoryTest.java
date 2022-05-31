@@ -14,7 +14,7 @@ class DesignedProductRepositoryTest {
 
     @Test
     public void testGetBestSellerDesignedProduct(){
-        designedProductRepository.get4BestSellerDesignedProduct();
+        designedProductRepository.get4HighestRateDesignedProduct();
     }
 
 }

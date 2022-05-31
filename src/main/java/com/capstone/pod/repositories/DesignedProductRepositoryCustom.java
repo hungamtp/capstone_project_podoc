@@ -1,9 +1,9 @@
 package com.capstone.pod.repositories;
 
-import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
+import com.capstone.pod.dto.designedProduct.DesignedProductDetailDTO;
 
 import java.util.List;
 
 public interface DesignedProductRepositoryCustom {
-    List<DesignedProductDTO> get4BestSellerDesignedProduct();
+    List<DesignedProductDetailDTO> get4HighestRateDesignedProduct();
 }
