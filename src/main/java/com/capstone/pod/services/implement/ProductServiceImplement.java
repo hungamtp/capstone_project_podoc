@@ -68,7 +68,9 @@ public class ProductServiceImplement implements ProductService {
     }
     @Override
     public ProductDto publishProduct(int productId) {
-        return null;
+        Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        product.setPublic(true);
+        return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
 
     @Override

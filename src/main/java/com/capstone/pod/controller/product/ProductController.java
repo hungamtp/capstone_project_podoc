@@ -104,5 +104,13 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.DELETE_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PatchMapping("/publish/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> publishProduct(@PathVariable(name="id") int productId){
+        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.publishProduct(productId));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.PUBLISH_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }
