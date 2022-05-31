@@ -4,8 +4,8 @@ import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.dto.product.AddProductDto;
 import com.capstone.pod.dto.product.GetAllProductDto;
-import com.capstone.pod.dto.product.GetProductByIdDto;
 import com.capstone.pod.dto.product.ProductDto;
+import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.entities.Category;
 import com.capstone.pod.entities.Product;
 import com.capstone.pod.entities.ProductImages;
@@ -13,7 +13,6 @@ import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
-import com.capstone.pod.repositories.ProductImagesRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
-    private final ProductImagesRepository productImagesRepository;
 
 
     @Override
@@ -54,6 +52,24 @@ public class ProductServiceImplement implements ProductService {
         product.setProductImages(imagesList);
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
+    @Override
+    public ProductDto updateProduct(UpdateProductDto productDto,int productId) {
+        Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
+        List<ProductImages> imagesList = new ArrayList<>();
+        for (int i = 0; i < productDto.getImages().size(); i++) {
+            imagesList.add(ProductImages.builder().product(productInRepo).image(productDto.getImages().get(i)).build());
+        }
+        productInRepo.setProductImages(imagesList);
+        productInRepo.setName(productDto.getName());
+        productInRepo.setCategory(category);
+        productInRepo.setDescription(productDto.getDescription());
+        return modelMapper.map(productRepository.save(productInRepo),ProductDto.class);
+    }
+    @Override
+    public ProductDto publishProduct(int productId) {
+        return null;
+    }
 
     @Override
     public Page<GetAllProductDto> getAllProducts(Specification<Product> specification, Pageable pageable) {
@@ -71,15 +87,23 @@ public class ProductServiceImplement implements ProductService {
         return pageProductDTO;
 
     }
+
     @Override
-    public GetProductByIdDto getProductById(Integer productId) {
+    public ProductDto deleteProduct(int productId) {
+        Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        product.setDeleted(true);
+        return modelMapper.map(productRepository.save(product),ProductDto.class);
+    }
+
+    @Override
+    public ProductDto getProductById(Integer productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if(!product.isPublic()||product.isDeleted()) return null;
-        return modelMapper.map(product,GetProductByIdDto.class);
+        return modelMapper.map(product,ProductDto.class);
     }
     @Override
-    public GetProductByIdDto getProductByIdAdmin(Integer productId) {
+    public ProductDto getProductByIdAdmin(Integer productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        return modelMapper.map(product,GetProductByIdDto.class);
+        return modelMapper.map(product,ProductDto.class);
     }
 }

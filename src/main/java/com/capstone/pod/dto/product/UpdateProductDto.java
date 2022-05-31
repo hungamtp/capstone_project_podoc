@@ -8,10 +8,9 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.List;
-
 @Setter
 @Getter
-public class AddProductDto {
+public class UpdateProductDto {
     @NotBlank(message = ValidationMessage.PRODUCT_NAME_VALID_MESSAGE)
     private String name;
     @NotBlank(message = ValidationMessage.PRODUCT_DESCRIPTION_VALID_MESSAGE)

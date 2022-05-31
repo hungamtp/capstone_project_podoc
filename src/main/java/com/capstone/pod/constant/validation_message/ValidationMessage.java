@@ -19,5 +19,10 @@ public final class ValidationMessage {
     public static final String ADDRESS_SIZE_VALID_MESSAGE ="Address must have at least 10 characters";
     public static final String LOGO_VALID_MESSAGE ="Logo must be filled";
     public static final String IMAGE_VALID_MESSAGE ="Image must be filled";
+    public static final String PRODUCT_NAME_VALID_MESSAGE = "Product name must be filled";
+    public static final String PRODUCT_DESCRIPTION_VALID_MESSAGE = "Description must be filled";
+    public static final String PRODUCT_IMAGES_VALID_MESSAGE = "Product must have at least 1 image";
+    public static final String PRODUCT_CATEGORY_VALID_MESSAGE = "Category must be filled";
+    public static final String PRODUCT_DESCRIPTION_SIZE_VALID_MESSAGE = "Description length must be greater than 10 characters";
 
 }

@@ -69,11 +69,27 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
+    public Page<UserDto> getAllByRoleName(int pageNum, int pageSize, String roleName) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Credential> credentials = credentialRepository.findAllByRoleName(pageable, roleName);
+        Page<UserDto> pageUserDTO = credentials.map(user -> modelMapper.map(user, UserDto.class));
+        return pageUserDTO;
+    }
+
+    @Override
     public UserDto getUserById(int userId) {
         Credential credential = getPermittedCredential(userId);
         UserDto userDto = modelMapper.map(credential, UserDto.class);
         return userDto;
     }
+    @Override
+    public UserDto findByEmail(String email) {
+        Credential credential = credentialRepository.findCredentialByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        UserDto userDto = modelMapper.map(credential, UserDto.class);
+        return userDto;
+    }
+
     @Override
     public UserDto getUserByIdRoleAdmin(int userId) {
         Credential credential = credentialRepository.findById(userId)
