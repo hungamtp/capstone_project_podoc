@@ -45,13 +45,11 @@ public class ProductController {
         return ResponseEntity.ok().body(responseDto);
     }
     @GetMapping
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<ResponseDto> getAllProduct(@RequestParam Integer pageNumber,
                                                      @RequestParam Integer pageSize,
                                                      @RequestParam String search,
                                                      @RequestParam String sort){
         ResponseDto<Page<ProductDto>> responseDTO = new ResponseDto();
-
         Pageable pageable = PageRequest.of(Optional.ofNullable(pageNumber)
                 .orElse(0), Optional.ofNullable(pageSize).orElse(9), sort.equals("createDate")
                 ? Sort.by("createDate").descending() : Sort.by(!sort.equals("") ? sort : "id")

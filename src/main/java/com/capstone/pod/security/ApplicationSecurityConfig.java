@@ -37,7 +37,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
-                        "/products",
+                        "/product/**",
                         "/products/{id}",
                         "/products/rating/{id}",
                         "/swagger-resources/**",
