@@ -2,6 +2,7 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.dto.commom.PageDTO;
 import com.capstone.pod.dto.product.AddProductDto;
 import com.capstone.pod.dto.product.GetAllProductDto;
 import com.capstone.pod.dto.product.ProductDto;
@@ -9,6 +10,7 @@ import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.entities.Category;
 import com.capstone.pod.entities.Product;
 import com.capstone.pod.entities.ProductImages;
+import com.capstone.pod.entities.SizeColor;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
@@ -74,12 +76,26 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public Page<GetAllProductDto> getAllProducts(Specification<Product> specification, Pageable pageable) {
+    public PageDTO getAllProducts(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
-        List<Product> listProductFiltered = pageProduct.stream().filter(product -> {return !product.isDeleted() && product.isPublic();}).collect(Collectors.toList());
-        Page<Product> convertListToPageProduct = new PageImpl<>(listProductFiltered,pageable,listProductFiltered.size());
-        Page<GetAllProductDto> pageProductDTO = convertListToPageProduct.map(product -> modelMapper.map(product, GetAllProductDto.class));
-        return pageProductDTO;
+        List<GetAllProductDto> dtos = new ArrayList<>();
+        for(var product : pageProduct){
+            GetAllProductDto productDto = GetAllProductDto.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .categoryName(product.getCategory().getName())
+                .numberOfColor(product.getSizeColors().stream().map(SizeColor::getColor).distinct().collect(Collectors.toList()).size())
+                .numberOfSize(product.getSizeColors().stream().map(SizeColor::getSize).distinct().collect(Collectors.toList()).size())
+                .build();
+            productDto.setProductImages(product.getProductImages().stream().map(ProductImages::getImage).collect(Collectors.toList()));
+            productDto.setTags(product.getProductTags().stream().map(tag ->tag.getTag().getName()).collect(Collectors.toList()));
+            dtos.add(productDto);
+        }
+        return PageDTO.builder()
+            .data(dtos)
+            .elements((int)pageProduct.getTotalElements())
+            .page(pageProduct.getPageable().getPageNumber())
+            .build();
 
     }
     @Override

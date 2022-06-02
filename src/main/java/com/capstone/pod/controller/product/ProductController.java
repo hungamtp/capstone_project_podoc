@@ -2,6 +2,7 @@ package com.capstone.pod.controller.product;
 
 import com.capstone.pod.constant.product.ProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.commom.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.AddProductDto;
 import com.capstone.pod.dto.product.ProductDto;
@@ -49,12 +50,12 @@ public class ProductController {
                                                      @RequestParam Integer pageSize,
                                                      @RequestParam String search,
                                                      @RequestParam String sort){
-        ResponseDto<Page<ProductDto>> responseDTO = new ResponseDto();
+        ResponseDto<PageDTO> responseDTO = new ResponseDto();
         Pageable pageable = PageRequest.of(Optional.ofNullable(pageNumber)
                 .orElse(0), Optional.ofNullable(pageSize).orElse(9), sort.equals("createDate")
                 ? Sort.by("createDate").descending() : Sort.by(!sort.equals("") ? sort : "id")
                 .ascending());
-
+        search.concat(",isDeleted:false,isPublic:true");
         Specification spec = Utils.buildProductSpecifications(search);
         responseDTO.setData(productService.getAllProducts(spec, pageable));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_ALL_PRODUCT_SUCCESS);
