@@ -15,10 +15,10 @@ public interface ProductService {
       public Page<GetAllProductDto> getAllProducts(Specification<Product> specification, Pageable pageable);
       public Page<GetAllProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
-    public ProductDto updateProduct(UpdateProductDto dto, int productId);
-    public ProductDto publishProduct(int productId);
-    public ProductDto deleteProduct(int productId);
+      public ProductDto updateProduct(UpdateProductDto dto, int productId);
+      public ProductDto publishProduct(int productId);
+      public ProductDto deleteProduct(int productId);
 
-    public ProductDto getProductById(Integer id);
-    public ProductDto getProductByIdAdmin(Integer id);
+      public ProductDto getProductById(Integer id);
+      public ProductDto getProductByIdAdmin(Integer id);
 }
