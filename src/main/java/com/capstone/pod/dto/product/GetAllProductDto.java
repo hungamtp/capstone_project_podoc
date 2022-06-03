@@ -1,9 +1,6 @@
 package com.capstone.pod.dto.product;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,12 +9,14 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GetAllProductDto {
     private int id;
     private String name;
-    private List<String> productImages= new ArrayList<>();
+    private List<ProductImagesDto> productImages;
     private String categoryName;
-    private List<String> tags = new ArrayList<>();
+    private List<ProductTagDto> tags ;
     private int numberOfSize;
     private int numberOfColor;
     private int numberOfFactory;
