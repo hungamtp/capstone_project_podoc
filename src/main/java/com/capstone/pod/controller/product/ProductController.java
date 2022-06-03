@@ -10,6 +10,7 @@ import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public class ProductController {
                 .orElse(0), Optional.ofNullable(pageSize).orElse(9), sort.equals("createDate")
                 ? Sort.by("createDate").descending() : Sort.by(!sort.equals("") ? sort : "id")
                 .ascending());
-        search.concat(",isDeleted:false,isPublic:true");
+        search = StringUtils.isEmpty(search) ? "isDeleted:false,isPublic:true" : search.concat(",isDeleted:false,isPublic:true");
         Specification spec = Utils.buildProductSpecifications(search);
         responseDTO.setData(productService.getAllProducts(spec, pageable));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_ALL_PRODUCT_SUCCESS);
