@@ -24,6 +24,12 @@ public class ProductSpecification implements Specification<Product> {
             return builder.lessThanOrEqualTo(
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
         } else if (criteria.getOperation().equalsIgnoreCase(":")) {
+            if(criteria.getValue().equals("false")){
+                return builder.isFalse(root.get(criteria.getKey()));
+            }
+            if(criteria.getValue().equals("true")){
+                return builder.isTrue(root.get(criteria.getKey()));
+            }
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 return builder.like(
                         root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
