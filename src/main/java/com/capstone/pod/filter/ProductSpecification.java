@@ -1,6 +1,8 @@
 package com.capstone.pod.filter;
 
+import com.capstone.pod.entities.Category_;
 import com.capstone.pod.entities.Product;
+import com.capstone.pod.entities.Product_;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,6 +19,9 @@ public class ProductSpecification implements Specification<Product> {
 
     @Override
     public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+        if(criteria.getKey().equalsIgnoreCase("category")){
+            builder.equal(root.join(Product_.CATEGORY).get(Category_.NAME) , criteria.getValue());
+        }
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
