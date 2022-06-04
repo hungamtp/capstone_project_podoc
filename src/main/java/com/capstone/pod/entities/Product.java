@@ -12,6 +12,14 @@ import java.util.Collection;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
+    },
+    indexes = {
+        @Index(columnList = "name , isDeleted , isPublic")
+    }
+)
 public class Product extends Auditable {
     @Id
     @GeneratedValue

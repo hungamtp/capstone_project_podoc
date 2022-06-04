@@ -2,10 +2,7 @@ package com.capstone.pod.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
@@ -14,6 +11,14 @@ import java.util.Collection;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
+    },
+    indexes = {
+        @Index(columnList = "name")
+    }
+)
 public class Color {
     @Id
     @GeneratedValue

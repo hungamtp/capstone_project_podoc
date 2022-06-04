@@ -13,6 +13,14 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"email"})
+    },
+    indexes = {
+        @Index( columnList = "email , phone")
+    }
+)
 public class Credential extends Auditable{
     @Id
     @GeneratedValue

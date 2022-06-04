@@ -11,6 +11,14 @@ import java.util.Collection;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
+    },
+    indexes = {
+        @Index(columnList = "name")
+    }
+)
 public class Role {
     @Id
     @GeneratedValue
