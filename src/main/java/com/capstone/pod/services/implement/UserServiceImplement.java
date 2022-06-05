@@ -186,8 +186,10 @@ public class UserServiceImplement implements UserService {
     public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new UserNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Optional<Role> role = roleRepository.findByName(credential.getRole().getName());
         credential.setAddress(user.getAddress());
         credential.setPhone(user.getPhone());
+        credential.setRole(role.get());
         credential.getUser().setFirstName(user.getFirstName());
         credential.getUser().setLastName(user.getLastName());
         return modelMapper.map(credentialRepository.save(credential),UserDto.class);
