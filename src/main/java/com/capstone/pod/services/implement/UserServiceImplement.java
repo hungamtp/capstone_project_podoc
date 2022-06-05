@@ -190,7 +190,6 @@ public class UserServiceImplement implements UserService {
         credential.setPhone(user.getPhone());
         credential.getUser().setFirstName(user.getFirstName());
         credential.getUser().setLastName(user.getLastName());
-        credential.getUser().setStatus(user.getStatus());
         return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
 
