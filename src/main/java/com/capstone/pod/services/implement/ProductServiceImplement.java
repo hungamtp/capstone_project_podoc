@@ -96,9 +96,9 @@ public class ProductServiceImplement implements ProductService {
 
     }
     @Override
-    public Page<GetAllProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
+    public Page<ProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
-        Page<GetAllProductDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, GetAllProductDto.class));
+        Page<ProductDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductDto.class));
         return pageProductDTO;
 
     }

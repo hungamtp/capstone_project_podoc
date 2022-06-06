@@ -74,7 +74,6 @@ public class ProductController {
                 .orElse(0), Optional.ofNullable(pageSize).orElse(9), sort.equals("createDate")
                 ? Sort.by("createDate").descending() : Sort.by(!sort.equals("") ? sort : "id")
                 .ascending());
-
         Specification spec = Utils.buildProductSpecifications(search);
         responseDTO.setData(productService.getAllProductsByAdmin(spec, pageable));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_ALL_PRODUCT_SUCCESS);

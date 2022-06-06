@@ -14,7 +14,7 @@ import org.springframework.data.jpa.domain.Specification;
 public interface ProductService {
       public ProductDto addProduct(AddProductDto productDto);
       public PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
-      public Page<GetAllProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
+      public Page<ProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
       public ProductDto updateProduct(UpdateProductDto dto, int productId);
       public ProductDto publishProduct(int productId);
