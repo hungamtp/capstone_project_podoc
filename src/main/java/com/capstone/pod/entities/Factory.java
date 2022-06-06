@@ -18,6 +18,10 @@ public class Factory{
     private int id;
     private boolean isCollaborating;
 
+    private String name;
+
+    private String location;
+
     @OneToOne(mappedBy = "factory")
     private Credential credential;
 

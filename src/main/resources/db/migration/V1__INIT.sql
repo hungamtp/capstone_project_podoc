@@ -25,7 +25,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`category` (
                                                          `image` VARCHAR(255) NULL DEFAULT NULL,
                                                          `is_deleted` BIT(1) NOT NULL,
                                                          `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                         PRIMARY KEY (`id`))
+                                                         PRIMARY KEY (`id`),
+                                                         UNIQUE INDEX `UK46ccwnsi9409t36lurvtyljak` (`name` ASC) VISIBLE,
+                                                         INDEX `IDX46ccwnsi9409t36lurvtyljak` (`name` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
@@ -44,6 +46,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product` (
                                                         `name` VARCHAR(255) NULL DEFAULT NULL,
                                                         `category_id` INT NULL DEFAULT NULL,
                                                         PRIMARY KEY (`id`),
+                                                        UNIQUE INDEX `UKjmivyxk9rmgysrmsqw15lqr5b` (`name` ASC) VISIBLE,
+                                                        INDEX `IDXjlu2orma9568avd6hy2665fbd` (`name` ASC, `is_deleted` ASC, `is_public` ASC) VISIBLE,
                                                         INDEX `FK1mtsbur82frn64de7balymq9s` (`category_id` ASC) VISIBLE,
                                                         CONSTRAINT `FK1mtsbur82frn64de7balymq9s`
                                                             FOREIGN KEY (`category_id`)
@@ -78,7 +82,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`color` (
                                                       `id` INT NOT NULL,
                                                       `image_color` VARCHAR(255) NULL DEFAULT NULL,
                                                       `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                      PRIMARY KEY (`id`))
+                                                      PRIMARY KEY (`id`),
+                                                      UNIQUE INDEX `UKn3axgangk6yuxhrb2o7fk9oa7` (`name` ASC) VISIBLE,
+                                                      INDEX `IDXn3axgangk6yuxhrb2o7fk9oa7` (`name` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
@@ -90,6 +96,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`color` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`factory` (
                                                         `id` INT NOT NULL,
                                                         `is_collaborating` BIT(1) NOT NULL,
+                                                        `location` VARCHAR(255) NULL DEFAULT NULL,
+                                                        `name` VARCHAR(255) NULL DEFAULT NULL,
                                                         PRIMARY KEY (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
@@ -102,7 +110,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`factory` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`role` (
                                                      `id` INT NOT NULL,
                                                      `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                     PRIMARY KEY (`id`))
+                                                     PRIMARY KEY (`id`),
+                                                     UNIQUE INDEX `UK8sewwnpamngi6b1dwaa88askk` (`name` ASC) VISIBLE,
+                                                     INDEX `IDX8sewwnpamngi6b1dwaa88askk` (`name` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
@@ -139,6 +149,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
                                                            `role_id` INT NULL DEFAULT NULL,
                                                            `user_id` INT NULL DEFAULT NULL,
                                                            PRIMARY KEY (`id`),
+                                                           UNIQUE INDEX `UK87sfas6wh5j3lvj191bnt1s2y` (`email` ASC) VISIBLE,
+                                                           INDEX `IDXim72bqfq0ipw8sa7k9odt4sfj` (`email` ASC, `phone` ASC) VISIBLE,
                                                            INDEX `FK1x6hukbi79vc4gcki0hf3hkkj` (`factory_id` ASC) VISIBLE,
                                                            INDEX `FKn0841dps0wpkedi6keaqh92kp` (`role_id` ASC) VISIBLE,
                                                            INDEX `FKpg7bdnqxpyhrt7f8soul9y7ne` (`user_id` ASC) VISIBLE,
@@ -206,7 +218,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`tag` (
                                                     `id` INT NOT NULL,
                                                     `is_exist` BIT(1) NOT NULL,
                                                     `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                    PRIMARY KEY (`id`))
+                                                    PRIMARY KEY (`id`),
+                                                    UNIQUE INDEX `UK1wdpsed5kna2y38hnbgrnhi5b` (`name` ASC) VISIBLE,
+                                                    INDEX `IDX1wdpsed5kna2y38hnbgrnhi5b` (`name` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
@@ -501,7 +515,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`shipping_info` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`size` (
                                                      `id` INT NOT NULL,
                                                      `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                     PRIMARY KEY (`id`))
+                                                     PRIMARY KEY (`id`),
+                                                     UNIQUE INDEX `UK8mx44qvbn71lwrou3igoc1nwm` (`name` ASC) VISIBLE,
+                                                     INDEX `IDX8mx44qvbn71lwrou3igoc1nwm` (`name` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
