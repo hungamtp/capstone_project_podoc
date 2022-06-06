@@ -15,8 +15,6 @@ public class Placeholder {
     @Id
     @GeneratedValue
     private int id;
-    private double topCoordinate;
-    private double leftCoordinate;
     private double width;
     private double height;
 

@@ -19,12 +19,14 @@ public class DesignedProduct  extends Auditable {
     private int id;
     private String name;
     private double designedPrice;
-    private String image;
 
     private double price;
 
     @OneToMany(mappedBy = "designedProduct")
     Collection<DesignBluePrint> designBluePrints;
+
+    @OneToMany(mappedBy = "designedProduct")
+    Collection<ImagePreview> imagePreviews;
 
     @ManyToOne
     Product product;

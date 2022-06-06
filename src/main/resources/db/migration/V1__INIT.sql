@@ -176,7 +176,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
                                                                  `create_date` DATE NULL DEFAULT NULL,
                                                                  `last_modified_date` DATE NULL DEFAULT NULL,
                                                                  `designed_price` DOUBLE NOT NULL,
-                                                                 `image` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `name` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `price` DOUBLE NOT NULL,
                                                                  `product_id` INT NULL DEFAULT NULL,
@@ -206,6 +205,33 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_blue_print` (
                                                                   CONSTRAINT `FKpmhqh1olubjvncddf9o04x04g`
                                                                       FOREIGN KEY (`blue_print_id`)
                                                                           REFERENCES `capstone_pod`.`blue_print` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`design_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
+                                                            `id` INT NOT NULL,
+                                                            `height` DOUBLE NOT NULL,
+                                                            `left_position` DOUBLE NOT NULL,
+                                                            `name` VARCHAR(255) NULL DEFAULT NULL,
+                                                            `rotate` DOUBLE NOT NULL,
+                                                            `scales` DOUBLE NOT NULL,
+                                                            `src` VARCHAR(255) NULL DEFAULT NULL,
+                                                            `top_position` DOUBLE NOT NULL,
+                                                            `types` VARCHAR(255) NULL DEFAULT NULL,
+                                                            `width` DOUBLE NOT NULL,
+                                                            `x` DOUBLE NOT NULL,
+                                                            `y` DOUBLE NOT NULL,
+                                                            `blue_print_id` INT NULL DEFAULT NULL,
+                                                            PRIMARY KEY (`id`),
+                                                            INDEX `FKh5uyam68u3624g7gqf7ysnbuh` (`blue_print_id` ASC) VISIBLE,
+                                                            CONSTRAINT `FKh5uyam68u3624g7gqf7ysnbuh`
+                                                                FOREIGN KEY (`blue_print_id`)
+                                                                    REFERENCES `capstone_pod`.`blue_print` (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
@@ -313,6 +339,23 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`hibernate_sequence` (
 
 
 -- -----------------------------------------------------
+-- Table `capstone_pod`.`image_preview`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
+                                                              `id` INT NOT NULL,
+                                                              `image` VARCHAR(255) NULL DEFAULT NULL,
+                                                              `designed_product_id` INT NULL DEFAULT NULL,
+                                                              PRIMARY KEY (`id`),
+                                                              INDEX `FKkhpt0kvab2o7vns3ikvne5fk9` (`designed_product_id` ASC) VISIBLE,
+                                                              CONSTRAINT `FKkhpt0kvab2o7vns3ikvne5fk9`
+                                                                  FOREIGN KEY (`designed_product_id`)
+                                                                      REFERENCES `capstone_pod`.`designed_product` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `capstone_pod`.`order_status`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
@@ -386,8 +429,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
                                                             `id` INT NOT NULL,
                                                             `height` DOUBLE NOT NULL,
-                                                            `left_coordinate` DOUBLE NOT NULL,
-                                                            `top_coordinate` DOUBLE NOT NULL,
                                                             `width` DOUBLE NOT NULL,
                                                             `blue_print_id` INT NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
@@ -528,7 +569,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`size` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color` (
                                                            `id` INT NOT NULL,
-                                                           `quantity` INT NOT NULL,
                                                            `color_id` INT NULL DEFAULT NULL,
                                                            `product_id` INT NULL DEFAULT NULL,
                                                            `size_id` INT NULL DEFAULT NULL,

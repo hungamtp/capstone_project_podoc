@@ -21,6 +21,8 @@ public class BluePrint {
 
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "bluePrint")
     Placeholder placeholder;
+    @OneToOne(cascade = CascadeType.ALL,mappedBy = "bluePrint")
+    DesignInfo designInfo;
 
     @ManyToOne
     Product product;
