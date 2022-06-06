@@ -34,8 +34,33 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             tagJoin.get(Tag_.NAME).as(String.class).alias("tag")
         );
         List<Order> orderList = new ArrayList();
-        orderList.add(criteriaBuilder.desc(criteriaBuilder.avg(ratingJoin.get(Rating_.ratingStar))));
+        orderList.add(criteriaBuilder.desc(criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR))));
         query.orderBy(orderList);
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<DesignedProductDetailDTO> get4HighestRateDesignedProductByProductId(int productId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<DesignedProductDetailDTO> query = criteriaBuilder.createQuery(DesignedProductDetailDTO.class);
+        Root<DesignedProduct> root = query.from(DesignedProduct.class);
+        Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
+        Join<DesignedProduct, Product> productJoin = root.join(DesignedProduct_.PRODUCT, JoinType.LEFT);
+        Join<DesignedProduct, DesignedProductTag> designedProductTagJoin = root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
+        Join<Tag, DesignedProductTag> tagJoin = designedProductTagJoin.join(DesignedProductTag_.TAG, JoinType.LEFT);
+        query.groupBy(root.get(DesignedProduct_.ID) , tagJoin.get(Tag_.ID));
+        query.multiselect(
+            root.get(DesignedProduct_.ID),
+            root.get(DesignedProduct_.NAME),
+            root.get(DesignedProduct_.IMAGE),
+            root.get(DesignedProduct_.PRICE),
+            criteriaBuilder.avg(ratingJoin.get(Rating_.ratingStar)),
+            tagJoin.get(Tag_.NAME).as(String.class).alias("tag")
+        );
+        Predicate productIdEqual = criteriaBuilder.equal(productJoin.get(Product_.ID) , productId);
+        List<Order> orderList = new ArrayList();
+        orderList.add(criteriaBuilder.desc(criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR))));
+        query.orderBy(orderList).where(productIdEqual);
         return entityManager.createQuery(query).getResultList();
     }
 
