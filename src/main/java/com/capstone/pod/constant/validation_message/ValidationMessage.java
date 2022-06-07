@@ -25,4 +25,6 @@ public final class ValidationMessage {
     public static final String PRODUCT_CATEGORY_VALID_MESSAGE = "Category must be filled";
     public static final String PRODUCT_DESCRIPTION_SIZE_VALID_MESSAGE = "Description length must be greater than 10 characters";
 
+    public static final String CATEGORY_NAME_VALID_MESSAGE = "Category name must be filled";
+
 }
