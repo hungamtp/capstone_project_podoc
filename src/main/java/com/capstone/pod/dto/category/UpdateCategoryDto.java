@@ -9,8 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class CategoryDto {
+public class UpdateCategoryDto {
     private String name;
     private String image;
-    private boolean isDeleted;
 }
