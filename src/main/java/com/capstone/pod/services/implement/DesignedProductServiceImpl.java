@@ -21,7 +21,33 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     @Override
     public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
         List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProduct();
-        System.out.println(String.format("Size %d", designedProductDetailDTOS.size()));
+        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+//        Map<Integer, List<DesignedProductDetailDTO>> mapByDesignProducts = designedProductDetailDTOS.stream()
+//            .collect(Collectors.groupingBy(d -> d.getId()));
+
+//        for (Map.Entry<Integer, List<DesignedProductDetailDTO>> designProductDetail : mapByDesignProducts.entrySet()) {
+//
+//            DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+//                .id(designProductDetail.getKey())
+//                .rate(designProductDetail.getValue().get(0).getRate())
+//                .name(designProductDetail.getValue().get(0).getName())
+//                .image(designProductDetail.getValue().get(0).getImage())
+//                .designedPrice(designProductDetail.getValue().get(0).getDesignedPrice())
+//                .tags(designProductDetail.getValue().stream().map(d -> d.getTag()).collect(Collectors.toList()))
+//                .build();
+//
+//            result.add(designedProductDTO);
+//        }
+    }
+
+    @Override
+    public List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId) {
+        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
+        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+
+    }
+
+    private List<DesignedProductDTO> calculate4HighestRateDesignedProduct(List<DesignedProductDetailDTO> designedProductDetailDTOS){
         List<DesignedProductDTO> result = new ArrayList<>();
 
         for (var designProductDetail : designedProductDetailDTOS) {
@@ -61,23 +87,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             }
 
         }
-//        Map<Integer, List<DesignedProductDetailDTO>> mapByDesignProducts = designedProductDetailDTOS.stream()
-//            .collect(Collectors.groupingBy(d -> d.getId()));
-
-
-//        for (Map.Entry<Integer, List<DesignedProductDetailDTO>> designProductDetail : mapByDesignProducts.entrySet()) {
-//
-//            DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
-//                .id(designProductDetail.getKey())
-//                .rate(designProductDetail.getValue().get(0).getRate())
-//                .name(designProductDetail.getValue().get(0).getName())
-//                .image(designProductDetail.getValue().get(0).getImage())
-//                .designedPrice(designProductDetail.getValue().get(0).getDesignedPrice())
-//                .tags(designProductDetail.getValue().stream().map(d -> d.getTag()).collect(Collectors.toList()))
-//                .build();
-//
-//            result.add(designedProductDTO);
-//        }
         return result;
     }
 }
