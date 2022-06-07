@@ -43,7 +43,7 @@ public class CategoryServiceImplement implements CategoryService {
             throw new CategoryExistedException(CategoryErrorMessage.CATEGORY_EXISTED_EXCEPTION);
         }
         Category category = Category.builder().name(categoryDto.getName()).image(categoryDto.getImage()).isDeleted(false).build();
-        return modelMapper.map(category,CategoryDto.class);
+        return modelMapper.map(categoryRepository.save(category),CategoryDto.class);
     }
 
     @Override

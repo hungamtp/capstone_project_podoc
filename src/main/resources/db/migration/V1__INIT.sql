@@ -406,7 +406,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
                                                              `id` VARCHAR(255) NOT NULL,
+                                                             `color` VARCHAR(255) NULL DEFAULT NULL,
                                                              `quantity` INT NOT NULL,
+                                                             `size` VARCHAR(255) NULL DEFAULT NULL,
                                                              `designed_product_id` INT NULL DEFAULT NULL,
                                                              `orders_id` INT NULL DEFAULT NULL,
                                                              PRIMARY KEY (`id`),

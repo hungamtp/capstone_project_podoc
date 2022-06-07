@@ -18,6 +18,8 @@ public class OrderDetail {
     @GeneratedValue
     private String id;
     private int quantity;
+    private String color;
+    private String size;
     @ManyToOne
     private Orders orders;
     @ManyToOne
