@@ -13,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @Getter
 public class CategoryDto {
+    private int id;
     @NotBlank(message = ValidationMessage.CATEGORY_NAME_VALID_MESSAGE)
     private String name;
     private String image;
