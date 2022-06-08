@@ -4,6 +4,7 @@ package com.capstone.pod.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,7 +25,6 @@ public class BluePrint {
     Placeholder placeholder;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "bluePrint")
     List<DesignInfo> designInfos;
-
     @ManyToOne
     DesignedProduct designedProduct;
 }

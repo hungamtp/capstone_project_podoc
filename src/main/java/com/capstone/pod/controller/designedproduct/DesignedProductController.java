@@ -34,10 +34,10 @@ public class DesignedProductController {
         return ResponseEntity.ok().body(responseDto);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PostMapping
-    public ResponseEntity<ResponseDto> addDesignedProduct(@Validated @RequestBody DesignedProductSaveDto dto) {
+    @PostMapping("/{productId}")
+    public ResponseEntity<ResponseDto> addDesignedProduct(@Validated @RequestBody DesignedProductSaveDto dto,@PathVariable int productId) {
         ResponseDto<DesignedProductSaveDto> responseDto = new ResponseDto();
-        responseDto.setData(designedProductService.addDesignedProduct(dto));
+        responseDto.setData(designedProductService.addDesignedProduct(dto, productId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.ADD_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }

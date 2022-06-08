@@ -11,5 +11,5 @@ public interface DesignedProductService {
     List<DesignedProductDTO> get4HighestRateDesignedProduct();
     List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId);
 
-    DesignedProductSaveDto addDesignedProduct(DesignedProductSaveDto dto);
+    DesignedProductSaveDto addDesignedProduct(DesignedProductSaveDto dto, int productId);
 }

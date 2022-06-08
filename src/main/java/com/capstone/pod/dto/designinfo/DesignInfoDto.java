@@ -1,10 +1,12 @@
 package com.capstone.pod.dto.designinfo;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class DesignInfoDto {
     private String name;
     private String types;
