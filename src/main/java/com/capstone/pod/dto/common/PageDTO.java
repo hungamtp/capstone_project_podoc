@@ -1,4 +1,4 @@
-package com.capstone.pod.dto.commom;
+package com.capstone.pod.dto.common;
 
 import lombok.*;
 

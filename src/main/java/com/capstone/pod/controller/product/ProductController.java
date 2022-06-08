@@ -2,7 +2,7 @@ package com.capstone.pod.controller.product;
 
 import com.capstone.pod.constant.product.ProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.dto.commom.PageDTO;
+import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.AddProductDto;
 import com.capstone.pod.dto.product.ProductDto;

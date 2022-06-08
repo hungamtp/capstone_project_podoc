@@ -1,8 +1,7 @@
 package com.capstone.pod.services;
 
-import com.capstone.pod.dto.commom.PageDTO;
+import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.AddProductDto;
-import com.capstone.pod.dto.product.GetAllProductDto;
 import com.capstone.pod.dto.product.ProductDto;
 import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.entities.Product;

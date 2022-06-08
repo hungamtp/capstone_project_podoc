@@ -2,7 +2,7 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
-import com.capstone.pod.dto.commom.PageDTO;
+import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.entities.Category;
 import com.capstone.pod.entities.Product;
@@ -17,7 +17,6 @@ import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
