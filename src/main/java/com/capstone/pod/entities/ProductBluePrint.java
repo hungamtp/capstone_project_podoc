@@ -13,15 +13,15 @@ import javax.persistence.ManyToOne;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DesignBluePrint {
-    @GeneratedValue
+public class ProductBluePrint {
     @Id
+    @GeneratedValue
     private int id;
+    private String frameImage;
+    private String position;
+    private double placeHolderHeight;
+    private double placeHolderWidth;
 
     @ManyToOne
-    BluePrint bluePrint;
-
-    @ManyToOne
-    DesignedProduct designedProduct;
-
+    Product product;
 }

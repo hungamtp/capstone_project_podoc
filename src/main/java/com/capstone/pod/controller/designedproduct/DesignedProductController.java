@@ -1,4 +1,4 @@
-package com.capstone.pod.controller;
+package com.capstone.pod.controller.designedproduct;
 
 import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
 import com.capstone.pod.dto.http.ResponseDto;

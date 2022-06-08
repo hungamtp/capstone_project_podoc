@@ -25,8 +25,5 @@ public class BluePrint {
     DesignInfo designInfo;
 
     @ManyToOne
-    Product product;
-
-    @OneToMany(mappedBy = "bluePrint")
-    Collection<DesignBluePrint> designBluePrints;
+    DesignedProduct designedProduct;
 }

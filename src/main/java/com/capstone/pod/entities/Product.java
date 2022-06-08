@@ -30,7 +30,7 @@ public class Product extends Auditable {
     private boolean isPublic;
 
     @OneToMany(mappedBy = "product")
-    private Collection<BluePrint> bluePrints;
+    private Collection<ProductBluePrint> productBluePrints;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private Collection<DesignedProduct> designedProducts;

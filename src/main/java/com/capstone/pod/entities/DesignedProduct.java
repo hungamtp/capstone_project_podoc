@@ -20,12 +20,10 @@ public class DesignedProduct  extends Auditable {
     private String name;
     private double designedPrice;
 
-    private double price;
+    @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
+    Collection<BluePrint> bluePrints;
 
-    @OneToMany(mappedBy = "designedProduct")
-    Collection<DesignBluePrint> designBluePrints;
-
-    @OneToMany(mappedBy = "designedProduct")
+    @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<ImagePreview> imagePreviews;
 
     @ManyToOne

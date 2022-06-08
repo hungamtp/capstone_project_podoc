@@ -29,7 +29,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             root.get(DesignedProduct_.ID),
             root.get(DesignedProduct_.NAME),
             root.get(DesignedProduct_.IMAGE_PREVIEWS),
-            root.get(DesignedProduct_.PRICE),
+            root.get(DesignedProduct_.DESIGNED_PRICE),
             criteriaBuilder.avg(ratingJoin.get(Rating_.ratingStar)),
             tagJoin.get(Tag_.NAME).as(String.class).alias("tag")
         );
@@ -53,7 +53,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             root.get(DesignedProduct_.ID),
             root.get(DesignedProduct_.NAME),
             root.get(DesignedProduct_.IMAGE_PREVIEWS),
-            root.get(DesignedProduct_.PRICE),
+            root.get(DesignedProduct_.DESIGNED_PRICE),
             criteriaBuilder.avg(ratingJoin.get(Rating_.ratingStar)),
             tagJoin.get(Tag_.NAME).as(String.class).alias("tag")
         );
