@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Builder
@@ -21,8 +22,8 @@ public class BluePrint {
 
     @OneToOne(cascade = CascadeType.ALL,mappedBy = "bluePrint")
     Placeholder placeholder;
-    @OneToOne(cascade = CascadeType.ALL,mappedBy = "bluePrint")
-    DesignInfo designInfo;
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "bluePrint")
+    List<DesignInfo> designInfos;
 
     @ManyToOne
     DesignedProduct designedProduct;

@@ -1,19 +1,11 @@
-package com.capstone.pod.entities;
+package com.capstone.pod.dto.designinfo;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-
-@Entity
-@Builder
-@Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class DesignInfo {
-    @GeneratedValue
-    @Id
-    private int id;
+@Setter
+public class DesignInfoDto {
     private String name;
     private String types;
     private double height;
@@ -25,7 +17,4 @@ public class DesignInfo {
     private double rotate;
     private double scales;
     private String src;
-    @ManyToOne
-    BluePrint bluePrint;
-
 }

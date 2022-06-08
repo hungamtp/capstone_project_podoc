@@ -2,9 +2,16 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
 import com.capstone.pod.dto.designedProduct.DesignedProductDetailDTO;
+import com.capstone.pod.dto.designedProduct.DesignedProductSaveDto;
+import com.capstone.pod.entities.BluePrint;
+import com.capstone.pod.entities.DesignInfo;
+import com.capstone.pod.entities.DesignedProduct;
+import com.capstone.pod.entities.Placeholder;
 import com.capstone.pod.repositories.DesignedProductRepository;
 import com.capstone.pod.services.DesignedProductService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -13,10 +20,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class DesignedProductServiceImpl implements DesignedProductService {
-    private DesignedProductRepository designedProductRepository;
-
+    private final DesignedProductRepository designedProductRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
@@ -46,6 +53,8 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
 
     }
+
+
 
     private List<DesignedProductDTO> calculate4HighestRateDesignedProduct(List<DesignedProductDetailDTO> designedProductDetailDTOS){
         List<DesignedProductDTO> result = new ArrayList<>();
@@ -88,5 +97,39 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
         }
         return result;
+    }
+    @Override
+    public DesignedProductSaveDto addDesignedProduct(DesignedProductSaveDto dto) {
+        DesignedProduct designedProduct = DesignedProduct.builder().designedPrice(dto.getDesignedPrice()).name(dto.getName()).build();
+        for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
+            Placeholder placeholder = Placeholder.builder()
+                    .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
+                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
+            BluePrint bluePrint = BluePrint.builder()
+                    .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
+                    .position(dto.getBluePrintDtos().get(i).getPosition())
+                    .placeholder(placeholder)
+                    .designedProduct(designedProduct)
+                    .build();
+            for (int j = 0; j < dto.getBluePrintDtos().get(i).getDesignInfoDtos().size(); j++) {
+                DesignInfo designInfo = DesignInfo.builder()
+                        .bluePrint(bluePrint)
+                        .name(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getName())
+                        .types(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getTypes())
+                        .height(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getHeight())
+                        .width(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getWidth())
+                        .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getLeftPosition())
+                        .topPosition(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getTopPosition())
+                        .x(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getX())
+                        .y(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getY())
+                        .rotate(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getRotate())
+                        .scales(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getScales())
+                        .src(dto.getBluePrintDtos().get(i).getDesignInfoDtos().get(j).getSrc())
+                        .build();
+                bluePrint.getDesignInfos().add(designInfo);
+            }
+            designedProduct.getBluePrints().add(bluePrint);
+        }
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductSaveDto.class);
     }
 }

@@ -26,5 +26,14 @@ public final class ValidationMessage {
     public static final String PRODUCT_DESCRIPTION_SIZE_VALID_MESSAGE = "Description length must be greater than 10 characters";
 
     public static final String CATEGORY_NAME_VALID_MESSAGE = "Category name must be filled";
+    public static final String DESIGNED_PRODUCT_NAME_VALID_MESSAGE = "Design name must be filled";
+    public static final String DESIGNED_PRODUCT_PRICE_VALID_MESSAGE = "Design price must be filled";
+
+    public static final String DESIGNED_PRODUCT_VALID_MESSAGE = "Design details must be filled";
+    public static final String FRAME_IMAGE_VALID_MESSAGE = "Frame image must be filled";
+    public static final String POSITION_VALID_MESSAGE = "Position must be filled";
+    public static final String WIDTH_VALID_MESSAGE = "Width must be filled";
+    public static final String HEIGHT_VALID_MESSAGE = "Height must be filled";
+    public static final String DESIGN_INFOS_VALID_MESSAGE = "Design details must be filled";
 
 }
