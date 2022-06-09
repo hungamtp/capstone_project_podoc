@@ -22,16 +22,17 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         CriteriaQuery<DesignedProductDetailDTO> query = criteriaBuilder.createQuery(DesignedProductDetailDTO.class);
         Root<DesignedProduct> root = query.from(DesignedProduct.class);
         Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
+        Join<DesignedProduct, ImagePreview> imagePreviewJoin = root.join(DesignedProduct_.IMAGE_PREVIEWS, JoinType.LEFT);
         Join<DesignedProduct, DesignedProductTag> designedProductTagJoin = root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
         Join<Tag, DesignedProductTag> tagJoin = designedProductTagJoin.join(DesignedProductTag_.TAG, JoinType.LEFT);
-        query.groupBy(root.get(DesignedProduct_.ID) , tagJoin.get(Tag_.ID));
+        query.groupBy(root.get(DesignedProduct_.ID) , tagJoin.get(Tag_.ID) , imagePreviewJoin.get(ImagePreview_.ID));
         query.multiselect(
             root.get(DesignedProduct_.ID),
             root.get(DesignedProduct_.NAME),
-            root.get(DesignedProduct_.IMAGE_PREVIEWS),
+            imagePreviewJoin.get(ImagePreview_.IMAGE),
             root.get(DesignedProduct_.DESIGNED_PRICE),
-            criteriaBuilder.avg(ratingJoin.get(Rating_.ratingStar)),
-            tagJoin.get(Tag_.NAME).as(String.class).alias("tag")
+            criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR)),
+            tagJoin.get(Tag_.NAME)
         );
         List<Order> orderList = new ArrayList();
         orderList.add(criteriaBuilder.desc(criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR))));

@@ -47,6 +47,26 @@ INSERT INTO `designed_product`  VALUES
                                     (9,'2022-06-02','2022-06-04',50000.0,'Áo thun ba lỗ ',0,45),
                                     (10,'2022-06-02','2022-06-03',50000.0,'Áo thun trắng trơn',0,48);
 
+INSERT INTO `image_preview`  VALUES
+                                    (1 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,2 ),
+                                    (2 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,3 ),
+                                    (3 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,4 ),
+                                    (4 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,5 ),
+                                    (5 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,6 ),
+                                    (6 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,7 ),
+                                    (7 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,8 ),
+                                    (8 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,9 ),
+                                    (9 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,10 );
+
+INSERT INTO `rating`
+VALUES (1, 'Good', '2000-06-02', 5, 2, 4),
+       (2, 'Bad', '2000-06-02', 2, 2, 4),
+       (3, 'Good', '2000-06-02', 5, 2, 4),
+       (4, 'Good', '2000-06-02', 5, 2, 4),
+       (5, 'Good', '2000-06-02', 5, 3, 4),
+       (6, 'Good', '2000-06-02', 5, 3, 4),
+       (7, 'Good', '2000-06-02', 5, 3, 4),
+       (8, 'Good', '2000-06-02', 5, 3, 4);
 INSERT INTO capstone_pod.blue_print (id,frame_image,`position`,designed_product_id) VALUES
                                                                                         (11,'1','1',2),
                                                                                         (2,'1','1',3),

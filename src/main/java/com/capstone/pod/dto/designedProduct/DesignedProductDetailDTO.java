@@ -1,20 +1,18 @@
 package com.capstone.pod.dto.designedProduct;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class DesignedProductDetailDTO {
-    private int id;
+    private Integer id;
     private String name;
     private String image;
-    private double designedPrice;
-    private double rate;
+    private Double designedPrice;
+    private Double rate;
     private String tag;
 
 }
