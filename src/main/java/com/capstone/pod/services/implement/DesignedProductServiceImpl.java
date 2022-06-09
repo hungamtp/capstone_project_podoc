@@ -147,6 +147,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     @Override
     public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
         designedProductInRepo.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
