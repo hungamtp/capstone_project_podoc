@@ -3,6 +3,7 @@ package com.capstone.pod.controller.designedproduct;
 import com.capstone.pod.constant.designedproduct.DesignedProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
+import com.capstone.pod.dto.designedProduct.DesignedProductReturnDto;
 import com.capstone.pod.dto.designedProduct.DesignedProductSaveDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.services.DesignedProductService;
@@ -36,7 +37,7 @@ public class DesignedProductController {
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PostMapping("/{productId}")
     public ResponseEntity<ResponseDto> addDesignedProduct(@Validated @RequestBody DesignedProductSaveDto dto,@PathVariable int productId) {
-        ResponseDto<DesignedProductSaveDto> responseDto = new ResponseDto();
+        ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
         responseDto.setData(designedProductService.addDesignedProduct(dto, productId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.ADD_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);

@@ -3,6 +3,7 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
 import com.capstone.pod.dto.designedProduct.DesignedProductDetailDTO;
+import com.capstone.pod.dto.designedProduct.DesignedProductReturnDto;
 import com.capstone.pod.dto.designedProduct.DesignedProductSaveDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.ProductNotFoundException;
@@ -101,7 +102,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         return result;
     }
     @Override
-    public DesignedProductSaveDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
+    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         DesignedProduct designedProduct = DesignedProduct.builder().product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
         designedProduct.setBluePrints(new ArrayList<>());
@@ -123,7 +124,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
                         .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
                         .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
-                         .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
+                        .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
                         .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
                         .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
@@ -136,6 +137,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             }
             designedProduct.getBluePrints().add(bluePrint);
         }
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductSaveDto.class);
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
     }
 }
