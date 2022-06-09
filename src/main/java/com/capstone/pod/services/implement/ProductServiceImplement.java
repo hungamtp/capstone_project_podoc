@@ -4,6 +4,7 @@ import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.*;
+import com.capstone.pod.dto.tag.TagDto;
 import com.capstone.pod.entities.Category;
 import com.capstone.pod.entities.Product;
 import com.capstone.pod.entities.ProductImages;
@@ -84,7 +85,7 @@ public class ProductServiceImplement implements ProductService {
                 .numberOfSize(product.getSizeColors().stream().map(SizeColor::getSize).distinct().collect(Collectors.toList()).size())
                 .build();
             productDto.setProductImages(product.getProductImages().stream().map(img -> ProductImagesDto.builder().image(img.getImage()).build()).collect(Collectors.toList()));
-            productDto.setTags(product.getProductTags().stream().map(tag -> ProductTagDto.builder().tag(tag.getTag().getName()).build()).collect(Collectors.toList()));
+            productDto.setTags(product.getProductTags().stream().map(tag -> ProductTagDto.builder().tag(TagDto.builder().name(tag.getTag().getName()).build()).build()).collect(Collectors.toList()));
             dtos.add(productDto);
         }
         return PageDTO.builder()

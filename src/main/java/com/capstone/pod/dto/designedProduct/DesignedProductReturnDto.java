@@ -15,6 +15,7 @@ import java.util.List;
 public class DesignedProductReturnDto {
     private int id;
     private String name;
+    private boolean publish;
     private double designedPrice;
     private List<BluePrintDto> bluePrints;
 }

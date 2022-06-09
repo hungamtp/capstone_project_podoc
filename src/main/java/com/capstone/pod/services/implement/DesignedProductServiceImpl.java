@@ -142,10 +142,13 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
     }
 
+
+
+
     @Override
     public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-
+        designedProductInRepo.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
                     .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
@@ -157,6 +160,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                     .designedProduct(designedProductInRepo)
                     .build();
             placeholder.setBluePrint(bluePrint);
+            bluePrint.setDesignInfos(new ArrayList<>());
             for (int j = 0; j < dto.getBluePrintDtos().get(i).getDesignInfos().size(); j++) {
                 DesignInfo designInfo = DesignInfo.builder()
                         .bluePrint(bluePrint)
@@ -178,6 +182,9 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         }
         return modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
     }
+
+
+
 
     @Override
     public DesignedProductReturnDto publishDesignedProduct(int designId) {
