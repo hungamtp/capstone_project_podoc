@@ -2,13 +2,11 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
-import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
-import com.capstone.pod.dto.designedProduct.DesignedProductDetailDTO;
-import com.capstone.pod.dto.designedProduct.DesignedProductReturnDto;
-import com.capstone.pod.dto.designedProduct.DesignedProductSaveDto;
+import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.DesignedProductNotExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
+import com.capstone.pod.repositories.BluePrintRepository;
 import com.capstone.pod.repositories.DesignedProductRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.DesignedProductService;
@@ -29,6 +27,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final DesignedProductRepository designedProductRepository;
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
+    private final BluePrintRepository bluePrintRepository;
 
     @Override
     public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
@@ -166,7 +165,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .bluePrint(bluePrint)
                         .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
                         .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
-                        .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
+                         .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
                         .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
                         .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
@@ -182,8 +181,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         }
         return modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
     }
-
-
 
 
     @Override
@@ -206,6 +203,13 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(false);
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+    }
+    @Override
+    public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProduct.setDesignedPrice(dto.getPrice());
         return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
     }
 
