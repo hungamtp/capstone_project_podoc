@@ -19,6 +19,7 @@ public class DesignedProduct  extends Auditable {
     private int id;
     private String name;
     private double designedPrice;
+    private boolean publish;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<BluePrint> bluePrints;

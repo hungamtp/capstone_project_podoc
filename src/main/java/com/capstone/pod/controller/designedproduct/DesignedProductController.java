@@ -42,4 +42,35 @@ public class DesignedProductController {
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.ADD_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @DeleteMapping("/{designId}")
+    public ResponseEntity<ResponseDto> deleteDesignedProduct(@PathVariable int designId) {
+        ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
+        designedProductService.deleteDesignedProduct(designId);
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.DELETE_DESIGNED_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PatchMapping("/publish/{designId}")
+    public ResponseEntity<ResponseDto> publishDesignedProduct(@PathVariable int designId) {
+        ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
+        responseDto.setData(designedProductService.publishDesignedProduct(designId));
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.PUBLISH_DESIGNED_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PatchMapping("/un-publish/{designId}")
+    public ResponseEntity<ResponseDto> unPublishDesignedProduct(@PathVariable int designId) {
+        ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
+        responseDto.setData(designedProductService.unPublishDesignedProduct(designId));
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.UN_PUBLISH_DESIGNED_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @GetMapping("/{designId}")
+    public ResponseEntity<ResponseDto> getPublishDesignedProductById(@PathVariable int designId) {
+        ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
+        responseDto.setData(designedProductService.getDesignedProductById(designId));
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.UN_PUBLISH_DESIGNED_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
 }

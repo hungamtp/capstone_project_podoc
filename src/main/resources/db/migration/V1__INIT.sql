@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
                                                                  `last_modified_date` DATE NULL DEFAULT NULL,
                                                                  `designed_price` DOUBLE NOT NULL,
                                                                  `name` VARCHAR(255) NULL DEFAULT NULL,
+                                                                 `publish` BIT(1) NOT NULL,
                                                                  `product_id` INT NULL DEFAULT NULL,
                                                                  PRIMARY KEY (`id`),
                                                                  INDEX `FKeor46gb2vt6k4p41wurmeo450` (`product_id` ASC) VISIBLE,

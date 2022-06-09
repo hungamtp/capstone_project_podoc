@@ -10,7 +10,12 @@ import java.util.List;
 
 public interface DesignedProductService {
     List<DesignedProductDTO> get4HighestRateDesignedProduct();
-    List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId);
+    List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int designId);
 
     DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId);
+    DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId);
+    DesignedProductReturnDto publishDesignedProduct(int designId);
+    DesignedProductReturnDto getDesignedProductById(int designId);
+    DesignedProductReturnDto unPublishDesignedProduct(int designId);
+    void deleteDesignedProduct(int designedProductId);
 }

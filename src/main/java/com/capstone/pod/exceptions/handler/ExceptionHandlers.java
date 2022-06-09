@@ -144,6 +144,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = DesignedProductNotExistException.class)
+    public ResponseEntity<Object> passwordNotMatch(DesignedProductNotExistException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
 
 
 }

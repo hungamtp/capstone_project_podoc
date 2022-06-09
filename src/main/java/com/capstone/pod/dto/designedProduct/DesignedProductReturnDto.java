@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Setter
 public class DesignedProductReturnDto {
+    private int id;
     private String name;
     private double designedPrice;
     private List<BluePrintDto> bluePrints;
