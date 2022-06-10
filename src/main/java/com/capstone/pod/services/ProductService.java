@@ -2,7 +2,7 @@ package com.capstone.pod.services;
 
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.AddProductDto;
-import com.capstone.pod.dto.product.ProductDetailDTO;
+import com.capstone.pod.dto.product.ProductDetailDto;
 import com.capstone.pod.dto.product.ProductDto;
 import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.entities.Product;
@@ -20,6 +20,6 @@ public interface ProductService {
       ProductDto publishProduct(int productId);
       ProductDto deleteProduct(int productId);
 
-      ProductDetailDTO getProductById(Integer id);
+      ProductDetailDto getProductById(Integer id);
       ProductDto getProductByIdAdmin(Integer id);
 }

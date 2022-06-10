@@ -111,7 +111,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDetailDTO getProductById(Integer productId) {
+    public ProductDetailDto getProductById(Integer productId) {
         Product product = productRepository.findById(productId).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if (!product.isPublic() || product.isDeleted()) {
@@ -148,7 +148,7 @@ public class ProductServiceImplement implements ProductService {
                     .build();
             factories.add(factoryProductDetailDTO);
         }
-        return ProductDetailDTO.builder()
+        return ProductDetailDto.builder()
             .id(product.getId())
             .name(product.getName())
             .description(product.getDescription())
