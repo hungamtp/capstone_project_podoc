@@ -1,18 +1,20 @@
 package com.capstone.pod.services.implement;
 
+import com.capstone.pod.constant.common.CommonMessage;
+import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.*;
-import com.capstone.pod.exceptions.DesignedProductNotExistException;
-import com.capstone.pod.exceptions.ProductNotFoundException;
-import com.capstone.pod.repositories.BluePrintRepository;
-import com.capstone.pod.repositories.DesignedProductRepository;
-import com.capstone.pod.repositories.ProductRepository;
+import com.capstone.pod.exceptions.*;
+import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,14 +29,8 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final DesignedProductRepository designedProductRepository;
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
-    private final BluePrintRepository bluePrintRepository;
+    private final CredentialRepository credentialRepository;
 
-    @Override
-    public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
-        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProduct();
-        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
-//        Map<Integer, List<DesignedProductDetailDTO>> mapByDesignProducts = designedProductDetailDTOS.stream()
-//            .collect(Collectors.groupingBy(d -> d.getId()));
 
 //        for (Map.Entry<Integer, List<DesignedProductDetailDTO>> designProductDetail : mapByDesignProducts.entrySet()) {
 //
@@ -146,6 +142,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
+        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
         designedProductInRepo.setBluePrints(new ArrayList<>());
@@ -166,7 +163,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .bluePrint(bluePrint)
                         .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
                         .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
-                         .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
+                        .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
                         .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
                         .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
@@ -186,6 +183,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto publishDesignedProduct(int designId) {
+        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(true);
@@ -194,6 +192,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto getDesignedProductById(int designId) {
+        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         return modelMapper.map(designedProduct,DesignedProductReturnDto.class);
@@ -201,6 +200,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto unPublishDesignedProduct(int designId) {
+        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(false);
@@ -208,6 +208,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     }
     @Override
     public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
+        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setDesignedPrice(dto.getPrice());
@@ -216,8 +217,84 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public void deleteDesignedProduct(int designId) {
-       DesignedProduct designedProduct = designedProductRepository.findById(designId)
-               .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-       designedProductRepository.delete(designedProduct);
+        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProductRepository.delete(designedProduct);
     }
+
+    @Override
+    public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
+        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProduct();
+        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+//        Map<Integer, List<DesignedProductDetailDTO>> mapByDesignProducts = designedProductDetailDTOS.stream()
+//            .collect(Collectors.groupingBy(d -> d.getId()));
+
+//        for (Map.Entry<Integer, List<DesignedProductDetailDTO>> designProductDetail : mapByDesignProducts.entrySet()) {
+//
+//            DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+//                .id(designProductDetail.getKey())
+//                .rate(designProductDetail.getValue().get(0).getRate())
+//                .name(designProductDetail.getValue().get(0).getName())
+//                .image(designProductDetail.getValue().get(0).getImage())
+//                .designedPrice(designProductDetail.getValue().get(0).getDesignedPrice())
+//                .tags(designProductDetail.getValue().stream().map(d -> d.getTag()).collect(Collectors.toList()))
+//                .build();
+//
+//            result.add(designedProductDTO);
+//        }
+    }
+
+    @Override
+    public List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId) {
+        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
+        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+
+    }
+
+
+
+    private List<DesignedProductDTO> calculate4HighestRateDesignedProduct(List<DesignedProductDetailDTO> designedProductDetailDTOS){
+        List<DesignedProductDTO> result = new ArrayList<>();
+
+        for (var designProductDetail : designedProductDetailDTOS) {
+            if (result.size() == 5) return result.subList(0 , 4);
+            if(result.size() == 0){
+                DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+                    .id(designProductDetail.getId())
+                    .rate(designProductDetail.getRate())
+                    .name(designProductDetail.getName())
+                    .image(designProductDetail.getImage())
+                    .designedPrice(designProductDetail.getDesignedPrice())
+                    .tags(new ArrayList<>())
+                    .build();
+                if(null != designProductDetail.getTag()){
+                    designedProductDTO.getTags().add(designProductDetail.getTag());
+                }
+                result.add(designedProductDTO);
+            }
+            else {
+                var currentDesign = result.get(result.size() - 1);
+                if (designProductDetail.getId() == currentDesign.getId()) {
+                    currentDesign.getTags().add(designProductDetail.getTag());
+                } else {
+                    DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+                        .id(designProductDetail.getId())
+                        .rate(designProductDetail.getRate())
+                        .name(designProductDetail.getName())
+                        .image(designProductDetail.getImage())
+                        .designedPrice(designProductDetail.getDesignedPrice())
+                        .tags(new ArrayList<>())
+                        .build();
+                    if(null != designProductDetail.getTag()){
+                        designedProductDTO.getTags().add(designProductDetail.getTag());
+                    }
+                    result.add(designedProductDTO);
+                }
+            }
+
+        }
+        return result;
+    }
+
 }

@@ -32,4 +32,6 @@ public class User{
     @OneToOne(mappedBy = "user")
     Credential credential;
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    Collection<DesignedProduct> designedProducts;
 }
