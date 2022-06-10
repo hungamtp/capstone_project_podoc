@@ -30,7 +30,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
     private final CredentialRepository credentialRepository;
-    private final UserRepository userRepository;
 
 
     private  boolean getPermittedUser(int designId) {
@@ -39,7 +38,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         Credential credential = credentialRepository.findById(currentCredentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        if(designedProduct.getUser().getId()==credential.getUser().getId()) return true;
+        if(designedProduct.getUser().getId() == credential.getUser().getId()) return true;
         return false;
     }
     @Override
@@ -86,7 +85,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
-        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(!getPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
         designedProductInRepo.setBluePrints(new ArrayList<>());
@@ -127,7 +126,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto publishDesignedProduct(int designId) {
-        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(!getPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(true);
@@ -136,7 +135,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto getDesignedProductById(int designId) {
-        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(!getPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         return modelMapper.map(designedProduct,DesignedProductReturnDto.class);
@@ -144,7 +143,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public DesignedProductReturnDto unPublishDesignedProduct(int designId) {
-        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(!getPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(false);
@@ -152,7 +151,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     }
     @Override
     public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
-        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(!getPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setDesignedPrice(dto.getPrice());
@@ -161,7 +160,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
 
     @Override
     public void deleteDesignedProduct(int designId) {
-        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(!getPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductRepository.delete(designedProduct);
