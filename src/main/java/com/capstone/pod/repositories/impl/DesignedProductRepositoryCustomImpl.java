@@ -31,7 +31,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             root.get(DesignedProduct_.NAME),
             imagePreviewJoin.get(ImagePreview_.IMAGE),
             root.get(DesignedProduct_.DESIGNED_PRICE),
-            criteriaBuilder.avg(ratingJoin.get(Rating_.ratingStar)),
+            criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR)),
             tagJoin.get(Tag_.NAME)
         );
         List<Order> orderList = new ArrayList();
