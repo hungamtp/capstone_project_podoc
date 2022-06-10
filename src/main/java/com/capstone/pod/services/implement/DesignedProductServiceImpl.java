@@ -205,7 +205,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             if(result.size() == 0){
                 DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
                     .id(designProductDetail.getId())
-                    .rate(designProductDetail.getRate())
+                    .rate(designProductDetail.getRate()== null ? 0 :designProductDetail.getRate())
                     .name(designProductDetail.getName())
                     .image(designProductDetail.getImage())
                     .designedPrice(designProductDetail.getDesignedPrice())
@@ -223,7 +223,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                 } else {
                     DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
                         .id(designProductDetail.getId())
-                        .rate(designProductDetail.getRate())
+                        .rate(designProductDetail.getRate()== null ? 0 :designProductDetail.getRate())
                         .name(designProductDetail.getName())
                         .image(designProductDetail.getImage())
                         .designedPrice(designProductDetail.getDesignedPrice())
