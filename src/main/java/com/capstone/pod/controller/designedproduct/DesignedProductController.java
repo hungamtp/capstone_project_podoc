@@ -2,13 +2,15 @@ package com.capstone.pod.controller.designedproduct;
 
 import com.capstone.pod.constant.designedproduct.DesignedProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.dto.designedProduct.DesignedProductDTO;
-import com.capstone.pod.dto.designedProduct.DesignedProductPriceDto;
-import com.capstone.pod.dto.designedProduct.DesignedProductReturnDto;
-import com.capstone.pod.dto.designedProduct.DesignedProductSaveDto;
+import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.services.DesignedProductService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -17,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("design")
+@RequiredArgsConstructor
 public class DesignedProductController {
-    private DesignedProductService designedProductService;
+    private final DesignedProductService designedProductService;
 
     @GetMapping("/4highestDRateDesignedProduct")
     public ResponseEntity<ResponseDto> get4highestDRateDesignedProduct() {
@@ -80,6 +82,15 @@ public class DesignedProductController {
         ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
         responseDto.setData(designedProductService.getDesignedProductById(designId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.GET_DESIGNED_PRODUCT_BY_ID_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @GetMapping("/view/{userId}")
+    public ResponseEntity<ResponseDto> viewOtherDesigned(@RequestParam int pageNumber, @RequestParam int pageSize,  @PathVariable int userId) {
+        ResponseDto<Page<ViewOtherDesignDto>> responseDto = new ResponseDto();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        responseDto.setData(designedProductService.viewDesignOfOthersByUserId(pageable, userId));
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_OTHERS_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)

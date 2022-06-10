@@ -14,7 +14,6 @@ import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -33,6 +32,7 @@ public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+
     private final FactoryConverter factoryConverter;
 
     @Override
