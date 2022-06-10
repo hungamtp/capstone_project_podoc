@@ -2,6 +2,7 @@ package com.capstone.pod.services;
 
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.AddProductDto;
+import com.capstone.pod.dto.product.ProductDetailDTO;
 import com.capstone.pod.dto.product.ProductDto;
 import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.entities.Product;
@@ -11,14 +12,14 @@ import org.springframework.data.jpa.domain.Specification;
 
 
 public interface ProductService {
-      public ProductDto addProduct(AddProductDto productDto);
-      public PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
-      public Page<ProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
+      ProductDto addProduct(AddProductDto productDto);
+      PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
+      Page<ProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
-      public ProductDto updateProduct(UpdateProductDto dto, int productId);
-      public ProductDto publishProduct(int productId);
-      public ProductDto deleteProduct(int productId);
+      ProductDto updateProduct(UpdateProductDto dto, int productId);
+      ProductDto publishProduct(int productId);
+      ProductDto deleteProduct(int productId);
 
-      public ProductDto getProductById(Integer id);
-      public ProductDto getProductByIdAdmin(Integer id);
+      ProductDetailDTO getProductById(Integer id);
+      ProductDto getProductByIdAdmin(Integer id);
 }

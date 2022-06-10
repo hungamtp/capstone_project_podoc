@@ -5,6 +5,7 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.AddProductDto;
+import com.capstone.pod.dto.product.ProductDetailDTO;
 import com.capstone.pod.dto.product.ProductDto;
 import com.capstone.pod.dto.product.UpdateProductDto;
 import com.capstone.pod.services.ProductService;
@@ -80,9 +81,8 @@ public class ProductController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<ResponseDto> getProductById(@PathVariable(name = "id") int productId){
-        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        ResponseDto<ProductDetailDTO> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductById(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

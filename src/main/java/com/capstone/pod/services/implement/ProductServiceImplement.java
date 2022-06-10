@@ -2,19 +2,19 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.converter.FactoryConverter;
 import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.factory.FactoryProductDetailDTO;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.tag.TagDto;
-import com.capstone.pod.entities.Category;
-import com.capstone.pod.entities.Product;
-import com.capstone.pod.entities.ProductImages;
-import com.capstone.pod.entities.SizeColor;
+import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -22,10 +22,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
-
+    private final FactoryConverter factoryConverter;
 
     @Override
     public ProductDto addProduct(AddProductDto productDto) {
@@ -111,11 +111,51 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto getProductById(Integer productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        if(!product.isPublic()||product.isDeleted()) return null;
-        return modelMapper.map(product,ProductDto.class);
+    public ProductDetailDTO getProductById(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow(
+            () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        if (!product.isPublic() || product.isDeleted()) {
+            throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST);
+        }
+        List<SizeColorByFactory> sizeColorByFactoryList = new ArrayList<>();
+        for(var sizeColor : product.getSizeColors()){
+            for(var sizeColorByFactory : sizeColor.getSizeColorByFactories()){
+                sizeColorByFactoryList.add(sizeColorByFactory);
+            }
+        }
+
+        Map<Factory , List<SizeColorByFactory>> groupSizeColorByFactory = sizeColorByFactoryList.stream()
+            .collect(groupingBy(SizeColorByFactory::getFactory));
+
+        List<FactoryProductDetailDTO> factories = new ArrayList<>();
+        for(var factoryEntry  : groupSizeColorByFactory.entrySet()){
+            var factory  = factoryEntry.getKey();
+            FactoryProductDetailDTO factoryProductDetailDTO =
+                FactoryProductDetailDTO.builder()
+                    .id(factory.getId())
+                    .name(factory.getName())
+                    .location(factory.getLocation())
+                    .area(product.getProductBluePrints().stream().map(ProductBluePrint::getPosition).collect(Collectors.toList()))
+                    .sizes(groupSizeColorByFactory.get(factoryEntry.getKey())
+                        .stream().map(sizeColor  -> sizeColor.getSizeColor().getSize().getName())
+                        .collect(Collectors.toList()))
+                    .colors(groupSizeColorByFactory.get(factoryEntry.getKey())
+                        .stream().map(sizeColor  -> sizeColor.getSizeColor().getColor().getName())
+                        .collect(Collectors.toList()))
+                    .build();
+            factories.add(factoryProductDetailDTO);
+        }
+        return ProductDetailDTO.builder()
+            .id(product.getId())
+            .name(product.getName())
+            .description(product.getDescription())
+            .images(product.getProductImages().stream().map(ProductImages::getImage).collect(Collectors.toList()))
+            .tags(product.getProductTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toList()))
+            .factories(
+                factories)
+            .build();
     }
+
     @Override
     public ProductDto getProductByIdAdmin(Integer productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
