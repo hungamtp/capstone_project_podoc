@@ -1,12 +1,13 @@
 package com.capstone.pod.dto.user;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class UserInDesignDto {
     private int id;
-    private String userFirstName;
-    private String userLastName;
-    private String email;
-    private String roleName;
-    private String phone;
-    private String address;
-    private String image;
+    private String firstName;
+    private String lastName;
+    private String credentialImage;
 }
