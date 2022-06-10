@@ -76,10 +76,10 @@ public class DesignedProductController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @GetMapping("/{designId}")
-    public ResponseEntity<ResponseDto> getPublishDesignedProductById(@PathVariable int designId) {
+    public ResponseEntity<ResponseDto> getDesignedProductById(@PathVariable int designId) {
         ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
         responseDto.setData(designedProductService.getDesignedProductById(designId));
-        responseDto.setSuccessMessage(DesignedProductSuccessMessage.UN_PUBLISH_DESIGNED_PRODUCT_SUCCESS);
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.GET_DESIGNED_PRODUCT_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)

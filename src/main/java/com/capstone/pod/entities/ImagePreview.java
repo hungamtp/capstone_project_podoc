@@ -18,6 +18,7 @@ public class ImagePreview {
     @Id
     private int id;
     private String image;
+    private String position;
     @ManyToOne
     DesignedProduct designedProduct;
 }

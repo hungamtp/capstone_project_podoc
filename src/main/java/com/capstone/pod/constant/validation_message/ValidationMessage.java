@@ -11,6 +11,7 @@ public final class ValidationMessage {
     public static final String NAME_VALID_MESSAGE ="Name must be filled";
     public static final String PASSWORD_VALID_MESSAGE ="Password must be filled";
     public static final String STATUS_VALID_MESSAGE ="Status must be filled";
+    public static final String POSITION_VALID_MESSAGE ="Position must be filled";
 
     public static final String PASSWORD_SIZE_VALID_MESSAGE ="Password length must be greater than 7 and less than 20 characters";
 
@@ -32,7 +33,6 @@ public final class ValidationMessage {
 
     public static final String DESIGNED_PRODUCT_VALID_MESSAGE = "Design details must be filled";
     public static final String FRAME_IMAGE_VALID_MESSAGE = "Frame image must be filled";
-    public static final String POSITION_VALID_MESSAGE = "Position must be filled";
     public static final String WIDTH_VALID_MESSAGE = "Width must be filled";
     public static final String HEIGHT_VALID_MESSAGE = "Height must be filled";
     public static final String DESIGN_INFOS_VALID_MESSAGE = "Design details must be filled";

@@ -36,7 +36,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
-            imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i)).build());
+            imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
         }
         designedProduct.setImagePreviews(imagePreviews);
         designedProduct.setBluePrints(new ArrayList<>());
@@ -81,7 +81,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
-            imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i)).build());
+            imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
         }
         designedProductInRepo.setImagePreviews(imagePreviews);
         designedProductInRepo.setBluePrints(new ArrayList<>());

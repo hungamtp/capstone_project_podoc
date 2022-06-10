@@ -59,15 +59,15 @@ INSERT INTO `designed_product`  VALUES
                                     (10,'2022-06-02','2022-06-03',50000.0,'Áo thun trắng trơn',0,48,26);
 
 INSERT INTO `image_preview`  VALUES
-                                    (1 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,2 ),
-                                    (2 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,3 ),
-                                    (3 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,4 ),
-                                    (4 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,5 ),
-                                    (5 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,6 ),
-                                    (6 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,7 ),
-                                    (7 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,8 ),
-                                    (8 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,9 ),
-                                    (9 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' ,10 );
+                                    (1 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",2 ),
+                                    (2 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",3 ),
+                                    (3 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",4 ),
+                                    (4 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",5 ),
+                                    (5 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",6 ),
+                                    (6 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",7 ),
+                                    (7 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",8 ),
+                                    (8 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",9 ),
+                                    (9 ,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533' , "front",10 );
 
 INSERT INTO `rating`
 VALUES (1, 'Good', '2000-06-02', 5, 2, 4),

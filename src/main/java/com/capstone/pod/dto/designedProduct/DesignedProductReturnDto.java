@@ -1,6 +1,7 @@
 package com.capstone.pod.dto.designedProduct;
 
 import com.capstone.pod.dto.blueprint.BluePrintDto;
+import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,5 +18,6 @@ public class DesignedProductReturnDto {
     private String name;
     private boolean publish;
     private double designedPrice;
+    private List<ImagePreviewDto> imagePreviews;
     private List<BluePrintDto> bluePrints;
 }
