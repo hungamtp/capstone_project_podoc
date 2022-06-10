@@ -34,14 +34,58 @@ INSERT INTO `product` VALUES (1,'2022-06-02','2022-06-02','rất chi là đẹp 
                              (51,'2022-06-08','2022-06-08','rất chi là đẹp luôn',_binary '\0',true,'Áo thun ',1),
                              (54,'2022-06-08','2022-06-08','rất chi là đẹp luôn',_binary '\0',true,'Áo thun vải ',1);
 
+INSERT INTO capstone_pod.price_by_factory (id,price,discount_id,factory_id,product_id) VALUES
+                 (1,50.0,NULL,1,1),
+                 (2,50.0,NULL,1,6),
+                 (3,50.0,NULL,1,23),
+                 (4,50.0,NULL,1,28),
+                 (5,50.0,NULL,1,34),
+                 (6,50.0,NULL,1,37),
+                 (7,50.0,NULL,1,42),
+                 (8,50.0,NULL,1,45),
+                 (9,50.0,NULL,1,48),
+                 (10,50.0,NULL,1,51),
+                 (11,50.0,NULL,1,54),
+                 (12,50.0,NULL,1,31);
+
+    INSERT INTO capstone_pod.product_blue_print (id, frame_image, place_holder_height, place_holder_width, `position`, product_id)
+    VALUES(1, '1', 1.0, 1.0, 'Back', 6),(2, '2', 2.0, 2.0, 'Front', 28);
+
+
 INSERT INTO `product_images` VALUES (2,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533',1),(3,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533',1),(7,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533',6),(8,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533',6),(24,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533',23),(25,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/4-0.jpg?alt=media&token=5ce8f57a-65ef-411a-b529-4e098c84e533',23),(29,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/dai-tay-trang-mat-truoc.png?alt=media&token=34310edc-88f3-407b-b8b9-36a109abf81b',28),(30,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/dai-tay-trang-mat-sau.png?alt=media&token=d8382cca-1aad-4bd6-82c7-ba4aa622e71f',28),(32,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-truoc.png?alt=media&token=9f25a0e1-9dab-472a-93e6-e9a6ca92a2a0',31),(33,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-sau.png?alt=media&token=263c173d-ae24-48c8-b35d-d0864bad71c0',31),(35,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-xam-mat-truoc.png?alt=media&token=0c80d4a2-8943-4325-8816-89b068fb40c3',34),(36,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-xam-mat-sau.png?alt=media&token=0625c7a1-9617-4de7-9fe3-a4cdf81c38db',34),(38,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-mat-truoc.png?alt=media&token=cfcb1a55-47f7-4a1c-80e7-c74beb351bd7',37),(39,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-mat-sau.png?alt=media&token=5ea98a33-cb61-417f-87d2-d6536823e3e8',37),(40,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-1.png?alt=media&token=ca3cee69-3f76-426e-88af-2463ac40e646',37),(41,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-2.png?alt=media&token=931b4fdf-3c76-4128-8d14-c59556b7c3cc',37),(43,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-mat-truoc.png?alt=media&token=cfcb1a55-47f7-4a1c-80e7-c74beb351bd7',42),(44,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-mat-sau.png?alt=media&token=5ea98a33-cb61-417f-87d2-d6536823e3e8',42),(46,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-mat-truoc.png?alt=media&token=cfcb1a55-47f7-4a1c-80e7-c74beb351bd7',45),(47,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/aobalo-trang-mat-sau.png?alt=media&token=5ea98a33-cb61-417f-87d2-d6536823e3e8',45),(49,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-truoc.png?alt=media&token=9f25a0e1-9dab-472a-93e6-e9a6ca92a2a0',48),(50,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-sau.png?alt=media&token=263c173d-ae24-48c8-b35d-d0864bad71c0',48),(52,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-truoc.png?alt=media&token=9f25a0e1-9dab-472a-93e6-e9a6ca92a2a0',51),(53,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-sau.png?alt=media&token=263c173d-ae24-48c8-b35d-d0864bad71c0',51),(55,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-truoc.png?alt=media&token=9f25a0e1-9dab-472a-93e6-e9a6ca92a2a0',54),(56,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/thun-trang-mat-sau.png?alt=media&token=263c173d-ae24-48c8-b35d-d0864bad71c0',54);
 
 
 INSERT INTO `size` VALUES (1,'XS'),(2,'S'),(3,'M'),(4,'L'),(5,'XL'),(6,'XXL'),(7,'XXXL');
 
-INSERT INTO `size_color` VALUES (1,1,28,1),(2,2,6,2),(3,1,31,3),(4,1,37,3),(34,9,34,3);
+INSERT INTO capstone_pod.size_color
+(id, color_id, product_id, size_id)
+VALUES (1, 9, 1, 3),
+       (2, 2, 6, 2),
+       (3, 2, 23, 2),
+       (4, 1, 28, 1),
+       (5, 1, 31, 3),
+       (6, 1, 37, 3),
+       (7, 9, 34, 3),
+       (8, 9, 42, 3),
+       (9, 9, 45, 3),
+       (10, 9, 48, 3),
+       (11, 9, 51, 3),
+       (12, 9, 54, 3);
 
-INSERT INTO `size_color_by_factory` VALUES (1,100,1,1),(2,100,2,2);
+INSERT INTO capstone_pod.size_color_by_factory
+    (id, quantity, factory_id, size_color_id)
+VALUES (1, 100, 1, 1),
+       (2, 100, 2, 2),
+       (3, 100, 2, 3),
+       (4, 100, 2, 4),
+       (5, 100, 2, 5),
+       (6, 100, 2, 6),
+       (7, 100, 2, 7),
+       (8, 100, 2, 8),
+       (9, 100, 2, 9),
+       (10, 100, 2, 10),
+       (11, 100, 2, 11),
+       (12, 100, 2, 12);
 
 INSERT INTO `tag` VALUES (1,0,'Bán chạy'),(2,0,'Mới'),(3,0,'Trending'),(4,0,'Ưu đãi');
 
