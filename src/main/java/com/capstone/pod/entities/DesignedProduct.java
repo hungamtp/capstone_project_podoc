@@ -29,6 +29,8 @@ public class DesignedProduct  extends Auditable {
 
     @ManyToOne
     Product product;
+    @ManyToOne
+    User user;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<Rating> ratings;

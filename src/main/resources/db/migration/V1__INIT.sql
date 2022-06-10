@@ -18,6 +18,21 @@ CREATE SCHEMA IF NOT EXISTS `capstone_pod` DEFAULT CHARACTER SET utf8mb4 COLLATE
 USE `capstone_pod` ;
 
 -- -----------------------------------------------------
+-- Table `capstone_pod`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`user` (
+                                                     `id` INT NOT NULL,
+                                                     `first_name` VARCHAR(255) NULL DEFAULT NULL,
+                                                     `is_mail_verified` BIT(1) NOT NULL,
+                                                     `last_name` VARCHAR(255) NULL DEFAULT NULL,
+                                                     `status` VARCHAR(255) NULL DEFAULT NULL,
+                                                     PRIMARY KEY (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `capstone_pod`.`category`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`category` (
@@ -68,8 +83,13 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
                                                                  `name` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `publish` BIT(1) NOT NULL,
                                                                  `product_id` INT NULL DEFAULT NULL,
+                                                                 `user_id` INT NULL DEFAULT NULL,
                                                                  PRIMARY KEY (`id`),
                                                                  INDEX `FKeor46gb2vt6k4p41wurmeo450` (`product_id` ASC) VISIBLE,
+                                                                 INDEX `FK6i1c3o92skq48djifdy0ocre0` (`user_id` ASC) VISIBLE,
+                                                                 CONSTRAINT `FK6i1c3o92skq48djifdy0ocre0`
+                                                                     FOREIGN KEY (`user_id`)
+                                                                         REFERENCES `capstone_pod`.`user` (`id`),
                                                                  CONSTRAINT `FKeor46gb2vt6k4p41wurmeo450`
                                                                      FOREIGN KEY (`product_id`)
                                                                          REFERENCES `capstone_pod`.`product` (`id`))
@@ -134,21 +154,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`role` (
                                                      PRIMARY KEY (`id`),
                                                      UNIQUE INDEX `UK8sewwnpamngi6b1dwaa88askk` (`name` ASC) VISIBLE,
                                                      INDEX `IDX8sewwnpamngi6b1dwaa88askk` (`name` ASC) VISIBLE)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `capstone_pod`.`user`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `capstone_pod`.`user` (
-                                                     `id` INT NOT NULL,
-                                                     `first_name` VARCHAR(255) NULL DEFAULT NULL,
-                                                     `is_mail_verified` BIT(1) NOT NULL,
-                                                     `last_name` VARCHAR(255) NULL DEFAULT NULL,
-                                                     `status` VARCHAR(255) NULL DEFAULT NULL,
-                                                     PRIMARY KEY (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;

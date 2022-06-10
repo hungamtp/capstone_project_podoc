@@ -1,18 +1,20 @@
 package com.capstone.pod.services.implement;
 
+import com.capstone.pod.constant.common.CommonMessage;
+import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.*;
-import com.capstone.pod.exceptions.DesignedProductNotExistException;
-import com.capstone.pod.exceptions.ProductNotFoundException;
-import com.capstone.pod.repositories.BluePrintRepository;
-import com.capstone.pod.repositories.DesignedProductRepository;
-import com.capstone.pod.repositories.ProductRepository;
+import com.capstone.pod.exceptions.*;
+import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +29,143 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final DesignedProductRepository designedProductRepository;
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
-    private final BluePrintRepository bluePrintRepository;
+    private final CredentialRepository credentialRepository;
+    private final UserRepository userRepository;
+
+
+    private  boolean getPermittedUser(int designId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        int currentCredentialId = (Integer)authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId)
+                .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        if(designedProduct.getUser().getId()==credential.getUser().getId()) return true;
+        return false;
+    }
+    @Override
+    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
+        Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
+        designedProduct.setBluePrints(new ArrayList<>());
+        for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
+            Placeholder placeholder = Placeholder.builder()
+                    .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
+                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
+            BluePrint bluePrint = BluePrint.builder()
+                    .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
+                    .position(dto.getBluePrintDtos().get(i).getPosition())
+                    .placeholder(placeholder)
+                    .designedProduct(designedProduct)
+                    .build();
+            placeholder.setBluePrint(bluePrint);
+            bluePrint.setDesignInfos(new ArrayList<>());
+            for (int j = 0; j < dto.getBluePrintDtos().get(i).getDesignInfos().size(); j++) {
+                DesignInfo designInfo = DesignInfo.builder()
+                        .bluePrint(bluePrint)
+                        .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
+                        .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
+                        .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
+                        .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
+                        .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
+                        .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
+                        .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
+                        .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
+                        .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
+                        .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
+                        .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
+                        .build();
+                bluePrint.getDesignInfos().add(designInfo);
+            }
+            designedProduct.getBluePrints().add(bluePrint);
+        }
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+    }
+
+
+
+
+    @Override
+    public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
+        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
+        designedProductInRepo.setBluePrints(new ArrayList<>());
+        for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
+            Placeholder placeholder = Placeholder.builder()
+                    .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
+                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
+            BluePrint bluePrint = BluePrint.builder()
+                    .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
+                    .position(dto.getBluePrintDtos().get(i).getPosition())
+                    .placeholder(placeholder)
+                    .designedProduct(designedProductInRepo)
+                    .build();
+            placeholder.setBluePrint(bluePrint);
+            bluePrint.setDesignInfos(new ArrayList<>());
+            for (int j = 0; j < dto.getBluePrintDtos().get(i).getDesignInfos().size(); j++) {
+                DesignInfo designInfo = DesignInfo.builder()
+                        .bluePrint(bluePrint)
+                        .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
+                        .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
+                        .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
+                        .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
+                        .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
+                        .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
+                        .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
+                        .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
+                        .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
+                        .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
+                        .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
+                        .build();
+                bluePrint.getDesignInfos().add(designInfo);
+            }
+            designedProductInRepo.getBluePrints().add(bluePrint);
+        }
+        return modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
+    }
+
+
+    @Override
+    public DesignedProductReturnDto publishDesignedProduct(int designId) {
+        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProduct.setPublish(true);
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+    }
+
+    @Override
+    public DesignedProductReturnDto getDesignedProductById(int designId) {
+        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        return modelMapper.map(designedProduct,DesignedProductReturnDto.class);
+    }
+
+    @Override
+    public DesignedProductReturnDto unPublishDesignedProduct(int designId) {
+        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProduct.setPublish(false);
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+    }
+    @Override
+    public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
+        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProduct.setDesignedPrice(dto.getPrice());
+        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+    }
+
+    @Override
+    public void deleteDesignedProduct(int designId) {
+        if(getPermittedUser(designId)==false) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        DesignedProduct designedProduct = designedProductRepository.findById(designId)
+                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        designedProductRepository.delete(designedProduct);
+    }
 
     @Override
     public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
@@ -102,122 +240,5 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         }
         return result;
     }
-    @Override
-    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
-        Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
-        designedProduct.setBluePrints(new ArrayList<>());
-        for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
-            Placeholder placeholder = Placeholder.builder()
-                    .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
-                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
-            BluePrint bluePrint = BluePrint.builder()
-                    .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
-                    .position(dto.getBluePrintDtos().get(i).getPosition())
-                    .placeholder(placeholder)
-                    .designedProduct(designedProduct)
-                    .build();
-            placeholder.setBluePrint(bluePrint);
-            bluePrint.setDesignInfos(new ArrayList<>());
-            for (int j = 0; j < dto.getBluePrintDtos().get(i).getDesignInfos().size(); j++) {
-                DesignInfo designInfo = DesignInfo.builder()
-                        .bluePrint(bluePrint)
-                        .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
-                        .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
-                        .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
-                        .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
-                        .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
-                        .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
-                        .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
-                        .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
-                        .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
-                        .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
-                        .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
-                        .build();
-                bluePrint.getDesignInfos().add(designInfo);
-            }
-            designedProduct.getBluePrints().add(bluePrint);
-        }
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
-    }
 
-
-
-
-    @Override
-    public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
-        DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
-        designedProductInRepo.setBluePrints(new ArrayList<>());
-        for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
-            Placeholder placeholder = Placeholder.builder()
-                    .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
-                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
-            BluePrint bluePrint = BluePrint.builder()
-                    .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
-                    .position(dto.getBluePrintDtos().get(i).getPosition())
-                    .placeholder(placeholder)
-                    .designedProduct(designedProductInRepo)
-                    .build();
-            placeholder.setBluePrint(bluePrint);
-            bluePrint.setDesignInfos(new ArrayList<>());
-            for (int j = 0; j < dto.getBluePrintDtos().get(i).getDesignInfos().size(); j++) {
-                DesignInfo designInfo = DesignInfo.builder()
-                        .bluePrint(bluePrint)
-                        .name(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getName())
-                        .types(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTypes())
-                         .height(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getHeight())
-                        .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
-                        .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
-                        .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
-                        .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
-                        .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
-                        .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
-                        .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
-                        .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
-                        .build();
-                bluePrint.getDesignInfos().add(designInfo);
-            }
-            designedProductInRepo.getBluePrints().add(bluePrint);
-        }
-        return modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
-    }
-
-
-    @Override
-    public DesignedProductReturnDto publishDesignedProduct(int designId) {
-        DesignedProduct designedProduct = designedProductRepository.findById(designId)
-                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        designedProduct.setPublish(true);
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
-    }
-
-    @Override
-    public DesignedProductReturnDto getDesignedProductById(int designId) {
-        DesignedProduct designedProduct = designedProductRepository.findById(designId)
-                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        return modelMapper.map(designedProduct,DesignedProductReturnDto.class);
-    }
-
-    @Override
-    public DesignedProductReturnDto unPublishDesignedProduct(int designId) {
-        DesignedProduct designedProduct = designedProductRepository.findById(designId)
-                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        designedProduct.setPublish(false);
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
-    }
-    @Override
-    public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
-        DesignedProduct designedProduct = designedProductRepository.findById(designId)
-                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        designedProduct.setDesignedPrice(dto.getPrice());
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
-    }
-
-    @Override
-    public void deleteDesignedProduct(int designId) {
-       DesignedProduct designedProduct = designedProductRepository.findById(designId)
-               .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-       designedProductRepository.delete(designedProduct);
-    }
 }
