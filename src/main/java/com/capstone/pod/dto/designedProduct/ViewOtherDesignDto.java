@@ -1,6 +1,7 @@
 package com.capstone.pod.dto.designedProduct;
 
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
+import com.capstone.pod.dto.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

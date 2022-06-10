@@ -86,7 +86,7 @@ public class DesignedProductController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @GetMapping("/view/{userId}")
-    public ResponseEntity<ResponseDto> viewOtherDesigned(@RequestParam int pageNumber, @RequestParam int pageSize,  @PathVariable int userId) {
+    public ResponseEntity<ResponseDto> viewOtherDesigned(@RequestParam Integer pageNumber, @RequestParam Integer pageSize,  @PathVariable(name = "userId") Integer userId) {
         ResponseDto<Page<ViewOtherDesignDto>> responseDto = new ResponseDto();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         responseDto.setData(designedProductService.viewDesignOfOthersByUserId(pageable, userId));
