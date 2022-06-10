@@ -32,14 +32,71 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final CredentialRepository credentialRepository;
 
 
-    private  boolean isPermittedUser(int designId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int currentCredentialId = (Integer)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId)
-                .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
-        DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        if(designedProduct.getUser().getId() == credential.getUser().getId()) return true;
-        return false;
+//        for (Map.Entry<Integer, List<DesignedProductDetailDTO>> designProductDetail : mapByDesignProducts.entrySet()) {
+//
+//            DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+//                .id(designProductDetail.getKey())
+//                .rate(designProductDetail.getValue().get(0).getRate())
+//                .name(designProductDetail.getValue().get(0).getName())
+//                .image(designProductDetail.getValue().get(0).getImage())
+//                .designedPrice(designProductDetail.getValue().get(0).getDesignedPrice())
+//                .tags(designProductDetail.getValue().stream().map(d -> d.getTag()).collect(Collectors.toList()))
+//                .build();
+//
+//            result.add(designedProductDTO);
+//        }
+    }
+
+    @Override
+    public List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId) {
+        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
+        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+
+    }
+
+
+
+    private List<DesignedProductDTO> calculate4HighestRateDesignedProduct(List<DesignedProductDetailDTO> designedProductDetailDTOS){
+        List<DesignedProductDTO> result = new ArrayList<>();
+
+        for (var designProductDetail : designedProductDetailDTOS) {
+            if (result.size() == 5) return result.subList(0 , 4);
+            if(result.size() == 0){
+                DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+                    .id(designProductDetail.getId())
+                    .rate(designProductDetail.getRate())
+                    .name(designProductDetail.getName())
+                    .image(designProductDetail.getImage())
+                    .designedPrice(designProductDetail.getDesignedPrice())
+                    .tags(new ArrayList<>())
+                    .build();
+                if(null != designProductDetail.getTag()){
+                    designedProductDTO.getTags().add(designProductDetail.getTag());
+                }
+                result.add(designedProductDTO);
+            }
+            else {
+                var currentDesign = result.get(result.size() - 1);
+                if (designProductDetail.getId() == currentDesign.getId()) {
+                    currentDesign.getTags().add(designProductDetail.getTag());
+                } else {
+                    DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+                        .id(designProductDetail.getId())
+                        .rate(designProductDetail.getRate() == null ? 0 : designProductDetail.getRate())
+                        .name(designProductDetail.getName())
+                        .image(designProductDetail.getImage())
+                        .designedPrice(designProductDetail.getDesignedPrice())
+                        .tags(new ArrayList<>())
+                        .build();
+                    if(null != designProductDetail.getTag()){
+                        designedProductDTO.getTags().add(designProductDetail.getTag());
+                    }
+                    result.add(designedProductDTO);
+                }
+            }
+
+        }
+        return result;
     }
     @Override
     public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
