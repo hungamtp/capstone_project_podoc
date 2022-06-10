@@ -4,13 +4,16 @@ import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
-import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.*;
-import com.capstone.pod.exceptions.*;
-import com.capstone.pod.repositories.*;
+import com.capstone.pod.exceptions.CredentialNotFoundException;
+import com.capstone.pod.exceptions.DesignedProductNotExistException;
+import com.capstone.pod.exceptions.PermissionException;
+import com.capstone.pod.exceptions.ProductNotFoundException;
+import com.capstone.pod.repositories.CredentialRepository;
+import com.capstone.pod.repositories.DesignedProductRepository;
+import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.DesignedProductService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
@@ -19,9 +22,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +30,15 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
     private final CredentialRepository credentialRepository;
-
-
     @Override
     public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
+        List<ImagePreview> imagePreviews = new ArrayList<>();
+        for (int i = 0; i < dto.getImagePreviews().size(); i++) {
+            imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i)).build());
+        }
+        designedProduct.setImagePreviews(imagePreviews);
         designedProduct.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
@@ -71,14 +74,16 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
     }
 
-
-
-
     @Override
     public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
+        List<ImagePreview> imagePreviews = new ArrayList<>();
+        for (int i = 0; i < dto.getImagePreviews().size(); i++) {
+            imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i)).build());
+        }
+        designedProductInRepo.setImagePreviews(imagePreviews);
         designedProductInRepo.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
@@ -183,7 +188,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     public List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId) {
         List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
         return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
-
     }
 
 

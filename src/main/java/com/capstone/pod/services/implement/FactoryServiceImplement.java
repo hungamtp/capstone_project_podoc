@@ -30,7 +30,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class FactoryServiceImplement implements FactoryService {
-    private final FactoryRepository factoryRepository;
+    private final FactoryRepository factoryRepository;zO
     private final CredentialRepository credentialRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
