@@ -13,7 +13,7 @@ public class FactoryProductDetailDTO {
     private int id;
     private String name;
     private String location;
-    private float price;
+    private double price;
     private List<String> sizes;
     private List<String> area;
     private List<String> colors;

@@ -14,7 +14,6 @@ import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -127,6 +126,8 @@ public class ProductServiceImplement implements ProductService {
         Map<Factory , List<SizeColorByFactory>> groupSizeColorByFactory = sizeColorByFactoryList.stream()
             .collect(groupingBy(SizeColorByFactory::getFactory));
 
+        Map<Factory , List<PriceByFactory>> groupPriceByFactory = product.getPriceByFactories().stream()
+            .collect(groupingBy(PriceByFactory::getFactory));
         List<FactoryProductDetailDTO> factories = new ArrayList<>();
         for(var factoryEntry  : groupSizeColorByFactory.entrySet()){
             var factory  = factoryEntry.getKey();
@@ -135,6 +136,7 @@ public class ProductServiceImplement implements ProductService {
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
+                    .price(groupPriceByFactory.get(factoryEntry.getKey()).isEmpty() ? 0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
                     .area(product.getProductBluePrints().stream().map(ProductBluePrint::getPosition).collect(Collectors.toList()))
                     .sizes(groupSizeColorByFactory.get(factoryEntry.getKey())
                         .stream().map(sizeColor  -> sizeColor.getSizeColor().getSize().getName())
