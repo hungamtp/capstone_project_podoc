@@ -12,6 +12,7 @@ import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
+import com.capstone.pod.repositories.ProductBluePrintRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+    private final ProductBluePrintRepository productBluePrintRepository;
 
     private final FactoryConverter factoryConverter;
 
@@ -112,7 +114,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDetailDto getProductById(Integer productId) {
+    public ProductDetailDto getProductById(int productId) {
         Product product = productRepository.findById(productId).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if (!product.isPublic() || product.isDeleted()) {
@@ -174,8 +176,15 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto getProductByIdAdmin(Integer productId) {
+    public ProductDto getProductByIdAdmin(int productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         return modelMapper.map(product,ProductDto.class);
+    }
+
+    @Override
+    public List<ProductBluePrintDto> getProductBluePrintByProductId(int productId) {
+        productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        List<ProductBluePrint> productBluePrintDtos = productBluePrintRepository.getAllByProductId(productId);
+        return productBluePrintDtos.stream().map(blueprint -> modelMapper.map(blueprint,ProductBluePrintDto.class)).collect(Collectors.toList());
     }
 }

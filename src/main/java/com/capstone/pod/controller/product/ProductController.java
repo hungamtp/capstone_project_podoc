@@ -4,10 +4,7 @@ import com.capstone.pod.constant.product.ProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
-import com.capstone.pod.dto.product.AddProductDto;
-import com.capstone.pod.dto.product.ProductDetailDto;
-import com.capstone.pod.dto.product.ProductDto;
-import com.capstone.pod.dto.product.UpdateProductDto;
+import com.capstone.pod.dto.product.*;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -85,6 +83,13 @@ public class ProductController {
         ResponseDto<ProductDetailDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductById(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @GetMapping("design/{id}")
+    public ResponseEntity<ResponseDto> getBluePrintByProductId(@PathVariable(name = "id") int productId){
+        ResponseDto<List<ProductBluePrintDto>> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.getProductBluePrintByProductId(productId));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.GET_BLUEPRINTS_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/admin/{id}")
