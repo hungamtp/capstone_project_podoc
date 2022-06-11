@@ -3,6 +3,7 @@ package com.capstone.pod.controller.category;
 import com.capstone.pod.constant.category.CategorySuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.category.CategoryDto;
+import com.capstone.pod.dto.category.CategoryHomePageDto;
 import com.capstone.pod.dto.category.UpdateCategoryDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.services.CategoryService;
@@ -14,10 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("category")
 @RequiredArgsConstructor
-@PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
 public class CategoryController {
     private final CategoryService categoryService;
     @GetMapping
@@ -51,6 +53,14 @@ public class CategoryController {
         CategoryDto categoryDtoPage= categoryService.deleteCategory(categoryId);
         responseDto.setData(categoryDtoPage);
         responseDto.setSuccessMessage(CategorySuccessMessage.DELETE_CATEGORY_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseDto> getAllCategoryProductDetail(){
+        ResponseDto<List<CategoryHomePageDto>> responseDto = new ResponseDto();
+        responseDto.setData(categoryService.getAllCategory());
+        responseDto.setSuccessMessage(CategorySuccessMessage.GET_ALL_CATEGORY_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
 }
