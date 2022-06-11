@@ -32,6 +32,7 @@ public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final ModelMapper modelMapper;
+
     private final FactoryConverter factoryConverter;
 
     @Override
@@ -111,7 +112,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDetailDTO getProductById(Integer productId) {
+    public ProductDetailDto getProductById(Integer productId) {
         Product product = productRepository.findById(productId).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if (!product.isPublic() || product.isDeleted()) {
@@ -127,6 +128,8 @@ public class ProductServiceImplement implements ProductService {
         Map<Factory , List<SizeColorByFactory>> groupSizeColorByFactory = sizeColorByFactoryList.stream()
             .collect(groupingBy(SizeColorByFactory::getFactory));
 
+        Map<Factory , List<PriceByFactory>> groupPriceByFactory = product.getPriceByFactories().stream()
+            .collect(groupingBy(PriceByFactory::getFactory));
         List<FactoryProductDetailDTO> factories = new ArrayList<>();
         Double highestPrice = 0.0;
         Double lowestPrice = 0.0;
@@ -145,7 +148,7 @@ public class ProductServiceImplement implements ProductService {
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
-                    .price(price)
+                    .price(groupPriceByFactory.get(factoryEntry.getKey()).isEmpty() ? 0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
                     .area(product.getProductBluePrints().stream().map(ProductBluePrint::getPosition).collect(Collectors.toList()))
                     .sizes(groupSizeColorByFactory.get(factoryEntry.getKey())
                         .stream().map(sizeColor -> sizeColor.getSizeColor().getSize().getName())
@@ -156,7 +159,7 @@ public class ProductServiceImplement implements ProductService {
                     .build();
             factories.add(factoryProductDetailDTO);
         }
-        return ProductDetailDTO.builder()
+        return ProductDetailDto.builder()
             .id(product.getId())
             .name(product.getName())
             .description(product.getDescription())

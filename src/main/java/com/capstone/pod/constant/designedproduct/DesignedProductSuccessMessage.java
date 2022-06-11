@@ -8,4 +8,5 @@ public final class DesignedProductSuccessMessage {
     public static final String UPDATE_DESIGNED_PRODUCT_PRICE_SUCCESS="Update design price successfully";
     public static final String PUBLISH_DESIGNED_PRODUCT_SUCCESS="Publish design successfully";
     public static final String UN_PUBLISH_DESIGNED_PRODUCT_SUCCESS="Un-publish design successfully";
+    public static final String VIEW_OTHERS_DESIGNED_PRODUCT_SUCCESS="View others design successfully";
 }

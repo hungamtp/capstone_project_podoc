@@ -4,18 +4,19 @@ import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.*;
-import com.capstone.pod.exceptions.CredentialNotFoundException;
-import com.capstone.pod.exceptions.DesignedProductNotExistException;
-import com.capstone.pod.exceptions.PermissionException;
-import com.capstone.pod.exceptions.ProductNotFoundException;
+import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.DesignedProductRepository;
 import com.capstone.pod.repositories.ProductRepository;
+import com.capstone.pod.repositories.UserRepository;
 import com.capstone.pod.services.DesignedProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
     private final CredentialRepository credentialRepository;
+    private final UserRepository userRepository;
     @Override
     public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
@@ -152,6 +154,14 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setDesignedPrice(dto.getPrice());
         return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+    }
+
+    @Override
+    public Page<ViewOtherDesignDto> viewDesignOfOthersByUserId(Pageable page, int userId) {
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page,userId);
+        Page<ViewOtherDesignDto> viewOtherDesignDtoPage = designedProductPage.map(designedProduct -> modelMapper.map(designedProduct,ViewOtherDesignDto.class));
+        return viewOtherDesignDtoPage;
     }
 
     @Override
