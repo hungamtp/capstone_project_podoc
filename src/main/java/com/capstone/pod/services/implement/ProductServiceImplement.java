@@ -131,8 +131,8 @@ public class ProductServiceImplement implements ProductService {
         Map<Factory , List<PriceByFactory>> groupPriceByFactory = product.getPriceByFactories().stream()
             .collect(groupingBy(PriceByFactory::getFactory));
         List<FactoryProductDetailDTO> factories = new ArrayList<>();
-        Double highestPrice = 0.0;
-        Double lowestPrice = 0.0;
+        Double highestPrice = Double.MIN_VALUE;
+        Double lowestPrice = Double.MAX_VALUE;
         for (var factoryEntry : groupSizeColorByFactory.entrySet()) {
             var factory = factoryEntry.getKey();
             var factoryPrice = product.getPriceByFactories().stream()
@@ -140,7 +140,8 @@ public class ProductServiceImplement implements ProductService {
             Double price = factoryPrice.size() == 0 ? 0 : factoryPrice.get(0).getPrice();
             if (price > highestPrice) {
                 highestPrice = price;
-            } else if (price < lowestPrice) {
+            }
+            if (price < lowestPrice) {
                 lowestPrice = price;
             }
             FactoryProductDetailDTO factoryProductDetailDTO =
@@ -152,10 +153,10 @@ public class ProductServiceImplement implements ProductService {
                     .area(product.getProductBluePrints().stream().map(ProductBluePrint::getPosition).collect(Collectors.toList()))
                     .sizes(groupSizeColorByFactory.get(factoryEntry.getKey())
                         .stream().map(sizeColor -> sizeColor.getSizeColor().getSize().getName())
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList()))
                     .colors(groupSizeColorByFactory.get(factoryEntry.getKey())
-                        .stream().map(sizeColor -> sizeColor.getSizeColor().getColor().getName())
-                        .collect(Collectors.toList()))
+                        .stream().distinct().map(sizeColor -> sizeColor.getSizeColor().getColor().getImageColor())
+                        .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList()))
                     .build();
             factories.add(factoryProductDetailDTO);
         }
