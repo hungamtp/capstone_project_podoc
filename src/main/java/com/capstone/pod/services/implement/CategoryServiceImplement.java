@@ -2,6 +2,7 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.dto.category.CategoryDto;
+import com.capstone.pod.dto.category.CategoryHomePageDto;
 import com.capstone.pod.dto.category.UpdateCategoryDto;
 import com.capstone.pod.entities.Category;
 import com.capstone.pod.exceptions.CategoryExistedException;
@@ -14,7 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -52,5 +55,13 @@ public class CategoryServiceImplement implements CategoryService {
         category.setImage(categoryDto.getImage());
         category.setName(categoryDto.getName());
         return modelMapper.map(categoryRepository.save(category),CategoryDto.class);
+    }
+
+    @Override
+    public List<CategoryHomePageDto> getAllCategory() {
+        List<Category> categories= categoryRepository.findAllByIsDeletedFalse();
+        List<CategoryHomePageDto> categoryDtoPage = categories.stream().map(
+            cate->modelMapper.map(cate,CategoryHomePageDto.class)).collect(Collectors.toList());
+        return categoryDtoPage;
     }
 }
