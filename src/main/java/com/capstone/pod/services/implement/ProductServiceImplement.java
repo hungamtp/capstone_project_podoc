@@ -14,7 +14,6 @@ import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -83,6 +82,7 @@ public class ProductServiceImplement implements ProductService {
                 .categoryName(product.getCategory().getName())
                 .numberOfColor(product.getSizeColors().stream().map(SizeColor::getColor).distinct().collect(Collectors.toList()).size())
                 .numberOfSize(product.getSizeColors().stream().map(SizeColor::getSize).distinct().collect(Collectors.toList()).size())
+                .numberOfFactory(product.getPriceByFactories().size())
                 .build();
             productDto.setProductImages(product.getProductImages().stream().map(img -> ProductImagesDto.builder().image(img.getImage()).build()).collect(Collectors.toList()));
             productDto.setTags(product.getProductTags().stream().map(tag -> ProductTagDto.builder().tag(TagDto.builder().name(tag.getTag().getName()).build()).build()).collect(Collectors.toList()));
@@ -128,19 +128,30 @@ public class ProductServiceImplement implements ProductService {
             .collect(groupingBy(SizeColorByFactory::getFactory));
 
         List<FactoryProductDetailDTO> factories = new ArrayList<>();
-        for(var factoryEntry  : groupSizeColorByFactory.entrySet()){
-            var factory  = factoryEntry.getKey();
+        Double highestPrice = 0.0;
+        Double lowestPrice = 0.0;
+        for (var factoryEntry : groupSizeColorByFactory.entrySet()) {
+            var factory = factoryEntry.getKey();
+            var factoryPrice = product.getPriceByFactories().stream()
+                .filter(f -> f.getFactory().getId() == factoryEntry.getKey().getId()).collect(Collectors.toList());
+            Double price = factoryPrice.size() == 0 ? 0 : factoryPrice.get(0).getPrice();
+            if (price > highestPrice) {
+                highestPrice = price;
+            } else if (price < lowestPrice) {
+                lowestPrice = price;
+            }
             FactoryProductDetailDTO factoryProductDetailDTO =
                 FactoryProductDetailDTO.builder()
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
+                    .price(price)
                     .area(product.getProductBluePrints().stream().map(ProductBluePrint::getPosition).collect(Collectors.toList()))
                     .sizes(groupSizeColorByFactory.get(factoryEntry.getKey())
-                        .stream().map(sizeColor  -> sizeColor.getSizeColor().getSize().getName())
+                        .stream().map(sizeColor -> sizeColor.getSizeColor().getSize().getName())
                         .collect(Collectors.toList()))
                     .colors(groupSizeColorByFactory.get(factoryEntry.getKey())
-                        .stream().map(sizeColor  -> sizeColor.getSizeColor().getColor().getName())
+                        .stream().map(sizeColor -> sizeColor.getSizeColor().getColor().getName())
                         .collect(Collectors.toList()))
                     .build();
             factories.add(factoryProductDetailDTO);
@@ -151,6 +162,8 @@ public class ProductServiceImplement implements ProductService {
             .description(product.getDescription())
             .images(product.getProductImages().stream().map(ProductImages::getImage).collect(Collectors.toList()))
             .tags(product.getProductTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toList()))
+            .lowestPrice(lowestPrice)
+            .highestPrice(highestPrice)
             .factories(
                 factories)
             .build();
