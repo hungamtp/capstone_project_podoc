@@ -14,8 +14,11 @@ public class ProductDetailDto {
     private int id;
     private String name;
     private String description;
+    private Double lowestPrice;
+    private Double highestPrice;
     private List<String> images;
     private String categoryName;
     private List<String> tags;
     private List<FactoryProductDetailDTO> factories;
+
 }
