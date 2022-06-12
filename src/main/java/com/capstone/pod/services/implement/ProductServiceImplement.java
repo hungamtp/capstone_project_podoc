@@ -13,6 +13,7 @@ import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
 import com.capstone.pod.repositories.ProductBluePrintRepository;
+import com.capstone.pod.repositories.ProductImagesRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class ProductServiceImplement implements ProductService {
     private final ModelMapper modelMapper;
     private final ProductBluePrintRepository productBluePrintRepository;
 
+    private final ProductImagesRepository productImagesRepository;
     private final FactoryConverter factoryConverter;
 
     @Override
@@ -57,6 +59,7 @@ public class ProductServiceImplement implements ProductService {
     public ProductDto updateProduct(UpdateProductDto productDto,int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
+        productImagesRepository.deleteAll(productInRepo.getProductImages());
         List<ProductImages> imagesList = new ArrayList<>();
         for (int i = 0; i < productDto.getImages().size(); i++) {
             imagesList.add(ProductImages.builder().product(productInRepo).image(productDto.getImages().get(i)).build());
