@@ -79,12 +79,14 @@ public class ProductServiceImplement implements ProductService {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
         List<GetAllProductDto> dtos = new ArrayList<>();
         for(var product : pageProduct){
+            var priceList = product.getPriceByFactories();
             GetAllProductDto productDto = GetAllProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .categoryName(product.getCategory().getName())
                 .numberOfColor(product.getSizeColors().stream().map(SizeColor::getColor).distinct().collect(Collectors.toList()).size())
                 .numberOfSize(product.getSizeColors().stream().map(SizeColor::getSize).distinct().collect(Collectors.toList()).size())
+                .priceFrom(priceList.size() == 0 ? 0 : priceList.stream().min(Comparator.comparingDouble(PriceByFactory::getPrice)).get().getPrice())
                 .numberOfFactory(product.getPriceByFactories().size())
                 .build();
             productDto.setProductImages(product.getProductImages().stream().map(img -> ProductImagesDto.builder().image(img.getImage()).build()).collect(Collectors.toList()));
