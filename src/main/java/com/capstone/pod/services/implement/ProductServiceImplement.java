@@ -76,6 +76,12 @@ public class ProductServiceImplement implements ProductService {
         product.setPublic(true);
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
+    @Override
+    public ProductDto unPublishProduct(int productId) {
+        Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        product.setPublic(false);
+        return modelMapper.map(productRepository.save(product),ProductDto.class);
+    }
 
     @Override
     public PageDTO getAllProducts(Specification<Product> specification, Pageable pageable) {

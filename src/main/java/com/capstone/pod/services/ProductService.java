@@ -17,6 +17,7 @@ public interface ProductService {
 
       ProductDto updateProduct(UpdateProductDto dto, int productId);
       ProductDto publishProduct(int productId);
+      ProductDto unPublishProduct(int productId);
       ProductDto deleteProduct(int productId);
 
       ProductDetailDto getProductById(int id);

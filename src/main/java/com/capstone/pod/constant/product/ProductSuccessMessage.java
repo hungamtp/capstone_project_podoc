@@ -8,4 +8,5 @@ public final class ProductSuccessMessage {
     public static final String GET_PRODUCT_BY_ID_SUCCESS = "Get product by id successfully";
     public static final String DELETE_PRODUCT_SUCCESS = "Delete product successfully";
     public static final String PUBLISH_PRODUCT_SUCCESS = "Publish product successfully";
+    public static final String UN_PUBLISH_PRODUCT_SUCCESS = "Un-publish product successfully";
 }

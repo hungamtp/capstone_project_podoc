@@ -116,5 +116,13 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.PUBLISH_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PatchMapping("/un-publish/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> unPublishProduct(@PathVariable(name="id") int productId){
+        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.unPublishProduct(productId));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.UN_PUBLISH_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 }
