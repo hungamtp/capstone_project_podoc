@@ -20,4 +20,5 @@ public class GetAllProductDto {
     private int numberOfSize;
     private int numberOfColor;
     private int numberOfFactory;
+    private Double priceFrom;
 }
