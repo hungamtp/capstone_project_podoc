@@ -5,6 +5,7 @@ import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.converter.FactoryConverter;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.factory.FactoryProductDetailDTO;
+import com.capstone.pod.dto.placeholder.PlaceHolderDto;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.tag.TagDto;
 import com.capstone.pod.entities.*;
@@ -196,6 +197,6 @@ public class ProductServiceImplement implements ProductService {
     public List<ProductBluePrintDto> getProductBluePrintByProductId(int productId) {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ProductBluePrint> productBluePrintDtos = productBluePrintRepository.getAllByProductId(productId);
-        return productBluePrintDtos.stream().map(blueprint -> modelMapper.map(blueprint,ProductBluePrintDto.class)).collect(Collectors.toList());
+        return productBluePrintDtos.stream().map(blueprint -> ProductBluePrintDto.builder().frameImage(blueprint.getFrameImage()).position(blueprint.getPosition()).placeHolder(PlaceHolderDto.builder().height(blueprint.getPlaceHolderHeight()).width(blueprint.getPlaceHolderWidth()).build()).build()).collect(Collectors.toList());
     }
 }
