@@ -163,7 +163,9 @@ public class ProductServiceImplement implements ProductService {
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
-                    .price(groupPriceByFactory.get(factoryEntry.getKey()).isEmpty() ? 0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
+                    .price(
+                        (groupPriceByFactory.get(factoryEntry.getKey()) != null &&  groupPriceByFactory.get(factoryEntry.getKey()).isEmpty() ) ?
+                            0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
                     .area(product.getProductBluePrints().stream().map(ProductBluePrint::getPosition).collect(Collectors.toList()))
                     .sizes(groupSizeColorByFactory.get(factoryEntry.getKey())
                         .stream().map(sizeColor -> sizeColor.getSizeColor().getSize().getName())
