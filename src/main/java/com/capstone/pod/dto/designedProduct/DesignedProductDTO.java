@@ -17,4 +17,6 @@ public class DesignedProductDTO {
     private double designedPrice;
     private double rate;
     private List<String> tags = new ArrayList<>();
+    private Integer userId;
+    private String username;
 }
