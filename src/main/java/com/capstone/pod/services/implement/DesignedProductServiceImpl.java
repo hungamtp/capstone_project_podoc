@@ -215,6 +215,8 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                     .image(designProductDetail.getImage())
                     .designedPrice(designProductDetail.getDesignedPrice())
                     .tags(new ArrayList<>())
+                    .userId(designProductDetail.getUserId())
+                    .username(designProductDetail.getUsername())
                     .build();
                 if(null != designProductDetail.getTag()){
                     designedProductDTO.getTags().add(designProductDetail.getTag());
@@ -233,6 +235,8 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .image(designProductDetail.getImage())
                         .designedPrice(designProductDetail.getDesignedPrice())
                         .tags(new ArrayList<>())
+                        .userId(designProductDetail.getUserId())
+                        .username(designProductDetail.getUsername())
                         .build();
                     if(null != designProductDetail.getTag()){
                         designedProductDTO.getTags().add(designProductDetail.getTag());

@@ -14,6 +14,8 @@ public class DesignedProductDetailDTO {
     private Double designedPrice;
     private Double rate;
     private String tag;
+    private Integer userId;
+    private String username;
 
 }
 
