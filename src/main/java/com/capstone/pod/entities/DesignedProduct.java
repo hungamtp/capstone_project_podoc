@@ -19,6 +19,7 @@ public class DesignedProduct  extends Auditable {
     @Id
     private int id;
     private String name;
+    private String description;
     private double designedPrice;
     private boolean publish;
 

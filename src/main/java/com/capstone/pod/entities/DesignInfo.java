@@ -24,6 +24,8 @@ public class DesignInfo {
     private double y;
     private double rotate;
     private double scales;
+    private String font;
+    private String textColor;
     private String src;
     @ManyToOne
     BluePrint bluePrint;

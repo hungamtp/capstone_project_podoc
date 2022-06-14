@@ -138,7 +138,6 @@ public class ProductServiceImplement implements ProductService {
                 sizeColorByFactoryList.add(sizeColorByFactory);
             }
         }
-
         Map<Factory , List<SizeColorByFactory>> groupSizeColorByFactory = sizeColorByFactoryList.stream()
             .collect(groupingBy(SizeColorByFactory::getFactory));
 

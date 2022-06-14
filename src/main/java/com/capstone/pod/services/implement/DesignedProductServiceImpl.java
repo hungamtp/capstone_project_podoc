@@ -36,6 +36,8 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
+        designedProduct.setDescription(dto.getDescription());
+        designedProduct.setName(dto.getName());
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
             imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
@@ -67,6 +69,8 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
                         .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                         .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
+                        .font(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getFont())
+                        .textColor(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTextColor())
                         .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
                         .build();
                 bluePrint.getDesignInfos().add(designInfo);

@@ -22,5 +22,4 @@ public class ProductDetailDto {
     private String categoryName;
     private List<String> tags;
     private List<FactoryProductDetailDTO> factories;
-
 }

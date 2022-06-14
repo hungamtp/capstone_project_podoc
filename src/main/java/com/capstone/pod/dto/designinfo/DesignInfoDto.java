@@ -18,5 +18,7 @@ public class DesignInfoDto {
     private double y;
     private double rotate;
     private double scales;
+    private String font;
+    private String textColor;
     private String src;
 }
