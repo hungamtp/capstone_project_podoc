@@ -5,7 +5,10 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.*;
+import com.capstone.pod.dto.sizecolor.SizeColorDto;
+import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
 import com.capstone.pod.services.ProductService;
+import com.capstone.pod.services.SizeColorService;
 import com.capstone.pod.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +30,7 @@ import java.util.Optional;
 @RequestMapping("product")
 public class ProductController {
     private final ProductService productService;
+    private final SizeColorService sizeColorService;
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> addProduct(@Validated @RequestBody AddProductDto addProductDto){
@@ -124,5 +128,13 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.UN_PUBLISH_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
+    @PostMapping("/size-color/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> addSizeColorToProduct(@PathVariable(name = "id") int id, @Validated @RequestBody SizeColorDto dto){
+        ResponseDto<List<SizeColorReturnDto>> responseDto = new ResponseDto();
+        List<SizeColorReturnDto> sizeColorDtos = sizeColorService.addSizeColor(id, dto);
+        responseDto.setData(sizeColorDtos);
+        responseDto.setSuccessMessage(ProductSuccessMessage.ADD_SIZE_COLOR_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
 }

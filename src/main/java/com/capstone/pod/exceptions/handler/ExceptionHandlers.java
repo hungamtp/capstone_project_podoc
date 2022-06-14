@@ -45,6 +45,18 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = ColorNotFoundException.class)
+    public ResponseEntity<Object>colorNotFoundException(ColorNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = SizeNotFoundException.class)
+    public ResponseEntity<Object> sizeNotException(SizeNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
 
     @ExceptionHandler(value = {UsernameNotFoundException.class})
     public ResponseEntity<Object> usernameNotFoundException(UsernameNotFoundException exception) {
