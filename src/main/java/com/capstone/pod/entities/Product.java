@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Builder
@@ -39,7 +40,7 @@ public class Product extends Auditable {
     private Collection<ProductImages> productImages;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    private Collection<SizeColor> sizeColors;
+    private List<SizeColor> sizeColors;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
     private Collection<ProductTag> productTags;

@@ -54,14 +54,16 @@ public class SizeColorServiceImplement implements SizeColorService {
                    sizeColors.add(sizeColor);
             }
         }
-        List sizeColorByProduct = Arrays.stream(product.getSizeColors().toArray()).collect(Collectors.toList());
-        for (int i = 0; i < sizeColors.size(); i++) {
-            if(sizeColorByProduct.get(i).equals(sizeColors.get(i))){
-            sizeColors.remove(i);
+        List<SizeColor> productSizeColorList = product.getSizeColors();
+        for (int i = 0; i < product.getSizeColors().size(); i++) {
+            for (int j = 0; j < sizeColors.size(); j++) {
+                if(productSizeColorList.get(i).getSize().getName().equals(sizeColors.get(j).getSize().getName())
+                        && productSizeColorList.get(i).getColor().getName().equals(sizeColors.get(j).getColor().getName())){
+                    sizeColors.remove(j);
+                }
             }
         }
-        product.setSizeColors(sizeColors);
-        productRepository.save(product);
+        sizeColorRepository.saveAll(sizeColors);
        return sizeColors.stream().map(sizeColor ->  modelMapper.map(sizeColor,SizeColorReturnDto.class)).collect(Collectors.toList());
     }
 
