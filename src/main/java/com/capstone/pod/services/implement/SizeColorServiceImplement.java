@@ -50,7 +50,7 @@ public class SizeColorServiceImplement implements SizeColorService {
         List<SizeColor> sizeColors = new ArrayList<>();
         for (int i = 0; i < colors.size(); i++) {
             for (int j = 0; j < sizes.size(); j++) {
-                SizeColor sizeColor = SizeColor.builder().product(product).color(colors.get(i)).size(sizes.get(j)).build();
+                SizeColor sizeColor = SizeColor.builder().id(1000+i).product(product).color(colors.get(i)).size(sizes.get(j)).build();
                    sizeColors.add(sizeColor);
             }
         }
