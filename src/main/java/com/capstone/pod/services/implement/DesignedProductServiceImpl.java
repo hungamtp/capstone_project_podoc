@@ -221,6 +221,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                     .tags(new ArrayList<>())
                     .userId(designProductDetail.getUserId())
                     .username(designProductDetail.getUsername())
+                    .soldCount(designProductDetail.getSoldCount() == null ? 0 :designProductDetail.getSoldCount() )
                     .build();
                 if(null != designProductDetail.getTag()){
                     designedProductDTO.getTags().add(designProductDetail.getTag());
@@ -241,6 +242,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .tags(new ArrayList<>())
                         .userId(designProductDetail.getUserId())
                         .username(designProductDetail.getUsername())
+                        .soldCount(designProductDetail.getSoldCount() == null ? 0 :designProductDetail.getSoldCount() )
                         .build();
                     if(null != designProductDetail.getTag()){
                         designedProductDTO.getTags().add(designProductDetail.getTag());
