@@ -27,7 +27,8 @@ public class Color {
     private String imageColor;
     @OneToMany(mappedBy = "color")
     private Collection<SizeColor> sizeColors;
-
+    @ManyToOne
+    private DesignedProduct designedProduct;
 
 
 }

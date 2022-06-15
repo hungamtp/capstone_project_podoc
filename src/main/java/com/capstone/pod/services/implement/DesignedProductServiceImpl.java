@@ -38,6 +38,12 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
         designedProduct.setDescription(dto.getDescription());
         designedProduct.setName(dto.getName());
+        List<Color> colors = new ArrayList<>();
+        for (int i = 0; i < dto.getColors().size(); i++) {
+            Color color = Color.builder().name(dto.getColors().get(i)).build();
+            colors.add(color);
+        }
+        designedProduct.setColors(colors);
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
             imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
@@ -89,6 +95,15 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
             imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
         }
+
+        designedProductInRepo.setDescription(dto.getDescription());
+        designedProductInRepo.setName(dto.getName());
+        List<Color> colors = new ArrayList<>();
+        for (int i = 0; i < dto.getColors().size(); i++) {
+            Color color = Color.builder().name(dto.getColors().get(i)).build();
+            colors.add(color);
+        }
+        designedProductInRepo.setColors(colors);
         designedProductInRepo.setImagePreviews(imagePreviews);
         designedProductInRepo.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {

@@ -21,6 +21,8 @@ public class DesignedProductSaveDto {
     private double designedPrice;
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
+    @NotNull(message = ValidationMessage.COLOR_VALID_MESSAGE)
+    private List<String> colors;
     @NotBlank(message = ValidationMessage.PRODUCT_DESCRIPTION_VALID_MESSAGE)
     private String description;
     @NotNull(message = ValidationMessage.DESIGNED_PRODUCT_VALID_MESSAGE)

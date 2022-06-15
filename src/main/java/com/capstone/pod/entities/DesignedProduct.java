@@ -23,8 +23,12 @@ public class DesignedProduct  extends Auditable {
     private double designedPrice;
     private boolean publish;
 
+
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<BluePrint> bluePrints;
+
+    @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
+    Collection<Color> colors;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<ImagePreview> imagePreviews;
