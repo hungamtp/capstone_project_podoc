@@ -32,5 +32,5 @@ public class Factory{
     private Collection<PriceByFactory> priceByFactories;
 
     @OneToMany(mappedBy = "factory",cascade = CascadeType.ALL)
-    private Collection<Orders> orders;
+    private Collection<OrderDetail> orderDetails;
 }

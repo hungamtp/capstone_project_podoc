@@ -9,15 +9,16 @@ Insert into hibernate_sequence values(1);
 
 INSERT INTO `category` VALUES (1,'1',0,'Áo thun'),(2,'1',0,'Áo ba lỗ'),(3,'1',0,'Áo dài tay'),(4,'1',0,'Áo hoodies');
 
-INSERT INTO `color` VALUES (1,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fblack.webp?alt=media&token=00cc21bc-66d5-48b0-809c-b63e845eff5a','Trắng'),
-                           (2,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fwhite.png?alt=media&token=8239b14a-151b-4726-a9d1-1334eaeb82e3','Đen'),
-                           (3,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fred.jpg?alt=media&token=4ad0c9de-27cd-4b71-9738-4fc3813b6d0d','Đỏ'),
-                           (4,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fyellow.png?alt=media&token=5b62f057-36a7-46be-9897-72fddaf39214','Vàng'),
-                           (5,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fhinh-nen-mau-tim-don-gian.jpg?alt=media&token=f2704e0d-ab41-4a14-b7a8-878da10ff991','Tím'),
-                           (6,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fblue.jpg?alt=media&token=908682cc-bbfb-4b37-8857-5a3266c0d4eb','Xanh dương'),
-                           (7,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fgreen.jpg?alt=media&token=8ccaa0b7-cedf-487d-a655-6890758e8540','Xanh lá cây'),
-                           (8,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fpink.jpg?alt=media&token=b9a91f1b-739f-4123-b5cf-6624d507669e','Hồng'),
-                           (9,'https://firebasestorage.googleapis.com/v0/b/assignment1-302217.appspot.com/o/color%2Fgray.png?alt=media&token=e42488b4-7fd0-4086-98c4-7e9a9f156fa5','Xám');
+INSERT INTO capstone_pod.color (id,image_color,name) VALUES
+                                                         (1,'white','Trắng'),
+                                                         (2,'black','Đen'),
+                                                         (3,'red','Đỏ'),
+                                                         (4,'yellow','Vàng'),
+                                                         (5,'purple','Tím'),
+                                                         (6,'blue','Xanh dương'),
+                                                         (7,'green','Xanh lá cây'),
+                                                         (8,'pink','Hồng'),
+                                                         (9,'gray','Xám');
 
 INSERT INTO `user` VALUES (4,'Duy',_binary '\0','Nguyen','ACTIVE'),(9,'Hiếu',_binary '\0','Nguyễn Minh','INACTIVE'),(11,'Sang',_binary '\0','Vũ Viết','ACTIVE'),(13,'Hưng',_binary '\0','Nguyễn Bá','ACTIVE'),(15,'Dương',_binary '\0','Nguyễn Hữu','ACTIVE'),(17,'Huy',_binary '\0','Đinh Quang','ACTIVE'),(19,'Duy',_binary '\0','Nguyễn Khánh','ACTIVE'),(21,'Son',_binary '\0','Tran Thanh','ACTIVE'),(26,'Duy',_binary '\0','Nguyen','ACTIVE'),(57,'Nguyen',_binary '\0','Thang','ACTIVE'),(59,'Dung',_binary '\0','Nguyen','ACTIVE'),(61,'vu',_binary '\0','sang','ACTIVE');
 

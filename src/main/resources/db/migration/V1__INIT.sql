@@ -196,6 +196,27 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
 
 
 -- -----------------------------------------------------
+-- Table `capstone_pod`.`design_color`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_color` (
+                                                             `id` INT NOT NULL,
+                                                             `color_id` INT NULL DEFAULT NULL,
+                                                             `designed_product_id` INT NULL DEFAULT NULL,
+                                                             PRIMARY KEY (`id`),
+                                                             INDEX `FKr3abfh8wr83cwh2squnq6btcp` (`color_id` ASC) VISIBLE,
+                                                             INDEX `FK8t1np3l29jjjscdvxy85m5a9y` (`designed_product_id` ASC) VISIBLE,
+                                                             CONSTRAINT `FK8t1np3l29jjjscdvxy85m5a9y`
+                                                                 FOREIGN KEY (`designed_product_id`)
+                                                                     REFERENCES `capstone_pod`.`designed_product` (`id`),
+                                                             CONSTRAINT `FKr3abfh8wr83cwh2squnq6btcp`
+                                                                 FOREIGN KEY (`color_id`)
+                                                                     REFERENCES `capstone_pod`.`color` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `capstone_pod`.`design_info`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
@@ -368,11 +389,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
                                                        `customer_name` VARCHAR(255) NULL DEFAULT NULL,
                                                        `phone` VARCHAR(255) NULL DEFAULT NULL,
                                                        `price` DOUBLE NOT NULL,
-                                                       `factory_id` INT NULL DEFAULT NULL,
                                                        `order_status_id` INT NULL DEFAULT NULL,
                                                        `user_id` INT NULL DEFAULT NULL,
                                                        PRIMARY KEY (`id`),
-                                                       INDEX `FKfgfi6frqfndwqc84l3s8v9mea` (`factory_id` ASC) VISIBLE,
                                                        INDEX `FK2n7p8t83wo7x0lep1q06a6cvy` (`order_status_id` ASC) VISIBLE,
                                                        INDEX `FKel9kyl84ego2otj2accfd8mr7` (`user_id` ASC) VISIBLE,
                                                        CONSTRAINT `FK2n7p8t83wo7x0lep1q06a6cvy`
@@ -380,10 +399,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
                                                                REFERENCES `capstone_pod`.`order_status` (`id`),
                                                        CONSTRAINT `FKel9kyl84ego2otj2accfd8mr7`
                                                            FOREIGN KEY (`user_id`)
-                                                               REFERENCES `capstone_pod`.`user` (`id`),
-                                                       CONSTRAINT `FKfgfi6frqfndwqc84l3s8v9mea`
-                                                           FOREIGN KEY (`factory_id`)
-                                                               REFERENCES `capstone_pod`.`factory` (`id`))
+                                                               REFERENCES `capstone_pod`.`user` (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
@@ -398,13 +414,18 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
                                                              `quantity` INT NOT NULL,
                                                              `size` VARCHAR(255) NULL DEFAULT NULL,
                                                              `designed_product_id` INT NULL DEFAULT NULL,
+                                                             `factory_id` INT NULL DEFAULT NULL,
                                                              `orders_id` INT NULL DEFAULT NULL,
                                                              PRIMARY KEY (`id`),
                                                              INDEX `FKrm4hw5w55k4634tlhnhyiciiv` (`designed_product_id` ASC) VISIBLE,
+                                                             INDEX `FKqj83wbodxud24dmcp8q7cftem` (`factory_id` ASC) VISIBLE,
                                                              INDEX `FK7xf2gmq3yok90kilflnu8aa7e` (`orders_id` ASC) VISIBLE,
                                                              CONSTRAINT `FK7xf2gmq3yok90kilflnu8aa7e`
                                                                  FOREIGN KEY (`orders_id`)
                                                                      REFERENCES `capstone_pod`.`orders` (`id`),
+                                                             CONSTRAINT `FKqj83wbodxud24dmcp8q7cftem`
+                                                                 FOREIGN KEY (`factory_id`)
+                                                                     REFERENCES `capstone_pod`.`factory` (`id`),
                                                              CONSTRAINT `FKrm4hw5w55k4634tlhnhyiciiv`
                                                                  FOREIGN KEY (`designed_product_id`)
                                                                      REFERENCES `capstone_pod`.`designed_product` (`id`))

@@ -9,21 +9,18 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Builder
-@Setter
 @Getter
+@Setter
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDetail {
+public class DesignColor {
     @Id
     @GeneratedValue
-    private String id;
-    private int quantity;
-    private String color;
-    private String size;
+    private int id;
+
     @ManyToOne
-    private Orders orders;
+    private Color color;
     @ManyToOne
     private DesignedProduct designedProduct;
-    @ManyToOne
-    private Factory factory;
 }
