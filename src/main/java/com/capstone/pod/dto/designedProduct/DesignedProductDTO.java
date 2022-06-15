@@ -19,4 +19,5 @@ public class DesignedProductDTO {
     private List<String> tags = new ArrayList<>();
     private Integer userId;
     private String username;
+    private Long soldCount;
 }
