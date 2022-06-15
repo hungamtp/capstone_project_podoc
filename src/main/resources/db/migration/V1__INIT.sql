@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
                                                                  `id` INT NOT NULL,
                                                                  `create_date` DATE NULL DEFAULT NULL,
                                                                  `last_modified_date` DATE NULL DEFAULT NULL,
+                                                                 `description` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `designed_price` DOUBLE NOT NULL,
                                                                  `name` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `publish` BIT(1) NOT NULL,
@@ -199,12 +200,14 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
                                                             `id` INT NOT NULL,
+                                                            `font` VARCHAR(255) NULL DEFAULT NULL,
                                                             `height` DOUBLE NOT NULL,
                                                             `left_position` DOUBLE NOT NULL,
                                                             `name` VARCHAR(255) NULL DEFAULT NULL,
                                                             `rotate` DOUBLE NOT NULL,
                                                             `scales` DOUBLE NOT NULL,
                                                             `src` VARCHAR(255) NULL DEFAULT NULL,
+                                                            `text_color` VARCHAR(255) NULL DEFAULT NULL,
                                                             `top_position` DOUBLE NOT NULL,
                                                             `types` VARCHAR(255) NULL DEFAULT NULL,
                                                             `width` DOUBLE NOT NULL,
