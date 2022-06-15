@@ -16,6 +16,7 @@ public class DesignedProductDetailDTO {
     private String tag;
     private Integer userId;
     private String username;
+    private Long soldCount;
 
 }
 
