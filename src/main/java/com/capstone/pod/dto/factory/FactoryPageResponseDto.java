@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Builder
 public class FactoryPageResponseDto {
+    private int id;
+    private int credentialId;
     private String email;
     private String address;
     private String phone;

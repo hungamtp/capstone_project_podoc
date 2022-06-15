@@ -56,6 +56,8 @@ public class FactoryServiceImplement implements FactoryService {
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable) {
         List<FactoryPageResponseDto> credentialFactories= credentialRepository.findAll(pageable).stream().filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_FACTORY))
                 .map(credential -> FactoryPageResponseDto.builder().email(credential.getEmail())
+                        .id(credential.getFactory().getId())
+                        .credentialId(credential.getId())
                         .address(credential.getAddress())
                         .phone(credential.getPhone())
                         .image(credential.getImage())
