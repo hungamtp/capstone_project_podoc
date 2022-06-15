@@ -7,6 +7,7 @@ import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
+import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
 import com.capstone.pod.dto.user.UpdatePasswordDto;
 import com.capstone.pod.dto.user.UserDto;
@@ -18,15 +19,20 @@ import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.FactoryRepository;
 import com.capstone.pod.repositories.RoleRepository;
 import com.capstone.pod.services.FactoryService;
-import com.capstone.pod.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class FactoryServiceImplement implements FactoryService {
@@ -45,6 +51,14 @@ public class FactoryServiceImplement implements FactoryService {
         }
         return credential;
     }
+
+    @Override
+    public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable) {
+        List credentialFactories= credentialRepository.findAll(pageable).stream().filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_FACTORY)).collect(Collectors.toList());
+        Page<FactoryPageResponseDto> pageReturn = new PageImpl((List) credentialFactories.stream().map(dto -> modelMapper.map(dto, AddFactoryResponse.class)).collect(Collectors.toList()),pageable,credentialFactories.size());
+        return pageReturn;
+    }
+
     @Override
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto) {
         Optional<Credential> credentialOptional = credentialRepository.findCredentialByEmail(factoryDto.getEmail());

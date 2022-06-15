@@ -11,5 +11,7 @@ public final class UserSuccessMessage {
     public final static String ADD_USER_SUCCESS = "Add user successfully";
 
     public final static String ADD_ADMIN_SUCCESS = "Add admin successfully";
+    public final static String ADD_FATORY_SUCCESS = "Add factory successfully";
+    public final static String GET_ALL_FACTORY_SUCCESS = "Get all factory successfully";
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class FactoryProductDetailDTO {
+public class FactoryProductDetailDto {
     private int id;
     private String name;
     private String location;

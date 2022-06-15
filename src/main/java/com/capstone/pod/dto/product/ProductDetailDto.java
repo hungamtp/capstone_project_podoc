@@ -1,6 +1,6 @@
 package com.capstone.pod.dto.product;
 
-import com.capstone.pod.dto.factory.FactoryProductDetailDTO;
+import com.capstone.pod.dto.factory.FactoryProductDetailDto;
 import lombok.*;
 
 import java.util.Collection;
@@ -21,5 +21,5 @@ public class ProductDetailDto {
     private Collection<ProductImagesDto> productImages;
     private String categoryName;
     private List<String> tags;
-    private List<FactoryProductDetailDTO> factories;
+    private List<FactoryProductDetailDto> factories;
 }

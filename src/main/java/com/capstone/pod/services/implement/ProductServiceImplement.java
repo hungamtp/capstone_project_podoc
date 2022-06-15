@@ -4,7 +4,7 @@ import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.converter.FactoryConverter;
 import com.capstone.pod.dto.common.PageDTO;
-import com.capstone.pod.dto.factory.FactoryProductDetailDTO;
+import com.capstone.pod.dto.factory.FactoryProductDetailDto;
 import com.capstone.pod.dto.placeholder.PlaceHolderDto;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.tag.TagDto;
@@ -149,7 +149,7 @@ public class ProductServiceImplement implements ProductService {
 
         Map<Factory , List<PriceByFactory>> groupPriceByFactory = product.getPriceByFactories().stream()
             .collect(groupingBy(PriceByFactory::getFactory));
-        List<FactoryProductDetailDTO> factories = new ArrayList<>();
+        List<FactoryProductDetailDto> factories = new ArrayList<>();
         Double highestPrice = Double.MIN_VALUE;
         Double lowestPrice = Double.MAX_VALUE;
         for (var factoryEntry : groupSizeColorByFactory.entrySet()) {
@@ -163,8 +163,8 @@ public class ProductServiceImplement implements ProductService {
             if (price < lowestPrice) {
                 lowestPrice = price;
             }
-            FactoryProductDetailDTO factoryProductDetailDTO =
-                FactoryProductDetailDTO.builder()
+            FactoryProductDetailDto factoryProductDetailDTO =
+                FactoryProductDetailDto.builder()
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
