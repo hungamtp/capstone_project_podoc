@@ -160,7 +160,13 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(true);
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        List<String> colors = new ArrayList<>();
+        for (int i = 0; i < designedProduct.getDesignColors().size(); i++) {
+            colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
+        }
+        designedProductReturnDto.setColors(colors);
+        return designedProductReturnDto;
     }
 
     @Override
@@ -168,7 +174,13 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        return modelMapper.map(designedProduct,DesignedProductReturnDto.class);
+        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProduct,DesignedProductReturnDto.class);
+        List<String> colors = new ArrayList<>();
+        for (int i = 0; i < designedProduct.getDesignColors().size(); i++) {
+            colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
+        }
+        designedProductReturnDto.setColors(colors);
+        return designedProductReturnDto;
     }
 
     @Override
@@ -177,7 +189,13 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setPublish(false);
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        List<String> colors = new ArrayList<>();
+        for (int i = 0; i < designedProduct.getDesignColors().size(); i++) {
+            colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
+        }
+        designedProductReturnDto.setColors(colors);
+        return designedProductReturnDto;
     }
     @Override
     public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
@@ -185,7 +203,13 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProduct.setDesignedPrice(dto.getPrice());
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        List<String> colors = new ArrayList<>();
+        for (int i = 0; i < designedProduct.getDesignColors().size(); i++) {
+            colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
+        }
+        designedProductReturnDto.setColors(colors);
+        return designedProductReturnDto;
     }
 
     @Override
@@ -202,6 +226,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductRepository.delete(designedProduct);
+
     }
 
     @Override

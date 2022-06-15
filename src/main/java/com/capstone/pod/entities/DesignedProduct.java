@@ -28,7 +28,7 @@ public class DesignedProduct  extends Auditable {
     Collection<BluePrint> bluePrints;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    Collection<DesignColor> designColors;
+    List<DesignColor> designColors;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<ImagePreview> imagePreviews;

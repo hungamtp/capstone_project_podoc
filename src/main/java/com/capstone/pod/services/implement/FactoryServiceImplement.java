@@ -54,8 +54,15 @@ public class FactoryServiceImplement implements FactoryService {
 
     @Override
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable) {
-        List credentialFactories= credentialRepository.findAll(pageable).stream().filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_FACTORY)).collect(Collectors.toList());
-        Page<FactoryPageResponseDto> pageReturn = new PageImpl((List) credentialFactories.stream().map(dto -> modelMapper.map(dto, AddFactoryResponse.class)).collect(Collectors.toList()),pageable,credentialFactories.size());
+        List<FactoryPageResponseDto> credentialFactories= credentialRepository.findAll(pageable).stream().filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_FACTORY))
+                .map(credential -> FactoryPageResponseDto.builder().email(credential.getEmail())
+                        .address(credential.getAddress())
+                        .phone(credential.getPhone())
+                        .image(credential.getImage())
+                        .name(credential.getFactory().getName())
+                        .location(credential.getFactory().getLocation())
+                        .isCollaborating(credential.getFactory().isCollaborating()).build()).collect(Collectors.toList());
+        Page<FactoryPageResponseDto> pageReturn = new PageImpl(credentialFactories,pageable,credentialFactories.size());
         return pageReturn;
     }
 
