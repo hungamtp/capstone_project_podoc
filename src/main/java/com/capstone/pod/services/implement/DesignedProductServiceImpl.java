@@ -8,10 +8,7 @@ import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
-import com.capstone.pod.repositories.CredentialRepository;
-import com.capstone.pod.repositories.DesignedProductRepository;
-import com.capstone.pod.repositories.ProductRepository;
-import com.capstone.pod.repositories.UserRepository;
+import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,6 +29,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final ProductRepository productRepository;
     private final CredentialRepository credentialRepository;
     private final UserRepository userRepository;
+    private final ColorRepository colorRepository;
     @Override
     public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
@@ -40,7 +38,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         designedProduct.setName(dto.getName());
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
-              Color color = Color.builder().name(dto.getColors().get(i)).build();
+            Color color = colorRepository.findByName(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
             DesignColor designColor = DesignColor.builder().color(color).designedProduct(designedProduct).build();
             designColors.add(designColor);
         }
@@ -101,7 +99,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         designedProductInRepo.setName(dto.getName());
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
-            Color color = Color.builder().name(dto.getColors().get(i)).build();
+            Color color = colorRepository.findByName(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
             DesignColor designColor = DesignColor.builder().color(color).designedProduct(designedProductInRepo).build();
             designColors.add(designColor);
         }
