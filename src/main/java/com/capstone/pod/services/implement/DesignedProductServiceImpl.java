@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +31,19 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final CredentialRepository credentialRepository;
     private final UserRepository userRepository;
     private final ColorRepository colorRepository;
+    private final DesignColorRepository designColorRepository;
+    private User getCurrentUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
+        return credential.get().getUser();
+    }
     @Override
     public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
         designedProduct.setDescription(dto.getDescription());
+        designedProduct.setUser(getCurrentUser());
         designedProduct.setName(dto.getName());
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
@@ -82,7 +91,9 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             }
             designedProduct.getBluePrints().add(bluePrint);
         }
-        return modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
+        designedProductReturnDto.setColors(dto.getColors());
+        return designedProductReturnDto;
     }
 
     @Override
@@ -94,9 +105,9 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
             imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
         }
-
         designedProductInRepo.setDescription(dto.getDescription());
         designedProductInRepo.setName(dto.getName());
+        designColorRepository.deleteAllInBatch(designedProductInRepo.getDesignColors());
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
             Color color = colorRepository.findByName(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
@@ -137,7 +148,9 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             }
             designedProductInRepo.getBluePrints().add(bluePrint);
         }
-        return modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
+        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
+        designedProductReturnDto.setColors(dto.getColors());
+        return designedProductReturnDto;
     }
 
 
