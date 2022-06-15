@@ -48,10 +48,10 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<DesignedProductDetailDTO> query = criteriaBuilder.createQuery(DesignedProductDetailDTO.class);
         Root<DesignedProduct> root = query.from(DesignedProduct.class);
-        Join<DesignedProduct, User> userJoin = root.join(DesignedProduct_.USER, JoinType.LEFT);
         Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
-        Join<DesignedProduct, ImagePreview> imagePreviewJoin = root.join(DesignedProduct_.IMAGE_PREVIEWS, JoinType.LEFT);
+        Join<DesignedProduct, User> userJoin = root.join(DesignedProduct_.USER, JoinType.LEFT);
         Join<DesignedProduct, Product> productJoin = root.join(DesignedProduct_.PRODUCT, JoinType.LEFT);
+        Join<DesignedProduct, ImagePreview> imagePreviewJoin = root.join(DesignedProduct_.IMAGE_PREVIEWS, JoinType.LEFT);
         Join<DesignedProduct, DesignedProductTag> designedProductTagJoin = root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
         Join<Tag, DesignedProductTag> tagJoin = designedProductTagJoin.join(DesignedProductTag_.TAG, JoinType.LEFT);
         query.groupBy(root.get(DesignedProduct_.ID) , tagJoin.get(Tag_.ID) , imagePreviewJoin.get(ImagePreview_.ID));
@@ -62,7 +62,6 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             root.get(DesignedProduct_.DESIGNED_PRICE),
             criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR)),
             tagJoin.get(Tag_.NAME),
-            tagJoin.get(Tag_.NAME),
             userJoin.get(User_.ID).alias("userId"),
             userJoin.get(User_.LAST_NAME).alias("username")
         );
@@ -72,7 +71,6 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         query.orderBy(orderList).where(productIdEqual);
         return entityManager.createQuery(query).getResultList();
     }
-
 }
 
 
