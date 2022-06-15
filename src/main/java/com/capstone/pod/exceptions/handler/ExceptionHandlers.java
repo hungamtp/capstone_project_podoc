@@ -64,6 +64,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = {FactoryNotFoundException.class})
+    public ResponseEntity<Object> factoryNotFoundException(FactoryNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
 
     @ExceptionHandler(value = {RoleNotFoundException.class})
     public ResponseEntity<Object> roleNotFoundException(RoleNotFoundException exception) {

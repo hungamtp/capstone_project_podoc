@@ -58,6 +58,14 @@ public class FactoryController {
         responseDTO.setData(checkDTO);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PatchMapping("collaborating/{id}")
+    public ResponseEntity<ResponseDto> updateCollaborating(@RequestParam boolean collaborating, @PathVariable(name = "id") int id) {
+        ResponseDto<FactoryPageResponseDto> responseDTO = new ResponseDto();
+        factoryService.updateCollaborating(id, collaborating);
+        responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_COLLABORATING_FACTORY_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PostMapping("password-change/{id}")
     public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") int id) {

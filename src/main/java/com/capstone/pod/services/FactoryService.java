@@ -14,4 +14,5 @@ public interface FactoryService {
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto);
     public UserDto updatePassword(UpdatePasswordDto user, int userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar, int userId);
+    public void updateCollaborating(int factoryId, boolean isCollaborating);
 }

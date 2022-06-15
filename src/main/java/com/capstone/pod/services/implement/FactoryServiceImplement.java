@@ -2,6 +2,7 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
+import com.capstone.pod.constant.factory.FactoryErrorMessage;
 import com.capstone.pod.constant.role.RoleErrorMessage;
 import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.constant.user.UserErrorMessage;
@@ -106,4 +107,11 @@ public class FactoryServiceImplement implements FactoryService {
         credential.setImage(avatar.getImage());
         return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
+
+    @Override
+    public void updateCollaborating(int factoryId, boolean isCollaborating) {
+      Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
+      factory.setCollaborating(isCollaborating);
+      factoryRepository.save(factory);
+    };
 }
