@@ -14,8 +14,6 @@ public class DesignInfoDto {
     private double width;
     private double leftPosition;
     private double topPosition;
-    private double x;
-    private double y;
     private double rotate;
     private double scales;
     private String font;

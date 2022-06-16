@@ -232,8 +232,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
                                                             `top_position` DOUBLE NOT NULL,
                                                             `types` VARCHAR(255) NULL DEFAULT NULL,
                                                             `width` DOUBLE NOT NULL,
-                                                            `x` DOUBLE NOT NULL,
-                                                            `y` DOUBLE NOT NULL,
                                                             `blue_print_id` INT NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             INDEX `FKh5uyam68u3624g7gqf7ysnbuh` (`blue_print_id` ASC) VISIBLE,
