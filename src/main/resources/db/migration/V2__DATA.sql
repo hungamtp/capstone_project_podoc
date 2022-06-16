@@ -1213,13 +1213,13 @@ INSERT INTO capstone_pod.blue_print (id,frame_image,`position`,designed_product_
                                                                                         (8,'1','1',9),
                                                                                         (9,'1','1',10);
 
-INSERT INTO capstone_pod.design_info (id,height,left_position,name,rotate,scales,src,top_position,types,width,x,y,blue_print_id) VALUES
-                                                                                                                                     (2,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,1.0,1.0,2),
-                                                                                                                                     (3,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,1.0,1.0,3),
-                                                                                                                                     (4,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,1.0,1.0,4),
-                                                                                                                                     (5,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,1.0,1.0,5),
-                                                                                                                                     (6,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,1.0,1.0,6),
-                                                                                                                                     (7,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,1.0,1.0,7);
+INSERT INTO capstone_pod.design_info (id,height,left_position,name,rotate,scales,src,top_position,types,width,blue_print_id) VALUES
+                                                                                                                                     (2,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,2),
+                                                                                                                                     (3,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,3),
+                                                                                                                                     (4,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,4),
+                                                                                                                                     (5,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,5),
+                                                                                                                                     (6,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,6),
+                                                                                                                                     (7,1.0,1.0,'ao',1.0,1.0,'ao',1.0,'image/jpeg',1.0,7);
 
 INSERT INTO `placeholder` VALUES (7,100,1,11),(2,100,2,2),(3,100,1,3),(4,100,2,4),(5,100,1,5),(6,100,2,6);
 
