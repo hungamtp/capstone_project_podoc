@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface ColorRepository extends JpaRepository<Color,Integer> {
     Optional<Color> findByName(String name);
+    Optional<Color> findByImageColor(String imageColor);
 }

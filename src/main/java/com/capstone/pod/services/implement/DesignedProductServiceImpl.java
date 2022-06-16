@@ -47,7 +47,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         designedProduct.setName(dto.getName());
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
-            Color color = colorRepository.findByName(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
+            Color color = colorRepository.findByImageColor(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
             DesignColor designColor = DesignColor.builder().color(color).designedProduct(designedProduct).build();
             designColors.add(designColor);
         }
@@ -79,8 +79,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
                         .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
-                        .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
-                        .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
                         .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                         .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
                         .font(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getFont())
@@ -110,7 +108,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         designColorRepository.deleteAllInBatch(designedProductInRepo.getDesignColors());
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
-            Color color = colorRepository.findByName(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
+            Color color = colorRepository.findByImageColor(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
             DesignColor designColor = DesignColor.builder().color(color).designedProduct(designedProductInRepo).build();
             designColors.add(designColor);
         }
@@ -138,8 +136,6 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                         .width(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getWidth())
                         .leftPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getLeftPosition())
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
-                        .x(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getX())
-                        .y(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getY())
                         .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                         .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
                         .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
