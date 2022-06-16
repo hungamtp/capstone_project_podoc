@@ -13,5 +13,5 @@ public class ProductBluePrintDto {
     private int id;
     private String frameImage;
     private String position;
-    private PlaceHolderDto placeHolder;
+    private PlaceHolderDto placeholder;
 }
