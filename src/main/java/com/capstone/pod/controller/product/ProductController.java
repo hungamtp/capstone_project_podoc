@@ -5,6 +5,7 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.*;
+import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
 import com.capstone.pod.services.ProductService;
@@ -102,6 +103,14 @@ public class ProductController {
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductByIdAdmin(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @GetMapping("/admin/size-color/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> getSizeColorProductById(@PathVariable(name = "id") int productId){
+        ResponseDto<SizeColorByProductIdDto> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.getSizesAndColorByProductId(productId));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.GET_SIZES_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PatchMapping("/{id}")

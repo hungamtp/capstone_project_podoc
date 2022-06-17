@@ -2,6 +2,7 @@ package com.capstone.pod.services;
 
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.*;
+import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
 import com.capstone.pod.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,6 @@ public interface ProductService {
       ProductDto getProductByIdAdmin(int id);
 
       List<ProductBluePrintDto> getProductBluePrintByProductId(int productId);
+
+      SizeColorByProductIdDto getSizesAndColorByProductId(int productId);
 }

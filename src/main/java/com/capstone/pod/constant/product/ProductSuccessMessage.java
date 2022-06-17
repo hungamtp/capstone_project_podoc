@@ -11,5 +11,6 @@ public final class ProductSuccessMessage {
     public static final String UN_PUBLISH_PRODUCT_SUCCESS = "Un-publish product successfully";
     public static final String GET_SIZES_SUCCESS = "Get sizes successfully";
     public static final String GET_COLORS_SUCCESS = "Get colors successfully";
+    public static final String GET_SIZES_COLORS_SUCCESS = "Get sizes and colors successfully";
     public static final String ADD_SIZE_COLOR_SUCCESS = "Add size and color to product successfully";
 }

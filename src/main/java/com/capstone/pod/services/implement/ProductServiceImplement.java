@@ -7,6 +7,7 @@ import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.factory.FactoryProductDetailDto;
 import com.capstone.pod.dto.placeholder.PlaceHolderDto;
 import com.capstone.pod.dto.product.*;
+import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
 import com.capstone.pod.dto.tag.TagDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
@@ -205,5 +206,13 @@ public class ProductServiceImplement implements ProductService {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ProductBluePrint> productBluePrintDtos = productBluePrintRepository.getAllByProductId(productId);
         return productBluePrintDtos.stream().map(blueprint -> ProductBluePrintDto.builder().frameImage(blueprint.getFrameImage()).position(blueprint.getPosition()).placeholder(PlaceHolderDto.builder().height(blueprint.getPlaceHolderHeight()).width(blueprint.getPlaceHolderWidth()).build()).build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public SizeColorByProductIdDto getSizesAndColorByProductId(int productId) {
+        Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        List<String> colors = product.getSizeColors().stream().map(sizeColor -> sizeColor.getColor().getName()).distinct().collect(Collectors.toList());
+        List<String> sizes = product.getSizeColors().stream().map(sizeColor -> sizeColor.getSize().getName()).distinct().collect(Collectors.toList());
+        return SizeColorByProductIdDto.builder().colors(colors).sizes(sizes).build();
     }
 }
