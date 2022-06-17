@@ -41,4 +41,12 @@ public class CartController {
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
         cartService.deleteCartDetail(cartDetailId,email);
     }
+
+    @GetMapping("/checkQuantity")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity checkQuantityCart(HttpServletRequest request, @RequestBody List<CartDetailDTO> cartDetailDTO) {
+        String jwt = request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
+        return ResponseEntity.ok().body(cartService.checkQuantityBeforeOrder(cartDetailDTO, email));
+    }
 }
