@@ -18,6 +18,7 @@ import com.capstone.pod.services.CartService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,7 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
     private CredentialRepository credentialRepository;
     private CartDetailConverter cartDetailConverter;
+    private CartDetailRepository cartDetailRepository;
 
     public List<CartDetailDTO> getCard(String email) {
         Cart cart = getCartByEmail(email);
@@ -38,12 +40,17 @@ public class CartServiceImpl implements CartService {
         return cartDetailConverter.entityToDtos(cart.getCartDetails());
     }
 
-    public void deleteCartDetail(Integer cartDetailId, String email) {
+    public void deleteCartDetail(final Integer cartDetailId, String email) {
+        //The deleteById in Spring Data JPA first does a findById which in your case, loads the associated entities eagerly.
+        // Can not use fetch EAGER in ManyToOne To deleteById
         Cart cart = getCartByEmail(email);
-        List<CartDetail> cartDetails = cart.getCartDetails();
-        List<CartDetail> updatedCartDetails = cartDetails.stream().filter((cartDetail -> cartDetail.getId() != cartDetailId)).collect(Collectors.toList());
-        cart.setCartDetails(updatedCartDetails);
-        cartRepository.save(cart);
+        CartDetail cartDetail = cartDetailRepository.findById(cartDetailId)
+            .orElseThrow(() -> new EntityNotFoundException(EntityName.CART_DETAIL + ErrorMessage.NOT_FOUND));
+
+        if (cartDetail.getCart().getId() != cart.getId())
+            throw new IllegalStateException(EntityName.CART + ErrorMessage.WRONG);
+
+        cartDetailRepository.deleteById(cartDetailId);
     }
 
     public void updateCart(List<CartDetailDTO> dtos, String email) {
