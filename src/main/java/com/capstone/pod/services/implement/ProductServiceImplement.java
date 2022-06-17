@@ -215,4 +215,18 @@ public class ProductServiceImplement implements ProductService {
         List<String> sizes = product.getSizeColors().stream().map(sizeColor -> sizeColor.getSize().getName()).distinct().collect(Collectors.toList());
         return SizeColorByProductIdDto.builder().colors(colors).sizes(sizes).build();
     }
+
+    @Override
+    public List<String> getColorsByProductNameAndFactoryName(String productName, String factoryName) {
+        Product product =  productRepository.findByName(productName).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        List colors = new ArrayList();
+         for (int i = 0; i < product.getSizeColors().size(); i++) {
+           List<String> colorTmp=  product.getSizeColors().get(i)
+                   .getSizeColorByFactories().stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getName().equals(factoryName))
+                   .map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getColor().getName()).collect(Collectors.toList());
+           colors.addAll(colorTmp);
+        }
+        List<String> colorsReturn = (List<String>) colors.stream().distinct().collect(Collectors.toList());
+        return colorsReturn;
+    }
 }

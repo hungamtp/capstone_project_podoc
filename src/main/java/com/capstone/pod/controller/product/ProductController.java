@@ -113,6 +113,14 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_SIZES_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("/colors")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> getSizeColorProductById(@RequestParam String productName, @RequestParam String factoryName){
+        ResponseDto<List<String>> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productName,factoryName));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PatchMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> deleteProductById(@PathVariable(name="id") int productId){
