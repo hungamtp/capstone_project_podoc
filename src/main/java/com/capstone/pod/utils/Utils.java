@@ -12,7 +12,11 @@ import com.capstone.pod.repositories.CredentialRepository;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.cfg.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,5 +52,13 @@ public class Utils {
         }
         Specification<Product> spec = builder.build();
         return spec;
+    }
+
+    public static String getEmailFromJwt(String jwtToken){
+        String secret  = "securesecuresecuresecuresecuresecuresecuresecuresecuresecuresecuresecure";
+        return Jwts.parserBuilder()
+            .setSigningKey(secret.getBytes()).build()
+            .parse(jwtToken)
+            .getBody().toString().split(",")[1].strip().replace("email=" , "");
     }
 }
