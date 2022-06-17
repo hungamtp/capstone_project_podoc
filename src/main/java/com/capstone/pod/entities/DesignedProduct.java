@@ -34,6 +34,9 @@ public class DesignedProduct  extends Auditable {
     Collection<ImagePreview> imagePreviews;
 
     @ManyToOne
+    PriceByFactory priceByFactory;
+
+    @ManyToOne
     Product product;
     @ManyToOne
     User user;

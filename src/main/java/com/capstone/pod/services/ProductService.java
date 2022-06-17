@@ -27,5 +27,5 @@ public interface ProductService {
       List<ProductBluePrintDto> getProductBluePrintByProductId(int productId);
 
       SizeColorByProductIdDto getSizesAndColorByProductId(int productId);
-      List<String> getColorsByProductNameAndFactoryName(String productName, String factoryName);
+      List<String> getColorsByProductNameAndFactoryName(int productId, int factoryId);
 }

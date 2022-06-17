@@ -217,12 +217,12 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public List<String> getColorsByProductNameAndFactoryName(String productName, String factoryName) {
-        Product product =  productRepository.findByName(productName).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+    public List<String> getColorsByProductNameAndFactoryName(int productId, int factoryId) {
+        Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List colors = new ArrayList();
          for (int i = 0; i < product.getSizeColors().size(); i++) {
            List<String> colorTmp=  product.getSizeColors().get(i)
-                   .getSizeColorByFactories().stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getName().equals(factoryName))
+                   .getSizeColorByFactories().stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId()==factoryId)
                    .map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getColor().getName()).collect(Collectors.toList());
            colors.addAll(colorTmp);
         }

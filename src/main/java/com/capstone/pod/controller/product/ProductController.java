@@ -115,9 +115,9 @@ public class ProductController {
     }
     @GetMapping("/colors")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getSizeColorProductById(@RequestParam String productName, @RequestParam String factoryName){
+    public ResponseEntity<ResponseDto> getSizeColorProductById(@RequestParam int productId, @RequestParam int factoryId){
         ResponseDto<List<String>> responseDTO = new ResponseDto();
-        responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productName,factoryName));
+        responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productId, factoryId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

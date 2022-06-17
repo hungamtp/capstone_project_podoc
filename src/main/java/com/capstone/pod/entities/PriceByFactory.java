@@ -2,10 +2,8 @@ package com.capstone.pod.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Setter
@@ -14,8 +12,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @Builder
 public class PriceByFactory {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private int id;
     private double price;
     @ManyToOne
@@ -24,4 +21,6 @@ public class PriceByFactory {
     private Product product;
     @ManyToOne
     private Discount discount;
+    @OneToMany(mappedBy = "priceByFactory")
+    private List<DesignedProduct> designedProducts;
 }

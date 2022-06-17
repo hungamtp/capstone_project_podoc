@@ -32,6 +32,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final UserRepository userRepository;
     private final ColorRepository colorRepository;
     private final DesignColorRepository designColorRepository;
+    private final PriceByFactoryRepository priceByFactoryRepository;
     private User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
@@ -39,12 +40,16 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         return credential.get().getUser();
     }
     @Override
-    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId) {
+    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId,int factoryId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
         designedProduct.setDescription(dto.getDescription());
         designedProduct.setUser(getCurrentUser());
         designedProduct.setName(dto.getName());
+
+        Optional<PriceByFactory> priceByFactory = priceByFactoryRepository.getByProductIdAndFactoryId(productId,factoryId);
+        designedProduct.setPriceByFactory(priceByFactory.get());
+
         List<DesignColor> designColors = new ArrayList<>();
         for (int i = 0; i < dto.getColors().size(); i++) {
             Color color = colorRepository.findByImageColor(dto.getColors().get(i)).orElseThrow(() -> new ColorNotFoundException(ProductErrorMessage.COLOR_NOT_FOUND));
@@ -52,6 +57,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             designColors.add(designColor);
         }
         designedProduct.setDesignColors(designColors);
+
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
             imagePreviews.add(ImagePreview.builder().image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
@@ -91,6 +97,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         }
         DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
         designedProductReturnDto.setColors(dto.getColors());
+        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }
 
@@ -146,6 +153,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         }
         DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProductInRepo),DesignedProductReturnDto.class);
         designedProductReturnDto.setColors(dto.getColors());
+        designedProductReturnDto.setPriceFromFactory(designedProductInRepo.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }
 
@@ -162,6 +170,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
         }
         designedProductReturnDto.setColors(colors);
+        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }
 
@@ -176,6 +185,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
         }
         designedProductReturnDto.setColors(colors);
+        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }
 
@@ -191,6 +201,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
         }
         designedProductReturnDto.setColors(colors);
+        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }
     @Override
@@ -205,6 +216,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
             colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
         }
         designedProductReturnDto.setColors(colors);
+        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }
 
