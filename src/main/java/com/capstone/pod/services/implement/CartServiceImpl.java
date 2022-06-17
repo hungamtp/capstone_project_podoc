@@ -10,6 +10,7 @@ import com.capstone.pod.entities.Credential;
 import com.capstone.pod.entities.User;
 import com.capstone.pod.exceptions.CredentialNotFoundException;
 import com.capstone.pod.exceptions.UserNotFoundException;
+import com.capstone.pod.repositories.CartDetailRepository;
 import com.capstone.pod.repositories.CartRepository;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.UserRepository;
@@ -18,12 +19,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
-    private UserRepository userRepository;
     private CredentialRepository credentialRepository;
     private CartDetailConverter cartDetailConverter;
 
@@ -40,19 +41,14 @@ public class CartServiceImpl implements CartService {
     public void deleteCartDetail(Integer cartDetailId, String email) {
         Cart cart = getCartByEmail(email);
         List<CartDetail> cartDetails = cart.getCartDetails();
-        for (var cardetail : cartDetails) {
-            if (cardetail.getId() == cartDetailId) {
-                cartDetails.remove(cardetail);
-                break;
-            }
-        }
-        cart.setCartDetails(cartDetails);
+        List<CartDetail> updatedCartDetails = cartDetails.stream().filter((cartDetail -> cartDetail.getId() != cartDetailId)).collect(Collectors.toList());
+        cart.setCartDetails(updatedCartDetails);
         cartRepository.save(cart);
     }
 
     public void updateCart(List<CartDetailDTO> dtos, String email) {
         Cart cart = getCartByEmail(email);
-        cart.setCartDetails(cartDetailConverter.dtoToEntities(dtos));
+        cart.setCartDetails(cartDetailConverter.dtoToEntities(dtos, cart.getId()));
         cartRepository.save(cart);
     }
 

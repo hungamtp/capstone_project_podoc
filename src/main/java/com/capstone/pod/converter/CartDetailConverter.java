@@ -4,6 +4,7 @@ import com.capstone.pod.dto.cartdetail.CartDetailDTO;
 import com.capstone.pod.entities.Cart;
 import com.capstone.pod.entities.CartDetail;
 import com.capstone.pod.entities.DesignedProduct;
+import com.capstone.pod.entities.ImagePreview;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,33 +14,35 @@ import java.util.stream.Collectors;
 public class CartDetailConverter {
 
 
-
-    public List<CartDetailDTO> entityToDtos(List<CartDetail> cartDetails){
+    public List<CartDetailDTO> entityToDtos(List<CartDetail> cartDetails) {
         return cartDetails.stream().map((cartDetail -> entityToDto(cartDetail))).collect(Collectors.toList());
     }
 
-    public List<CartDetail> dtoToEntities(List<CartDetailDTO> dtos){
-        return dtos.stream().map((dto -> dtoToEntity(dto))).collect(Collectors.toList());
+    public List<CartDetail> dtoToEntities(List<CartDetailDTO> dtos , int cartId) {
+        return dtos.stream().map((dto -> dtoToEntity(dto , cartId))).collect(Collectors.toList());
     }
 
-    private CartDetailDTO entityToDto(CartDetail cartDetail){
+    private CartDetailDTO entityToDto(CartDetail cartDetail) {
         return CartDetailDTO.builder()
             .id(cartDetail.getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
             .designedProductName(cartDetail.getDesignedProduct().getName())
             .color(cartDetail.getColor())
             .size(cartDetail.getSize())
+            .designedImage(cartDetail.getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
+            .price(Double.valueOf(cartDetail.getDesignedProduct().getDesignedPrice() + cartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
             .quantity(cartDetail.getQuantity())
             .build();
     }
 
-    private CartDetail dtoToEntity(CartDetailDTO cartDetailDTO){
+    private CartDetail dtoToEntity(CartDetailDTO cartDetailDTO , int cartId) {
         return CartDetail.builder()
             .id(cartDetailDTO.getId())
             .designedProduct(DesignedProduct.builder().id(cartDetailDTO.getDesignedProductId()).build())
             .size(cartDetailDTO.getSize())
             .color(cartDetailDTO.getColor())
             .quantity(cartDetailDTO.getQuantity())
+            .cart(Cart.builder().id(cartId).build())
             .build();
     }
 }
