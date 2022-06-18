@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -164,6 +165,12 @@ public class ExceptionHandlers extends RuntimeException {
     }
     @ExceptionHandler(value = DesignedProductNotExistException.class)
     public ResponseEntity<Object> passwordNotMatch(DesignedProductNotExistException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity<Object> catchErrorEntityNotFound(EntityNotFoundException exception) {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);

@@ -33,7 +33,7 @@ public class TokenVerifier extends OncePerRequestFilter {
             return;
         }
         try {
-            String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
+            String token = authorizationHeader.replace(jwtConfig.getTokenPrefix()+" ", "");
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes())).build().parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String name = body.getSubject();

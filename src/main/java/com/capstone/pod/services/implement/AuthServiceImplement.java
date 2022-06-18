@@ -82,7 +82,7 @@ public class AuthServiceImplement implements AuthService {
                     .phone(credentialAuthenticated.getPhone())
                     .address(credentialAuthenticated.getAddress())
                     .roleName(credentialAuthenticated.getRole().getName())
-                    .token(jwtConfig.getTokenPrefix() + token).build();
+                    .token(jwtConfig.getTokenPrefix()+" "+ token).build();
         }
         return loginResponseDTO;
     }
