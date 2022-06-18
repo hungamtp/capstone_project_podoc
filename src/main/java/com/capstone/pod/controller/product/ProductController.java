@@ -23,6 +23,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import java.util.List;
 import java.util.Optional;
 
@@ -114,8 +115,8 @@ public class ProductController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/colors")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getSizeColorProductById(@RequestParam int productId, @RequestParam int factoryId){
+    @PermitAll
+    public ResponseEntity<ResponseDto> getColorsByProductNameAndFactoryName(@RequestParam int productId, @RequestParam int factoryId){
         ResponseDto<List<String>> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productId, factoryId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
