@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartNotEnough {
+public class CartNotEnoughDto {
     private Integer id;
     private Integer quantityAvailable;
 }

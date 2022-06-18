@@ -1,6 +1,6 @@
 package com.capstone.pod.converter;
 
-import com.capstone.pod.dto.cartdetail.CartDetailDTO;
+import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.entities.Cart;
 import com.capstone.pod.entities.CartDetail;
 import com.capstone.pod.entities.DesignedProduct;
@@ -14,16 +14,16 @@ import java.util.stream.Collectors;
 public class CartDetailConverter {
 
 
-    public List<CartDetailDTO> entityToDtos(List<CartDetail> cartDetails) {
+    public List<CartDetailDto> entityToDtos(List<CartDetail> cartDetails) {
         return cartDetails.stream().map((cartDetail -> entityToDto(cartDetail))).collect(Collectors.toList());
     }
 
-    public List<CartDetail> dtoToEntities(List<CartDetailDTO> dtos , int cartId) {
+    public List<CartDetail> dtoToEntities(List<CartDetailDto> dtos , int cartId) {
         return dtos.stream().map((dto -> dtoToEntity(dto , cartId))).collect(Collectors.toList());
     }
 
-    private CartDetailDTO entityToDto(CartDetail cartDetail) {
-        return CartDetailDTO.builder()
+    private CartDetailDto entityToDto(CartDetail cartDetail) {
+        return CartDetailDto.builder()
             .id(cartDetail.getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
             .designedProductName(cartDetail.getDesignedProduct().getName())
@@ -35,7 +35,7 @@ public class CartDetailConverter {
             .build();
     }
 
-    private CartDetail dtoToEntity(CartDetailDTO cartDetailDTO , int cartId) {
+    private CartDetail dtoToEntity(CartDetailDto cartDetailDTO , int cartId) {
         return CartDetail.builder()
             .id(cartDetailDTO.getId())
             .designedProduct(DesignedProduct.builder().id(cartDetailDTO.getDesignedProductId()).build())

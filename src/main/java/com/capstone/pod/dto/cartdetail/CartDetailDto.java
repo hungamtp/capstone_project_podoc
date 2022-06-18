@@ -2,14 +2,12 @@ package com.capstone.pod.dto.cartdetail;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartDetailDTO {
+public class CartDetailDto {
     private Integer id;
     private Integer designedProductId;
     private Float price;

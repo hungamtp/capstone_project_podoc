@@ -1,7 +1,7 @@
 package com.capstone.pod.controller.cart;
 
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.dto.cartdetail.CartDetailDTO;
+import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.services.CartService;
 import com.capstone.pod.utils.Utils;
 import lombok.AllArgsConstructor;
@@ -28,7 +28,7 @@ public class CartController {
 
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public void updateCart(HttpServletRequest request , @RequestBody List<CartDetailDTO> cartDetailDTO){
+    public void updateCart(HttpServletRequest request , @RequestBody List<CartDetailDto> cartDetailDTO){
         String jwt =request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
          cartService.updateCart(cartDetailDTO,email);
@@ -44,7 +44,7 @@ public class CartController {
 
     @GetMapping("/checkQuantity")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity checkQuantityCart(HttpServletRequest request, @RequestBody List<CartDetailDTO> cartDetailDTO) {
+    public ResponseEntity checkQuantityCart(HttpServletRequest request, @RequestBody List<CartDetailDto> cartDetailDTO) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
         return ResponseEntity.ok().body(cartService.checkQuantityBeforeOrder(cartDetailDTO, email));
