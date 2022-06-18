@@ -3,8 +3,8 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.converter.CartDetailConverter;
-import com.capstone.pod.dto.cartdetail.CartDetailDTO;
-import com.capstone.pod.dto.cartdetail.CartNotEnough;
+import com.capstone.pod.dto.cartdetail.CartDetailDto;
+import com.capstone.pod.dto.cartdetail.CartNotEnoughDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CredentialNotFoundException;
 import com.capstone.pod.repositories.*;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CartServiceImpl implements CartService {
+public class CartServiceImplement implements CartService {
     private CartRepository cartRepository;
     private CredentialRepository credentialRepository;
     private CartDetailConverter cartDetailConverter;
@@ -29,7 +29,7 @@ public class CartServiceImpl implements CartService {
     private DesignedProductRepository designedProductRepository;
     private SizeColorByFactoryRepository sizeColorByFactoryRepository;
 
-    public List<CartDetailDTO> getCard(String email) {
+    public List<CartDetailDto> getCard(String email) {
         Cart cart = getCartByEmail(email);
 
         if (cart.getCartDetails() == null) {
@@ -52,20 +52,20 @@ public class CartServiceImpl implements CartService {
         cartDetailRepository.deleteById(cartDetailId);
     }
 
-    public void updateCart(List<CartDetailDTO> dtos, String email) {
+    public void updateCart(List<CartDetailDto> dtos, String email) {
         Cart cart = getCartByEmail(email);
         cart.setCartDetails(cartDetailConverter.dtoToEntities(dtos, cart.getId()));
         cartRepository.save(cart);
     }
 
-    public List<CartNotEnough> checkQuantityBeforeOrder(List<CartDetailDTO> cartDetails, String email) {
+    public List<CartNotEnoughDto> checkQuantityBeforeOrder(List<CartDetailDto> cartDetails, String email) {
         Cart cart = getCartByEmail(email);
-        List<CartNotEnough> productHaveNotEnoughQuantity = new ArrayList<>();
+        List<CartNotEnoughDto> productHaveNotEnoughQuantity = new ArrayList<>();
         for (var cartDetail : cartDetails) {
             // if checkSizeColorQuantity() return 0 if enough quantity to order
             Integer checkedQuantity = checkSizeColorQuantity(cartDetail.getSize(), cartDetail.getColor(), cartDetail.getDesignedProductId(), cartDetail.getQuantity());
             if (checkedQuantity != 0) {
-                productHaveNotEnoughQuantity.add(new CartNotEnough(cart.getId(), checkedQuantity));
+                productHaveNotEnoughQuantity.add(new CartNotEnoughDto(cart.getId(), checkedQuantity));
             }
         }
         return productHaveNotEnoughQuantity;
