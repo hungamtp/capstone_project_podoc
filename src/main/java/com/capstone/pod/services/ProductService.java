@@ -1,5 +1,6 @@
 package com.capstone.pod.services;
 
+import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
@@ -27,5 +28,5 @@ public interface ProductService {
       List<ProductBluePrintDto> getProductBluePrintByProductId(int productId);
 
       SizeColorByProductIdDto getSizesAndColorByProductId(int productId);
-      List<String> getColorsByProductNameAndFactoryName(int productId, int factoryId);
+      List<ColorInDesignDto> getColorsByProductNameAndFactoryName(int productId, int factoryId);
 }

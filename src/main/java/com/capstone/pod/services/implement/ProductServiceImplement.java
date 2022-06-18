@@ -3,6 +3,8 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.converter.FactoryConverter;
+import com.capstone.pod.dto.color.ColorDto;
+import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.factory.FactoryProductDetailDto;
 import com.capstone.pod.dto.placeholder.PlaceHolderDto;
@@ -217,16 +219,16 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public List<String> getColorsByProductNameAndFactoryName(int productId, int factoryId) {
+    public List<ColorInDesignDto> getColorsByProductNameAndFactoryName(int productId, int factoryId) {
         Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        List colors = new ArrayList();
+        List<ColorInDesignDto> colors = new ArrayList();
          for (int i = 0; i < product.getSizeColors().size(); i++) {
-           List<String> colorTmp=  product.getSizeColors().get(i)
+           List<ColorInDesignDto> colorTmp=  product.getSizeColors().get(i)
                    .getSizeColorByFactories().stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId()==factoryId)
-                   .map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getColor().getName()).collect(Collectors.toList());
+                   .map(sizeColorByFactory -> ColorInDesignDto.builder().id(sizeColorByFactory.getSizeColor().getColor().getId()).name(sizeColorByFactory.getSizeColor().getColor().getName()).image(sizeColorByFactory.getSizeColor().getColor().getImageColor()).build()).collect(Collectors.toList());
            colors.addAll(colorTmp);
         }
-        List<String> colorsReturn = (List<String>) colors.stream().distinct().collect(Collectors.toList());
+        List<ColorInDesignDto> colorsReturn =  colors.stream().distinct().collect(Collectors.toList());
         return colorsReturn;
     }
 }

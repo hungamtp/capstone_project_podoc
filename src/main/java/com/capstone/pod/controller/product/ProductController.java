@@ -2,6 +2,7 @@ package com.capstone.pod.controller.product;
 
 import com.capstone.pod.constant.product.ProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.*;
@@ -117,7 +118,7 @@ public class ProductController {
     @GetMapping("/colors")
     @PermitAll
     public ResponseEntity<ResponseDto> getColorsByProductNameAndFactoryName(@RequestParam int productId, @RequestParam int factoryId){
-        ResponseDto<List<String>> responseDTO = new ResponseDto();
+        ResponseDto<List<ColorInDesignDto>> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productId, factoryId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
