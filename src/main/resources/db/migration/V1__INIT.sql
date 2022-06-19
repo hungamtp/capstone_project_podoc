@@ -177,6 +177,46 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`blue_print` (
 
 
 -- -----------------------------------------------------
+-- Table `capstone_pod`.`cart`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`cart` (
+                                                     `id` INT NOT NULL,
+                                                     `user_id` INT NULL DEFAULT NULL,
+                                                     PRIMARY KEY (`id`),
+                                                     UNIQUE INDEX `unique_user` (`user_id` ASC) VISIBLE,
+                                                     CONSTRAINT `FKl70asp4l4w0jmbm1tqyofho4o`
+                                                         FOREIGN KEY (`user_id`)
+                                                             REFERENCES `capstone_pod`.`user` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`cart_detail`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`cart_detail` (
+                                                            `id` INT NOT NULL,
+                                                            `color` VARCHAR(255) NULL DEFAULT NULL,
+                                                            `quantity` INT NOT NULL,
+                                                            `size` VARCHAR(255) NULL DEFAULT NULL,
+                                                            `cart_id` INT NULL DEFAULT NULL,
+                                                            `designed_product_id` INT NULL DEFAULT NULL,
+                                                            PRIMARY KEY (`id`),
+                                                            INDEX `FKrg4yopd2252nwj8bfcgq5f4jp` (`cart_id` ASC) VISIBLE,
+                                                            INDEX `FKk3vd994ail3ndk6uitppwrhu5` (`designed_product_id` ASC) VISIBLE,
+                                                            CONSTRAINT `FKk3vd994ail3ndk6uitppwrhu5`
+                                                                FOREIGN KEY (`designed_product_id`)
+                                                                    REFERENCES `capstone_pod`.`designed_product` (`id`),
+                                                            CONSTRAINT `FKrg4yopd2252nwj8bfcgq5f4jp`
+                                                                FOREIGN KEY (`cart_id`)
+                                                                    REFERENCES `capstone_pod`.`cart` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `capstone_pod`.`color`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`color` (
@@ -401,7 +441,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
                                                              `id` INT NOT NULL,
                                                              `create_date` DATE NULL DEFAULT NULL,
                                                              `last_modified_date` DATE NULL DEFAULT NULL,
-                                                             `status_name` VARCHAR(255) NULL DEFAULT NULL,
+                                                             `name` VARCHAR(255) NULL DEFAULT NULL,
                                                              PRIMARY KEY (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
