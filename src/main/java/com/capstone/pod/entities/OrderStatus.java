@@ -18,7 +18,7 @@ public class OrderStatus extends Auditable {
     @Id
     @GeneratedValue
     private int id;
-    private String statusName;
+    private String name;
     @OneToMany(mappedBy = "orderStatus")
     Collection<Orders> orders;
 }

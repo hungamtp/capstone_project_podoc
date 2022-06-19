@@ -46,6 +46,18 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = CartNotFoundException.class)
+    public ResponseEntity<Object> cartNotFoundException(CartNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = OrderStatusNotFoundException.class)
+    public ResponseEntity<Object> orderStatusNotFoundException(OrderStatusNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
     @ExceptionHandler(value = ColorNotFoundException.class)
     public ResponseEntity<Object>colorNotFoundException(ColorNotFoundException exception) {
         ResponseDto dto = new ResponseDto();

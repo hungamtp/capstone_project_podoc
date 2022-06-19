@@ -14,5 +14,5 @@ public class OrderDto {
     private String phone;
     private String customerName;
     private String userId;
-    private String orderStatusStatusName;
+    private String orderStatus;
 }

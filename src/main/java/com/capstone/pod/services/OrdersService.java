@@ -2,5 +2,5 @@ package com.capstone.pod.services;
 
 
 public interface OrdersService {
-    public void addOrder();
+    public void addOrder(int cartId);
 }
