@@ -55,15 +55,10 @@ public class CartServiceImplement implements CartService {
         return cartDetailId;
     }
 
-    public List<CartNotEnoughDto> updateCart(List<CartDetailDto> dtos, String email) {
+    public void updateCart(List<CartDetailDto> dtos, String email) {
         Cart cart = getCartByEmail(email);
         cart.setCartDetails(cartDetailConverter.dtoToEntities(dtos, cart.getId()));
-        List<CartNotEnoughDto> productNotEnoughQuantity = checkQuantity(dtos , cart);
-
-        if(productNotEnoughQuantity.size() ==0){
             cartRepository.save(cart);
-        }
-        return productNotEnoughQuantity;
     }
 
     public List<CartNotEnoughDto> checkQuantityBeforeOrder(List<CartDetailDto> cartDetails, String email) {

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CartService {
     List<CartDetailDto> getCard(String email);
-    List<CartNotEnoughDto> updateCart(List<CartDetailDto> dtos, String email);
+    void updateCart(List<CartDetailDto> dtos, String email);
     Integer deleteCartDetail(Integer cartDetailId, String email);
     void addToCart(AddToCartDto addToCartDto, String email);
     List<CartNotEnoughDto> checkQuantityBeforeOrder(List<CartDetailDto> cartDetails, String email);
