@@ -31,13 +31,10 @@ public class CartController {
 
     @PutMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity updateCart(HttpServletRequest request , @RequestBody List<CartDetailDto> cartDetailDTO){
-        String jwt =request.getHeader("Authorization");
-        String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
-        ResponseDTO response =ResponseDTO.builder()
-            .data(cartService.updateCart(cartDetailDTO,email))
-            .build();
-        return ResponseEntity.ok().body(response);
+    public void updateCart(HttpServletRequest request, @RequestBody List<CartDetailDto> cartDetailDTO) {
+        String jwt = request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
+        cartService.updateCart(cartDetailDTO, email);
     }
 
     @DeleteMapping("/{cartDetailId}")
