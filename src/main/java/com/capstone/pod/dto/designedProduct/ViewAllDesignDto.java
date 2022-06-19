@@ -1,20 +1,16 @@
 package com.capstone.pod.dto.designedProduct;
 
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
-import com.capstone.pod.dto.user.UserDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class ViewOtherDesignDto {
+@Builder
+public class ViewAllDesignDto {
     private int id;
     private String name;
     private boolean publish;

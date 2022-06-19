@@ -1,6 +1,6 @@
 package com.capstone.pod.repositories.impl;
 
-import com.capstone.pod.dto.designedProduct.DesignedProductDetailDTO;
+import com.capstone.pod.dto.designedProduct.DesignedProductDetailDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.repositories.DesignedProductRepositoryCustom;
 import org.springframework.stereotype.Repository;
@@ -17,9 +17,9 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
     private EntityManager entityManager;
 
 
-    public List<DesignedProductDetailDTO> get4HighestRateDesignedProduct() {
+    public List<DesignedProductDetailDto> get4HighestRateDesignedProduct() {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<DesignedProductDetailDTO> query = criteriaBuilder.createQuery(DesignedProductDetailDTO.class);
+        CriteriaQuery<DesignedProductDetailDto> query = criteriaBuilder.createQuery(DesignedProductDetailDto.class);
         Root<DesignedProduct> root = query.from(DesignedProduct.class);
         Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
         Join<DesignedProduct, OrderDetail> orderDetailJoin = root.join(DesignedProduct_.ORDER_DETAILS, JoinType.LEFT);
@@ -47,9 +47,9 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
     }
 
     @Override
-    public List<DesignedProductDetailDTO> get4HighestRateDesignedProductByProductId(int productId) {
+    public List<DesignedProductDetailDto> get4HighestRateDesignedProductByProductId(int productId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<DesignedProductDetailDTO> query = criteriaBuilder.createQuery(DesignedProductDetailDTO.class);
+        CriteriaQuery<DesignedProductDetailDto> query = criteriaBuilder.createQuery(DesignedProductDetailDto.class);
         Root<DesignedProduct> root = query.from(DesignedProduct.class);
         Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
         Join<DesignedProduct, OrderDetail> orderDetailJoin = root.join(DesignedProduct_.ORDER_DETAILS, JoinType.LEFT);

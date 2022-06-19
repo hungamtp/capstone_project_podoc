@@ -9,4 +9,6 @@ public final class DesignedProductSuccessMessage {
     public static final String PUBLISH_DESIGNED_PRODUCT_SUCCESS="Publish design successfully";
     public static final String UN_PUBLISH_DESIGNED_PRODUCT_SUCCESS="Un-publish design successfully";
     public static final String VIEW_OTHERS_DESIGNED_PRODUCT_SUCCESS="View others design successfully";
+    public static final String VIEW_DESIGNED_PRODUCT_SUCCESS="View  design successfully";
+    public static final String VIEW_ALL_DESIGN_SUCCESS="View all design successfully";
 }

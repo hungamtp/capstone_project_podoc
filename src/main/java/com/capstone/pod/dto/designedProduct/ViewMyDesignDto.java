@@ -1,7 +1,6 @@
 package com.capstone.pod.dto.designedProduct;
 
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
-import com.capstone.pod.dto.user.UserDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class ViewOtherDesignDto {
+public class ViewMyDesignDto {
     private int id;
     private String name;
     private boolean publish;
-    private double price;
+    private double designedPrice;
     private UserInDesignDto user;
     private List<ImagePreviewDto> imagePreviews;
 }

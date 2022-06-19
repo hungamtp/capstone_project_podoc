@@ -4,8 +4,9 @@ import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
-import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.designedProduct.*;
+import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
+import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
@@ -13,6 +14,7 @@ import com.capstone.pod.services.DesignedProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -221,11 +224,26 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     }
 
     @Override
-    public Page<ViewOtherDesignDto> viewDesignOfOthersByUserId(Pageable page, int userId) {
-        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page,userId);
+    public Page<ViewOtherDesignDto> viewMyDesign(Pageable page) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
         Page<ViewOtherDesignDto> viewOtherDesignDtoPage = designedProductPage.map(designedProduct -> modelMapper.map(designedProduct,ViewOtherDesignDto.class));
         return viewOtherDesignDtoPage;
+    }
+    @Override
+    public Page<ViewAllDesignDto> viewAllDesign(Pageable page) {
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(page);
+        List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().filter(designedProduct -> designedProduct.isPublish()==true).map(designedProduct -> ViewAllDesignDto.builder()
+                .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
+                .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
+                .name(designedProduct.getName())
+                .publish(designedProduct.isPublish())
+                .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
+        Page<ViewAllDesignDto> dtoPage = new PageImpl<>(viewAllDesignDtos,page,viewAllDesignDtos.size());
+        return dtoPage;
     }
 
     @Override
@@ -238,9 +256,9 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     }
 
     @Override
-    public List<DesignedProductDTO> get4HighestRateDesignedProduct() {
-        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProduct();
-        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+    public List<DesignedProductDto> get4HighestRateDesignedProduct() {
+        List<DesignedProductDetailDto> designedProductDetailDtos = designedProductRepository.get4HighestRateDesignedProduct();
+        return calculate4HighestRateDesignedProduct(designedProductDetailDtos);
 //        Map<Integer, List<DesignedProductDetailDTO>> mapByDesignProducts = designedProductDetailDTOS.stream()
 //            .collect(Collectors.groupingBy(d -> d.getId()));
 
@@ -260,20 +278,20 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     }
 
     @Override
-    public List<DesignedProductDTO> get4HighestRateDesignedProductByProductId(int productId) {
-        List<DesignedProductDetailDTO> designedProductDetailDTOS = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
-        return calculate4HighestRateDesignedProduct(designedProductDetailDTOS);
+    public List<DesignedProductDto> get4HighestRateDesignedProductByProductId(int productId) {
+        List<DesignedProductDetailDto> designedProductDetailDtos = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
+        return calculate4HighestRateDesignedProduct(designedProductDetailDtos);
     }
 
 
 
-    private List<DesignedProductDTO> calculate4HighestRateDesignedProduct(List<DesignedProductDetailDTO> designedProductDetailDTOS){
-        List<DesignedProductDTO> result = new ArrayList<>();
+    private List<DesignedProductDto> calculate4HighestRateDesignedProduct(List<DesignedProductDetailDto> designedProductDetailDtos){
+        List<DesignedProductDto> result = new ArrayList<>();
 
-        for (var designProductDetail : designedProductDetailDTOS) {
+        for (var designProductDetail : designedProductDetailDtos) {
             if (result.size() == 5) return result.subList(0 , 4);
             if(result.size() == 0){
-                DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+                DesignedProductDto designedProductDTO = DesignedProductDto.builder()
                     .id(designProductDetail.getId())
                     .rate(designProductDetail.getRate()== null ? 0 :designProductDetail.getRate())
                     .name(designProductDetail.getName())
@@ -294,7 +312,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                 if (designProductDetail.getId() == currentDesign.getId()) {
                     currentDesign.getTags().add(designProductDetail.getTag());
                 } else {
-                    DesignedProductDTO designedProductDTO = DesignedProductDTO.builder()
+                    DesignedProductDto designedProductDTO = DesignedProductDto.builder()
                         .id(designProductDetail.getId())
                         .rate(designProductDetail.getRate()== null ? 0 :designProductDetail.getRate())
                         .name(designProductDetail.getName())

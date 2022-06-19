@@ -2,22 +2,22 @@ package com.capstone.pod.dto.designedProduct;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-public class DesignedProductDetailDTO {
-    private Integer id;
+public class DesignedProductDto {
+    private int id;
     private String name;
     private String image;
-    private Double designedPrice;
-    private Double rate;
-    private String tag;
+    private double designedPrice;
+    private double rate;
+    private List<String> tags = new ArrayList<>();
     private Integer userId;
     private String username;
     private Long soldCount;
-
 }
-
-
