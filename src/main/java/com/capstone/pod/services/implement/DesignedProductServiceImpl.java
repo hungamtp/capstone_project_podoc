@@ -36,6 +36,10 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     private final ColorRepository colorRepository;
     private final DesignColorRepository designColorRepository;
     private final PriceByFactoryRepository priceByFactoryRepository;
+    private final RatingRepository ratingRepository;
+    private final DesignedProductTagRepository designedProductTagRepository;
+    private final OrderDetailRepository orderDetailRepository;
+
     private User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
@@ -239,8 +243,11 @@ public class DesignedProductServiceImpl implements DesignedProductService {
                 .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
+                .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num+""))))
+                .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
                 .publish(designedProduct.isPublish())
                 .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).size())
                 .build()).collect(Collectors.toList());
         Page<ViewAllDesignDto> dtoPage = new PageImpl<>(viewAllDesignDtos,page,viewAllDesignDtos.size());
         return dtoPage;
