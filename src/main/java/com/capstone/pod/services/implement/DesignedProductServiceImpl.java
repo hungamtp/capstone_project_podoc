@@ -245,6 +245,19 @@ public class DesignedProductServiceImpl implements DesignedProductService {
         Page<ViewAllDesignDto> dtoPage = new PageImpl<>(viewAllDesignDtos,page,viewAllDesignDtos.size());
         return dtoPage;
     }
+    @Override
+    public Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, int userId) {
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, userId);
+        List<ViewOtherDesignDto> viewOtherDesignDtos = designedProductPage.stream().filter(designedProduct -> designedProduct.isPublish()==true).map(designedProduct -> ViewOtherDesignDto.builder()
+                .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
+                .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
+                .name(designedProduct.getName())
+                .publish(designedProduct.isPublish())
+                .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
+        Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos,page,viewOtherDesignDtos.size());
+        return dtoPage;
+    }
 
     @Override
     public void deleteDesignedProduct(int designId) {

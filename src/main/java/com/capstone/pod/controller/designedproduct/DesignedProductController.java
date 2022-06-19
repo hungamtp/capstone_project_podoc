@@ -97,7 +97,7 @@ public class DesignedProductController {
     public ResponseEntity<ResponseDto> viewOtherDesign(@RequestParam Integer pageNumber, @RequestParam Integer pageSize,  @PathVariable(name = "userId") Integer userId) {
         ResponseDto<Page<ViewOtherDesignDto>> responseDto = new ResponseDto();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        responseDto.setData(designedProductService.viewMyDesign(pageable));
+        responseDto.setData(designedProductService.viewOtherDesign(pageable, userId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_OTHERS_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
