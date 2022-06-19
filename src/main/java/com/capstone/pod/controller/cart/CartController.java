@@ -48,7 +48,7 @@ public class CartController {
         return ResponseEntity.ok().body(cartService.deleteCartDetail(cartDetailId,email));
     }
 
-    @GetMapping("/checkQuantity")
+    @PutMapping("/checkQuantity")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity checkQuantityCart(HttpServletRequest request, @RequestBody List<CartDetailDto> cartDetailDTO) {
         String jwt = request.getHeader("Authorization");
