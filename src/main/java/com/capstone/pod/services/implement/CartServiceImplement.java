@@ -3,6 +3,7 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.converter.CartDetailConverter;
+import com.capstone.pod.dto.cartdetail.AddToCartDto;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.dto.cartdetail.CartNotEnoughDto;
 import com.capstone.pod.entities.*;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +41,7 @@ public class CartServiceImplement implements CartService {
         return cartDetailConverter.entityToDtos(cart.getCartDetails());
     }
 
-    public void deleteCartDetail(final Integer cartDetailId, String email) {
+    public Integer deleteCartDetail(final Integer cartDetailId, String email) {
         //The deleteById in Spring Data JPA first does a findById which in your case, loads the associated entities eagerly.
         // Can not use fetch EAGER in ManyToOne To deleteById
         Cart cart = getCartByEmail(email);
@@ -50,12 +52,18 @@ public class CartServiceImplement implements CartService {
             throw new IllegalStateException(EntityName.CART + ErrorMessage.WRONG);
 
         cartDetailRepository.deleteById(cartDetailId);
+        return cartDetailId;
     }
 
-    public void updateCart(List<CartDetailDto> dtos, String email) {
+    public List<CartNotEnoughDto> updateCart(List<CartDetailDto> dtos, String email) {
         Cart cart = getCartByEmail(email);
         cart.setCartDetails(cartDetailConverter.dtoToEntities(dtos, cart.getId()));
-        cartRepository.save(cart);
+        List<CartNotEnoughDto> productNotEnoughQuantity = checkQuantity(dtos , cart);
+
+        if(productNotEnoughQuantity.size() ==0){
+            cartRepository.save(cart);
+        }
+        return productNotEnoughQuantity;
     }
 
     public List<CartNotEnoughDto> checkQuantityBeforeOrder(List<CartDetailDto> cartDetails, String email) {
@@ -69,6 +77,43 @@ public class CartServiceImplement implements CartService {
             }
         }
         return productHaveNotEnoughQuantity;
+    }
+
+    private List<CartNotEnoughDto> checkQuantity(List<CartDetailDto> cartDetails, Cart cart) {
+        List<CartNotEnoughDto> productHaveNotEnoughQuantity = new ArrayList<>();
+        for (var cartDetail : cartDetails) {
+            // if checkSizeColorQuantity() return 0 if enough quantity to order
+            Integer checkedQuantity = checkSizeColorQuantity(cartDetail.getSize(), cartDetail.getColor(), cartDetail.getDesignedProductId(), cartDetail.getQuantity());
+            if (checkedQuantity != 0) {
+                productHaveNotEnoughQuantity.add(new CartNotEnoughDto(cart.getId(), checkedQuantity));
+            }
+        }
+        return productHaveNotEnoughQuantity;
+    }
+
+    public void addToCart(AddToCartDto addToCartDto, String email) {
+        Cart cart = getCartByEmail(email);
+        DesignedProduct designedProduct = designedProductRepository.findById(addToCartDto.getDesignId())
+            .orElseThrow(() -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
+        );
+
+        Optional<CartDetail> cartDetail = cartDetailRepository
+            .findByDesignedProductAndColorAndSize(designedProduct, addToCartDto.getColor(), addToCartDto.getSize());
+
+        if (cartDetail.isPresent()) {
+            CartDetail savedCartDetail = cartDetail.get();
+            savedCartDetail.setQuantity(savedCartDetail.getQuantity() + 1);
+            cartDetailRepository.save(savedCartDetail);
+        } else {
+            cartDetailRepository.save(
+                CartDetail.builder()
+                    .cart(cart)
+                    .size(addToCartDto.getSize())
+                    .color(addToCartDto.getColor())
+                    .quantity(1)
+                    .designedProduct(designedProduct)
+                    .build());
+        }
     }
 
     private Integer checkSizeColorQuantity(String sizeName, String colorName, int designedProductId, int quantity) {
