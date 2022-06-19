@@ -1,7 +1,10 @@
 package com.capstone.pod.controller.cart;
 
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.cartdetail.AddToCartDto;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
+import com.capstone.pod.dto.cartdetail.CartNotEnoughDto;
+import com.capstone.pod.dto.common.ResponseDTO;
 import com.capstone.pod.services.CartService;
 import com.capstone.pod.utils.Utils;
 import lombok.AllArgsConstructor;
@@ -26,20 +29,23 @@ public class CartController {
         return ResponseEntity.ok().body(cartService.getCard(email));
     }
 
-    @PostMapping
+    @PutMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public void updateCart(HttpServletRequest request , @RequestBody List<CartDetailDto> cartDetailDTO){
+    public ResponseEntity updateCart(HttpServletRequest request , @RequestBody List<CartDetailDto> cartDetailDTO){
         String jwt =request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
-         cartService.updateCart(cartDetailDTO,email);
+        ResponseDTO response =ResponseDTO.builder()
+            .data(cartService.updateCart(cartDetailDTO,email))
+            .build();
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{cartDetailId}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public void deleteCartDetail(HttpServletRequest request , @PathVariable int cartDetailId){
+    public ResponseEntity deleteCartDetail(HttpServletRequest request , @PathVariable int cartDetailId){
         String jwt =request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
-        cartService.deleteCartDetail(cartDetailId,email);
+        return ResponseEntity.ok().body(cartService.deleteCartDetail(cartDetailId,email));
     }
 
     @GetMapping("/checkQuantity")
@@ -48,5 +54,13 @@ public class CartController {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
         return ResponseEntity.ok().body(cartService.checkQuantityBeforeOrder(cartDetailDTO, email));
+    }
+
+    @GetMapping("/addToCart")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public void addToCart(HttpServletRequest request, @RequestBody AddToCartDto addToCartDto) {
+        String jwt = request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
+        cartService.addToCart(addToCartDto , email);
     }
 }
