@@ -18,6 +18,7 @@ import com.capstone.pod.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -25,7 +26,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +67,10 @@ public class UserServiceImplement implements UserService {
     public Page<UserDto> getAllUser(int pageNum, int pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Credential> credentials = credentialRepository.findAll(pageable);
-        Page<UserDto> pageUserDTO = credentials.map(user -> modelMapper.map(user, UserDto.class));
+        List<UserDto> listUserDto = credentials.stream()
+                .filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_USER)|| credential.getRole().getName().equals(RoleName.ROLE_ADMIN)).
+                map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
         return pageUserDTO;
     }
 
