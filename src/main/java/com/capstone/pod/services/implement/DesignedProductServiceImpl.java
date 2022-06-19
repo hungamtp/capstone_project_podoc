@@ -254,6 +254,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     }
     @Override
     public Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, int userId) {
+
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, userId);
         List<ViewOtherDesignDto> viewOtherDesignDtos = designedProductPage.stream().filter(designedProduct -> designedProduct.isPublish()==true).map(designedProduct -> ViewOtherDesignDto.builder()
                 .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
