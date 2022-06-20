@@ -275,12 +275,18 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             List sizeByFactory = designedProduct.getProduct().getSizeColors().get(i).getSizeColorByFactories().stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getSize().getName()).collect(Collectors.toList());
             sizes.add(sizeByFactory.get(0));
         }
+        double price = 0;
+        if(isPermittedUser(designId)){
+            price = designedProduct.getPriceByFactory().getPrice();
+        }
+        else price = designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice();
+
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
                 .id(designedProduct.getId())
                 .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
                 .colors(designedProduct.getDesignColors().stream().map(designColor -> designColor.getColor().getName()).collect(Collectors.toSet()))
                 .sizes(sizes)
-                .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
+                .price(price)
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
                 .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num+""))))
