@@ -18,5 +18,6 @@ public interface DesignedProductService {
     Page<ViewOtherDesignDto> viewMyDesign(Pageable page);
     Page<ViewAllDesignDto> viewAllDesign(Pageable page);
     Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, int userId);
+    ViewOtherDesignDto viewDesignDetailsByDesignId(int designId);
     void deleteDesignedProduct(int designedProductId);
 }

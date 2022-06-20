@@ -32,7 +32,6 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
     private final CredentialRepository credentialRepository;
-    private final UserRepository userRepository;
     private final ColorRepository colorRepository;
     private final DesignColorRepository designColorRepository;
     private final PriceByFactoryRepository priceByFactoryRepository;
@@ -268,6 +267,22 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .build()).collect(Collectors.toList());
         Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos,page,viewOtherDesignDtos.size());
         return dtoPage;
+    }
+
+    @Override
+    public ViewOtherDesignDto viewDesignDetailsByDesignId(int designId) {
+        DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
+                .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
+                .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
+                .name(designedProduct.getName())
+                .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num+""))))
+                .publish(designedProduct.isPublish())
+                .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
+                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).size())
+                .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+                .build();
+        return dto;
     }
 
     @Override

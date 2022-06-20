@@ -77,7 +77,7 @@ public class DesignedProductController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @GetMapping("/{designId}")
-    public ResponseEntity<ResponseDto> getDesignedProductById(@PathVariable int designId) {
+    public ResponseEntity<ResponseDto> getMyDesignByDesignId(@PathVariable int designId) {
         ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
         responseDto.setData(designedProductService.getDesignedProductById(designId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.GET_DESIGNED_PRODUCT_BY_ID_SUCCESS);
@@ -99,6 +99,14 @@ public class DesignedProductController {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         responseDto.setData(designedProductService.viewOtherDesign(pageable, userId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_OTHERS_DESIGNED_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @GetMapping("/details/{id}")
+    public ResponseEntity<ResponseDto> viewOtherDesignDetailsByDesignId(@PathVariable(name = "id") Integer id) {
+        ResponseDto<ViewOtherDesignDto> responseDto = new ResponseDto();
+        responseDto.setData(designedProductService.viewDesignDetailsByDesignId(id));
+        responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_DESIGNED_PRODUCT_DETAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
     @PermitAll
