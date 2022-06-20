@@ -6,6 +6,7 @@ import com.capstone.pod.dto.user.UserInDesignDto;
 import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @AllArgsConstructor
@@ -22,4 +23,7 @@ public class ViewOtherDesignDto {
     private double rating;
     private int sold;
     private List<String> tagName;
+    private Set colors;
+    private Set sizes;
+    private String factoryName;
 }

@@ -20,9 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -272,8 +270,16 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     @Override
     public ViewOtherDesignDto viewDesignDetailsByDesignId(int designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        Set sizes = new HashSet<>();
+        for (int i = 0; i < designedProduct.getProduct().getSizeColors().size(); i++) {
+            List sizeByFactory = designedProduct.getProduct().getSizeColors().get(i).getSizeColorByFactories().stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getSize().getName()).collect(Collectors.toList());
+            sizes.add(sizeByFactory.get(0));
+        }
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
                 .id(designedProduct.getId())
+                .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
+                .colors(designedProduct.getDesignColors().stream().map(designColor -> designColor.getColor().getName()).collect(Collectors.toSet()))
+                .sizes(sizes)
                 .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
