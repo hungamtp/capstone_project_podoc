@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class DesignedProductServiceImpl implements DesignedProductService {
+public class DesignedProductServiceImplement implements DesignedProductService {
     private final DesignedProductRepository designedProductRepository;
     private final ModelMapper modelMapper;
     private final ProductRepository productRepository;
@@ -240,6 +240,7 @@ public class DesignedProductServiceImpl implements DesignedProductService {
     public Page<ViewAllDesignDto> viewAllDesign(Pageable page) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(page);
         List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().filter(designedProduct -> designedProduct.isPublish()==true).map(designedProduct -> ViewAllDesignDto.builder()
+                .id(designedProduct.getId())
                 .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
