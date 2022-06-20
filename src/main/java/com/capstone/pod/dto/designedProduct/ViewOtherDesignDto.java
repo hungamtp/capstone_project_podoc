@@ -19,4 +19,7 @@ public class ViewOtherDesignDto {
     private double price;
     private UserInDesignDto user;
     private List<ImagePreviewDto> imagePreviews;
+    private double rating;
+    private int sold;
+    private List<String> tagName;
 }
