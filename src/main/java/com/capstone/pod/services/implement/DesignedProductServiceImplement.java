@@ -273,6 +273,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     public ViewOtherDesignDto viewDesignDetailsByDesignId(int designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
+                .id(designedProduct.getId())
                 .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
