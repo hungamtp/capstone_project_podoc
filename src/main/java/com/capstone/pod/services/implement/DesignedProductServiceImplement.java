@@ -287,6 +287,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
                 .colors(designedProduct.getDesignColors().stream().map(designColor -> designColor.getColor().getName()).collect(Collectors.toSet()))
                 .sizes(sizes)
+                .description(designedProduct.getDescription())
                 .price(price)
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())

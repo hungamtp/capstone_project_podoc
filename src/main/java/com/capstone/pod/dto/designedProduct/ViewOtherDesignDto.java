@@ -25,5 +25,6 @@ public class ViewOtherDesignDto {
     private List<String> tagName;
     private Set colors;
     private Set sizes;
+    private String description;
     private String factoryName;
 }
