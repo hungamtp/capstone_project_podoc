@@ -3,9 +3,11 @@ package com.capstone.pod.utils;
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.entities.Credential;
+import com.capstone.pod.entities.DesignedProduct;
 import com.capstone.pod.entities.Product;
 import com.capstone.pod.exceptions.CredentialNotFoundException;
 import com.capstone.pod.exceptions.PermissionException;
+import com.capstone.pod.filter.DesignedProductSpecificationBuilder;
 import com.capstone.pod.filter.ProductSpecificationBuilder;
 import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.repositories.CredentialRepository;
@@ -51,6 +53,18 @@ public class Utils {
             builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
         }
         Specification<Product> spec = builder.build();
+        return spec;
+    }
+    public static Specification buildDesignedProductSpecifications(String search) {
+        DesignedProductSpecificationBuilder builder = new DesignedProductSpecificationBuilder();
+
+        Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\X+?),");
+        Matcher matcher = pattern.matcher(search + ",");
+
+        while (matcher.find()) {
+            builder.with(matcher.group(1), matcher.group(2), matcher.group(3));
+        }
+        Specification<DesignedProduct> spec = builder.build();
         return spec;
     }
 

@@ -16,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -241,9 +242,9 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         return dtoPage;
     }
     @Override
-    public Page<ViewAllDesignDto> viewAllDesign(Pageable page) {
-        Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(page);
-        List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().filter(designedProduct -> designedProduct.isPublish()==true).map(designedProduct -> ViewAllDesignDto.builder()
+    public Page<ViewAllDesignDto> viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(specification ,page);
+        List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().map(designedProduct -> ViewAllDesignDto.builder()
                 .id(designedProduct.getId())
                 .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
