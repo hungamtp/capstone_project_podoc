@@ -21,6 +21,7 @@ public class Orders extends Auditable {
     private String address;
     private String phone;
     private String customerName;
+    private String isPaid;
     @ManyToOne
     User user;
     @ManyToOne

@@ -4,6 +4,7 @@ package com.capstone.pod.entities;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
@@ -12,7 +13,7 @@ import java.util.Collection;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SizeColor {
+public class SizeColor{
     @Id
     @GeneratedValue
     private int id;

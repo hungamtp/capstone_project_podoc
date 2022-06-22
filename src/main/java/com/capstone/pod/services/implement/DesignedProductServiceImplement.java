@@ -225,13 +225,20 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public Page<ViewOtherDesignDto> viewMyDesign(Pageable page) {
+    public Page<ViewMyDesignDto> viewMyDesign(Pageable page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
-        Page<ViewOtherDesignDto> viewOtherDesignDtoPage = designedProductPage.map(designedProduct -> modelMapper.map(designedProduct,ViewOtherDesignDto.class));
-        return viewOtherDesignDtoPage;
+        List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
+                .id(designedProduct.getId())
+                .name(designedProduct.getName())
+                .designedPrice(designedProduct.getDesignedPrice())
+                .publish(designedProduct.isPublish())
+                .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+                .build()).collect(Collectors.toList());
+        Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos,page,viewMyDesignDtos.size());
+        return dtoPage;
     }
     @Override
     public Page<ViewAllDesignDto> viewAllDesign(Pageable page) {

@@ -84,9 +84,9 @@ public class DesignedProductController {
         return ResponseEntity.ok().body(responseDto);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @GetMapping("/view")
+    @GetMapping("/mydesign")
     public ResponseEntity<ResponseDto> viewMyDesign(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
-        ResponseDto<Page<ViewOtherDesignDto>> responseDto = new ResponseDto();
+        ResponseDto<Page<ViewMyDesignDto>> responseDto = new ResponseDto();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         responseDto.setData(designedProductService.viewMyDesign(pageable));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_DESIGNED_PRODUCT_SUCCESS);

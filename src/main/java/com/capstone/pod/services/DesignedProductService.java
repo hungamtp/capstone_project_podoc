@@ -15,7 +15,7 @@ public interface DesignedProductService {
     DesignedProductReturnDto getDesignedProductById(int designId);
     DesignedProductReturnDto unPublishDesignedProduct(int designId);
     DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId);
-    Page<ViewOtherDesignDto> viewMyDesign(Pageable page);
+    Page<ViewMyDesignDto> viewMyDesign(Pageable page);
     Page<ViewAllDesignDto> viewAllDesign(Pageable page);
     Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, int userId);
     ViewOtherDesignDto viewDesignDetailsByDesignId(int designId);
