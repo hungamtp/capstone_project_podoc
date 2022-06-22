@@ -46,6 +46,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = {PhoneFormatException.class, NumberFormatException.class})
+    public ResponseEntity<Object> phoneFormatException(NumberFormatException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
     @ExceptionHandler(value = CartNotFoundException.class)
     public ResponseEntity<Object> cartNotFoundException(CartNotFoundException exception) {
         ResponseDto dto = new ResponseDto();

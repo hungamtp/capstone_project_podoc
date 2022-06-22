@@ -4,6 +4,7 @@ import com.capstone.pod.constant.role.RoleErrorMessage;
 import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.user.UserStatus;
+import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.auth.LoginDto;
 import com.capstone.pod.dto.auth.LoginResponseDto;
 import com.capstone.pod.dto.auth.RegisterDto;
@@ -12,10 +13,7 @@ import com.capstone.pod.dto.credential.CredentialDto;
 import com.capstone.pod.entities.Credential;
 import com.capstone.pod.entities.Role;
 import com.capstone.pod.entities.User;
-import com.capstone.pod.exceptions.EmailExistException;
-import com.capstone.pod.exceptions.EmailNotFoundException;
-import com.capstone.pod.exceptions.RoleNotFoundException;
-import com.capstone.pod.exceptions.UserDisableException;
+import com.capstone.pod.exceptions.*;
 import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.RoleRepository;
@@ -50,6 +48,12 @@ public class AuthServiceImplement implements AuthService {
         if(optionalUser.isPresent()){
             throw new EmailExistException(UserErrorMessage.EMAIL_EXIST);
         }
+       try {
+           Integer.parseInt(registerDto.getPhone());
+       }
+       catch (NumberFormatException e){
+           throw new NumberFormatException(ValidationMessage.PHONE_FORMAT_VALID_MESSAGE);
+       }
         User user = User.builder().lastName(registerDto.getLastName()).firstName(registerDto.getFirstName()).status(UserStatus.ACTIVE).build();
         Role role = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
         Credential credential = Credential.builder()
