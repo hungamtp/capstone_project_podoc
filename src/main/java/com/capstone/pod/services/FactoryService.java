@@ -2,6 +2,7 @@ package com.capstone.pod.services;
 
 import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
+import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
 import com.capstone.pod.dto.user.UpdatePasswordDto;
@@ -12,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 public interface FactoryService {
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable);
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto);
-    public AddFactoryResponse getFactoryById(int factoryId);
+    public FactoryByIdDto getFactorybyCredentialId(int credentialId);
     public UserDto updatePassword(UpdatePasswordDto user, int userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar, int userId);
     public void updateCollaborating(int factoryId, boolean isCollaborating);

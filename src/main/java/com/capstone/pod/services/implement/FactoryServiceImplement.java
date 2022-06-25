@@ -8,17 +8,20 @@ import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
+import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
+import com.capstone.pod.dto.product.ProductDto;
+import com.capstone.pod.dto.product.ProductImagesDto;
+import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
 import com.capstone.pod.dto.user.UpdatePasswordDto;
 import com.capstone.pod.dto.user.UserDto;
-import com.capstone.pod.entities.Credential;
-import com.capstone.pod.entities.Factory;
-import com.capstone.pod.entities.Role;
+import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.FactoryRepository;
 import com.capstone.pod.repositories.RoleRepository;
+import com.capstone.pod.repositories.SizeColorByFactoryRepository;
 import com.capstone.pod.services.FactoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,8 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +42,8 @@ public class FactoryServiceImplement implements FactoryService {
     private final FactoryRepository factoryRepository;
     private final CredentialRepository credentialRepository;
     private final RoleRepository roleRepository;
+    private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
+
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private  Credential getPermittedCredential(int credentialId) {
@@ -92,6 +96,39 @@ public class FactoryServiceImplement implements FactoryService {
         AddFactoryResponse addFactoryDto = modelMapper.map(credentialInrepo, AddFactoryResponse.class);
         return addFactoryDto;
     }
+
+    @Override
+    public FactoryByIdDto getFactorybyCredentialId(int credentialId) {
+        Credential credential = credentialRepository.findById(credentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        if(credential.getFactory() != null){
+            List<SizeColorByFactory>  sizeColorByFactories = (List<SizeColorByFactory>) credential.getFactory().getSizeColorByFactories();
+            Set<Product> productList = new HashSet<>();
+            for (int i = 0; i < sizeColorByFactories.size(); i++) {
+               productList.add(sizeColorByFactories.get(i).getSizeColor().getProduct());
+            }
+            List<ProductDto> productDtoList = productList.stream().map(product -> ProductDto.builder()
+                    .id(product.getId())
+                    .name(product.getName())
+                    .isPublic(product.isPublic())
+                    .isDeleted(product.isDeleted())
+                    .productImages(product.getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
+                    .categoryName(product.getCategory().getName())
+                    .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).color(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
+                    .build()).collect(Collectors.toList());
+        FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
+                        .email(credential.getEmail())
+                        .name(credential.getFactory()
+                        .getName()).location(credential.getFactory()
+                        .getLocation()).phone(credential.getPhone())
+                        .address(credential.getAddress())
+                        .image(credential.getImage())
+                        .productDtoList(productDtoList)
+                        .isCollaborating(credential.getFactory().isCollaborating()).build();
+        return factory;
+        }
+        throw new UserNameExistException(UserErrorMessage.FACTORY_NOT_EXIST_EXCETPTION);
+    }
+
     @Override
     public UserDto updatePassword(UpdatePasswordDto user, int credentialId) {
         Credential userRepo =  getPermittedCredential(credentialId);

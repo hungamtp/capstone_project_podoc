@@ -11,6 +11,8 @@ public final  class UserErrorMessage {
     public static final String UPDATE_USER_FAIL="Update user failed";
 
     public static final String EMAIL_OR_PASSWORD_INCORRECT="Email or password is incorrect";
+    public static final String FACTORY_NOT_EXIST_EXCETPTION="Factory is not existed";
+
     public static final String PASSWORD_DOES_NOT_MATCH="Old password does not match";
 
 }

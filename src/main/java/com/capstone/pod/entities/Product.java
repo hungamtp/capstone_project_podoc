@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Table(
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"name"})

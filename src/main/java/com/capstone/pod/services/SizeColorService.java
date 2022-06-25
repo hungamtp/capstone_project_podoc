@@ -12,8 +12,6 @@ import java.util.List;
 
 public interface SizeColorService {
     public List<SizeColorReturnDto> addSizeColor(int productId, SizeColorDto dto);
-    public List<SizeDto> getSizes();
-    public List<ColorDto> getColors();
 
     public Page<SizeDto> getAllSize(Pageable pageable);
     public SizeDto addSize(SizeDto sizeDto);

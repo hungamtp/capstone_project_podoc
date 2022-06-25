@@ -73,18 +73,6 @@ public class SizeColorServiceImplement implements SizeColorService {
     }
 
     @Override
-    public List<SizeDto> getSizes() {
-        List<Size> sizes = sizeRepository.findAll();
-        return sizes.stream().map(size -> modelMapper.map(size,SizeDto.class)).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ColorDto> getColors() {
-        List<Color> colors = colorRepository.findAll();
-        return colors.stream().map(color -> modelMapper.map(color,ColorDto.class)).collect(Collectors.toList());
-    }
-
-    @Override
     public Page<SizeDto> getAllSize(Pageable pageable) {
         Page<Size> sizes = sizeRepository.findAll(pageable);
         Page<SizeDto> sizeDtos = sizes.map(size -> modelMapper.map(size,SizeDto.class));

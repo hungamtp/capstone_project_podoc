@@ -5,6 +5,7 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.constant.user.UserSuccessMessage;
 import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
+import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
@@ -36,7 +37,18 @@ public class FactoryController {
         responseDTO.setData(getAllFactory);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_FACTORY_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
-    }    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDto> getFactoryByCredentialId(@PathVariable(name = "id") int id)
+    {
+        ResponseDto<FactoryByIdDto> responseDTO = new ResponseDto();
+        FactoryByIdDto factory = factoryService.getFactorybyCredentialId(id);
+        responseDTO.setData(factory);
+        responseDTO.setSuccessMessage(UserSuccessMessage.GET_FACTORY_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping
     public ResponseEntity<ResponseDto> add(@Validated @RequestBody AddFactoryDto factoryDto)
     {
