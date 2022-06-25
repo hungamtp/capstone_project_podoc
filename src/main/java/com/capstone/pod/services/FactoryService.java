@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 public interface FactoryService {
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable);
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto);
+    public AddFactoryResponse getFactoryById(int factoryId);
     public UserDto updatePassword(UpdatePasswordDto user, int userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar, int userId);
     public void updateCollaborating(int factoryId, boolean isCollaborating);

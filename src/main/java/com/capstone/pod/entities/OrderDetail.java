@@ -2,10 +2,8 @@ package com.capstone.pod.entities;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Builder
@@ -16,7 +14,7 @@ import javax.persistence.ManyToOne;
 public class OrderDetail {
     @Id
     @GeneratedValue
-    private String id;
+    private int id;
     private int quantity;
     private String color;
     private String size;
@@ -26,4 +24,6 @@ public class OrderDetail {
     private DesignedProduct designedProduct;
     @ManyToOne
     private Factory factory;
+    @OneToMany(mappedBy = "orderDetail")
+    List<OrderStatus> orderStatuses;
 }

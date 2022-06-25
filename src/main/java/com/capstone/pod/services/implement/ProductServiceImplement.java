@@ -77,10 +77,13 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public ProductDto publishProduct(int productId) {
         Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        if(product.getSizeColors().size()==0){
+        if(product.getSizeColors().isEmpty()){
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
         }
-        if(product.getPriceByFactories().size()==0){
+        if(product.getSizeColors().get(0).getSizeColorByFactories().isEmpty()){
+            throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
+        }
+        if(product.getPriceByFactories().isEmpty()){
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_PRICE);
         }
         product.setPublic(true);

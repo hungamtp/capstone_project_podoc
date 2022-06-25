@@ -46,7 +46,7 @@ public class OrderServiceImplement implements OrdersService {
         String customerName = currentCredential.getUser().getLastName() + " " +currentCredential.getUser().getFirstName();
         OrderStatus orderStatus = orderStatusRepository.findByName(OrderState.PENDING).orElseThrow(() -> new OrderStatusNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
 
-        Orders order = Orders.builder().orderStatus(orderStatus).address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
+        Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
         for (int i = 0; i < cartDetailList.size(); i++) {
 
         }

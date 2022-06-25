@@ -3,10 +3,7 @@ package com.capstone.pod.entities;
 import com.capstone.pod.dto.support.Auditable;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Collection;
 @Entity
 @Builder
@@ -19,6 +16,6 @@ public class OrderStatus extends Auditable {
     @GeneratedValue
     private int id;
     private String name;
-    @OneToMany(mappedBy = "orderStatus")
-    Collection<Orders> orders;
+    @ManyToOne
+    OrderDetail orderDetail;
 }

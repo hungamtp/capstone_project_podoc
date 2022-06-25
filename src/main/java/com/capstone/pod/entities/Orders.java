@@ -21,11 +21,9 @@ public class Orders extends Auditable {
     private String address;
     private String phone;
     private String customerName;
-    private String isPaid;
+    private boolean isPaid;
     @ManyToOne
     User user;
-    @ManyToOne
-    OrderStatus orderStatus;
 
     @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
     Collection<OrderDetail> orderDetails;

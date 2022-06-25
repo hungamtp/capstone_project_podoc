@@ -435,20 +435,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
 
 
 -- -----------------------------------------------------
--- Table `capstone_pod`.`order_status`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
-                                                             `id` INT NOT NULL,
-                                                             `create_date` DATE NULL DEFAULT NULL,
-                                                             `last_modified_date` DATE NULL DEFAULT NULL,
-                                                             `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                             PRIMARY KEY (`id`))
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `capstone_pod`.`orders`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
@@ -457,16 +443,12 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
                                                        `last_modified_date` DATE NULL DEFAULT NULL,
                                                        `address` VARCHAR(255) NULL DEFAULT NULL,
                                                        `customer_name` VARCHAR(255) NULL DEFAULT NULL,
+                                                       `is_paid` BIT(1) NOT NULL,
                                                        `phone` VARCHAR(255) NULL DEFAULT NULL,
                                                        `price` DOUBLE NOT NULL,
-                                                       `order_status_id` INT NULL DEFAULT NULL,
                                                        `user_id` INT NULL DEFAULT NULL,
                                                        PRIMARY KEY (`id`),
-                                                       INDEX `FK2n7p8t83wo7x0lep1q06a6cvy` (`order_status_id` ASC) VISIBLE,
                                                        INDEX `FKel9kyl84ego2otj2accfd8mr7` (`user_id` ASC) VISIBLE,
-                                                       CONSTRAINT `FK2n7p8t83wo7x0lep1q06a6cvy`
-                                                           FOREIGN KEY (`order_status_id`)
-                                                               REFERENCES `capstone_pod`.`order_status` (`id`),
                                                        CONSTRAINT `FKel9kyl84ego2otj2accfd8mr7`
                                                            FOREIGN KEY (`user_id`)
                                                                REFERENCES `capstone_pod`.`user` (`id`))
@@ -479,7 +461,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
 -- Table `capstone_pod`.`order_detail`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
-                                                             `id` VARCHAR(255) NOT NULL,
+                                                             `id` INT NOT NULL,
                                                              `color` VARCHAR(255) NULL DEFAULT NULL,
                                                              `quantity` INT NOT NULL,
                                                              `size` VARCHAR(255) NULL DEFAULT NULL,
@@ -499,6 +481,25 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
                                                              CONSTRAINT `FKrm4hw5w55k4634tlhnhyiciiv`
                                                                  FOREIGN KEY (`designed_product_id`)
                                                                      REFERENCES `capstone_pod`.`designed_product` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`order_status`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
+                                                             `id` INT NOT NULL,
+                                                             `create_date` DATE NULL DEFAULT NULL,
+                                                             `last_modified_date` DATE NULL DEFAULT NULL,
+                                                             `name` VARCHAR(255) NULL DEFAULT NULL,
+                                                             `order_detail_id` INT NULL DEFAULT NULL,
+                                                             PRIMARY KEY (`id`),
+                                                             INDEX `FKm1pbooh547jg5x2s01lv37i12` (`order_detail_id` ASC) VISIBLE,
+                                                             CONSTRAINT `FKm1pbooh547jg5x2s01lv37i12`
+                                                                 FOREIGN KEY (`order_detail_id`)
+                                                                     REFERENCES `capstone_pod`.`order_detail` (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
