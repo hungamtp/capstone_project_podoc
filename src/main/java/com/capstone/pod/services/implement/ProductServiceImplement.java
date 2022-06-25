@@ -3,7 +3,6 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.category.CategoryErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.converter.FactoryConverter;
-import com.capstone.pod.dto.color.ColorDto;
 import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.factory.FactoryProductDetailDto;
@@ -123,11 +122,10 @@ public class ProductServiceImplement implements ProductService {
 
     }
     @Override
-    public Page<ProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
+    public Page<ProductGetAllByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
-        Page<ProductDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductDto.class));
+        Page<ProductGetAllByAdminDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductGetAllByAdminDto.class));
         return pageProductDTO;
-
     }
 
     @Override

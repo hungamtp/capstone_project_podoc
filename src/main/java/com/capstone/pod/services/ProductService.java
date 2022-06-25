@@ -15,7 +15,7 @@ import java.util.List;
 public interface ProductService {
       ProductDto addProduct(AddProductDto productDto);
       PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
-      Page<ProductDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
+      Page<ProductGetAllByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
       ProductDto updateProduct(UpdateProductDto dto, int productId);
       ProductDto publishProduct(int productId);
