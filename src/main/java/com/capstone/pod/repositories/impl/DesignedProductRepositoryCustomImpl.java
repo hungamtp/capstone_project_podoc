@@ -40,9 +40,10 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             userJoin.get(User_.LAST_NAME).alias("username"),
             criteriaBuilder.count(orderDetailJoin.get(OrderDetail_.ID)).alias("soldCount")
         );
+        Predicate publishTrue = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
         List<Order> orderList = new ArrayList();
         orderList.add(criteriaBuilder.desc(criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR))));
-        query.orderBy(orderList);
+        query.orderBy(orderList).where(publishTrue);
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -71,10 +72,11 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
             userJoin.get(User_.LAST_NAME).alias("username"),
             criteriaBuilder.count(orderDetailJoin.get(OrderDetail_.ID)).alias("soldCount")
         );
+        Predicate publishTrue = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
         Predicate productIdEqual = criteriaBuilder.equal(productJoin.get(Product_.ID), productId);
         List<Order> orderList = new ArrayList();
         orderList.add(criteriaBuilder.desc(criteriaBuilder.avg(ratingJoin.get(Rating_.RATING_STAR))));
-        query.orderBy(orderList).where(productIdEqual);
+        query.orderBy(orderList).where(productIdEqual, publishTrue);
         return entityManager.createQuery(query).getResultList();
     }
 }
