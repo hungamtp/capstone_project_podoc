@@ -167,21 +167,6 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
 
-    @Override
-    public DesignedProductReturnDto publishDesignedProduct(int designId) {
-        if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
-        DesignedProduct designedProduct = designedProductRepository.findById(designId)
-                .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        designedProduct.setPublish(true);
-        DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProductRepository.save(designedProduct),DesignedProductReturnDto.class);
-        List<String> colors = new ArrayList<>();
-        for (int i = 0; i < designedProduct.getDesignColors().size(); i++) {
-            colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
-        }
-        designedProductReturnDto.setColors(colors);
-        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
-        return designedProductReturnDto;
-    }
 
     @Override
     public DesignedProductReturnDto getDesignedProductById(int designId) {

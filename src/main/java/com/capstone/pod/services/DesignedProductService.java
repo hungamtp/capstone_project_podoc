@@ -14,7 +14,6 @@ public interface DesignedProductService {
     List<DesignedProductDto> get4HighestRateDesignedProductByProductId(int designId);
     DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId, int factoryId);
     DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId);
-    DesignedProductReturnDto publishDesignedProduct(int designId);
     DesignedProductReturnDto getDesignedProductById(int designId);
     DesignedProductReturnDto unPublishDesignedProduct(int designId);
     DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId);

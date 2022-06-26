@@ -65,13 +65,6 @@ public class DesignedProductController {
         designedProductService.deleteDesignedProduct(designId);
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.DELETE_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
-    }    @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PatchMapping("/publish/{designId}")
-    public ResponseEntity<ResponseDto> publishDesignedProduct(@PathVariable int designId) {
-        ResponseDto<DesignedProductReturnDto> responseDto = new ResponseDto();
-        responseDto.setData(designedProductService.publishDesignedProduct(designId));
-        responseDto.setSuccessMessage(DesignedProductSuccessMessage.PUBLISH_DESIGNED_PRODUCT_SUCCESS);
-        return ResponseEntity.ok().body(responseDto);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PatchMapping("/un-publish/{designId}")
