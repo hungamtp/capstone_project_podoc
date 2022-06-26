@@ -55,9 +55,11 @@ public class CartController {
 
     @PutMapping("/addToCart")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public void addToCart(HttpServletRequest request, @RequestBody AddToCartDto addToCartDto) {
+    public ResponseEntity addToCart(HttpServletRequest request, @RequestBody AddToCartDto addToCartDto) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
-        cartService.addToCart(addToCartDto , email);
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setData(cartService.addToCart(addToCartDto , email));
+        return ResponseEntity.ok().body(responseDTO);
     }
 }

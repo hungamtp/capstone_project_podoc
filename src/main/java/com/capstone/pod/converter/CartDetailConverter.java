@@ -22,7 +22,7 @@ public class CartDetailConverter {
         return dtos.stream().map((dto -> dtoToEntity(dto , cartId))).collect(Collectors.toList());
     }
 
-    private CartDetailDto entityToDto(CartDetail cartDetail) {
+    public CartDetailDto entityToDto(CartDetail cartDetail) {
         return CartDetailDto.builder()
             .id(cartDetail.getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
