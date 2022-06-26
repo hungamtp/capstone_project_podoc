@@ -23,4 +23,5 @@ public interface DesignedProductService {
     Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, int userId);
     ViewOtherDesignDto viewDesignDetailsByDesignId(int designId);
     void deleteDesignedProduct(int designedProductId);
+    boolean publishOrUnpublishDesign(int designId , String email ,boolean publish);
 }
