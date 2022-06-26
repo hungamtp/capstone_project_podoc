@@ -6,10 +6,7 @@ import com.capstone.pod.constant.order.OrderErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.entities.*;
-import com.capstone.pod.exceptions.CartNotFoundException;
-import com.capstone.pod.exceptions.CredentialNotFoundException;
-import com.capstone.pod.exceptions.OrderStatusNotFoundException;
-import com.capstone.pod.exceptions.QuantityNotEnoughException;
+import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.OrdersService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +53,9 @@ public class OrderServiceImplement implements OrdersService {
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
+            if( cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted() || !cartDetailList.get(i).getDesignedProduct().isPublish() ) {
+                throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
+            }
            OrderDetail orderDetail = OrderDetail.builder()
                    .quantity(cartDetailList.get(i).getQuantity())
                    .orderStatuses(Arrays.asList(orderStatus))
