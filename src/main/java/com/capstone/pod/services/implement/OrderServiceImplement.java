@@ -27,6 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderServiceImplement implements OrdersService {
     private final CartRepository cartRepository;
+    private final CartDetailRepository cartDetailRepository;
     private final OrdersRepository ordersRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
@@ -52,8 +53,8 @@ public class OrderServiceImplement implements OrdersService {
         String address  = currentCredential.getAddress();
         String phone = currentCredential.getPhone();
         String customerName = currentCredential.getUser().getLastName() + " " +currentCredential.getUser().getFirstName();
-        OrderStatus orderStatus = orderStatusRepository.findByName(OrderState.PENDING).orElseThrow(() -> new OrderStatusNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
         Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
+        OrderStatus orderStatus = OrderStatus.builder().name(OrderState.PENDING).build();
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
@@ -62,6 +63,7 @@ public class OrderServiceImplement implements OrdersService {
             }
            OrderDetail orderDetail = OrderDetail.builder()
                    .orders(order)
+                   .orderStatuses(Arrays.asList(orderStatus))
                    .quantity(cartDetailList.get(i).getQuantity())
                    .orderStatuses(Arrays.asList(orderStatus))
                    .color(cartDetailList.get(i).getColor())
@@ -89,5 +91,6 @@ public class OrderServiceImplement implements OrdersService {
         order.setPrice(totalPrice);
         order.setPaid(false);
         ordersRepository.save(order);
+        cartDetailRepository.deleteAllInBatch(cartDetailList);
     }
 }
