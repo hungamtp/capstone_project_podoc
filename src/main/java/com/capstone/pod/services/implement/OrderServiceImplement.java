@@ -1,6 +1,7 @@
 package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.cart.CartErrorMessage;
+import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.order.OrderErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
@@ -42,6 +43,9 @@ public class OrderServiceImplement implements OrdersService {
     @Transactional
     public void addOrder(int cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR));
+        if(cart.getUser().getId() != getCredential().getUser().getId()){
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
         List<CartDetail> cartDetailList = cart.getCartDetails();
         Credential currentCredential = getCredential();
         double totalPrice = 0;
