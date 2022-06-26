@@ -116,7 +116,7 @@ public class FactoryServiceImplement implements FactoryService {
                     .productImages(product.getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
                     .categoryName(product.getCategory().getName())
                     .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).color(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
-                    .build()).collect(Collectors.toList());
+                    .build()).sorted(Comparator.comparing(productDto -> productDto.getId())).collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
                         .name(credential.getFactory()
