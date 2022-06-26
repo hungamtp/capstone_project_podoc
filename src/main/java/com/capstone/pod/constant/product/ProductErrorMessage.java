@@ -10,6 +10,7 @@ public final class ProductErrorMessage {
     public static final String SIZE_NOT_FOUND = "Size not found";
     public static final String PRICE_BY_FACTORY_EXISTED = "Price by factory already existed";
     public static final String PRICE_BY_FACTORY_NOT_EXISTED = "Price by factory not existed";
+    public static final String QUANTITY_BY_FACTORY_NOT_ENOUGH = "Quantity by factory not enough";
 
 
 }

@@ -52,6 +52,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = QuantityNotEnoughException.class)
+    public ResponseEntity<Object> quantityNotEnoughException(QuantityNotEnoughException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
     @ExceptionHandler(value = PriceByFactoryNotExistedException.class)
     public ResponseEntity<Object> pricebyFactoryNotExistedException(PriceByFactoryNotExistedException exception) {
         ResponseDto dto = new ResponseDto();

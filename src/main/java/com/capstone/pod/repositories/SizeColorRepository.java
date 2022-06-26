@@ -17,4 +17,5 @@ public interface SizeColorRepository extends JpaRepository<SizeColor,Integer> , 
     Optional<SizeColor> findSizeColorByColorAndSizeAndProduct(Color color , Size size , Product product);
 
     Optional<SizeColor> findByColorNameAndSizeNameAndProductId(String colorName, String sizeName, int productId);
+    Optional<SizeColor> findByColorImageColorAndSizeNameAndProductId(String imageColor, String sizeName, int productId);
 }
