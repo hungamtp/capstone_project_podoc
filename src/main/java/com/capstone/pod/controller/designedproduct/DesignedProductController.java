@@ -2,6 +2,7 @@ package com.capstone.pod.controller.designedproduct;
 
 import com.capstone.pod.constant.designedproduct.DesignedProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.common.ResponseDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.http.ResponseDto;
@@ -111,7 +112,7 @@ public class DesignedProductController {
     @PermitAll
     @GetMapping
     public ResponseEntity<ResponseDto> viewAllDesign(@RequestParam Integer pageNumber, @RequestParam Integer pageSize, @RequestParam @Nullable String search) {
-        ResponseDto<Page<ViewAllDesignDto>> responseDto = new ResponseDto();
+        ResponseDto<PageDTO> responseDto = new ResponseDto();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         search = StringUtils.isEmpty(search) ? "publish:true" : search.concat(", publish:true");
         Specification spec = Utils.buildDesignedProductSpecifications(search);

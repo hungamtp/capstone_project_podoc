@@ -7,6 +7,7 @@ import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
+import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
@@ -25,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.swing.text.View;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -231,7 +233,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         return dtoPage;
     }
     @Override
-    public Page<ViewAllDesignDto> viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
+    public PageDTO viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(specification ,page);
         List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().map(designedProduct -> ViewAllDesignDto.builder()
                 .id(designedProduct.getId())
@@ -244,7 +246,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
                 .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).size())
                 .build()).collect(Collectors.toList());
-        Page<ViewAllDesignDto> dtoPage = new PageImpl<>(viewAllDesignDtos,page,viewAllDesignDtos.size());
+        PageDTO dtoPage = PageDTO.builder().page(page.getPageNumber()).data(viewAllDesignDtos).elements((int) designedProductPage.getTotalElements()).build();
         return dtoPage;
     }
     @Override
