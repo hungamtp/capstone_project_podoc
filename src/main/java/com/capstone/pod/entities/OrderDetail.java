@@ -24,6 +24,6 @@ public class OrderDetail {
     private DesignedProduct designedProduct;
     @ManyToOne
     private Factory factory;
-    @OneToMany(mappedBy = "orderDetail")
+    @OneToMany(mappedBy = "orderDetail",cascade = CascadeType.ALL)
     List<OrderStatus> orderStatuses;
 }

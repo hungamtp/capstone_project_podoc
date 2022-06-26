@@ -6,6 +6,7 @@ import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.order.OrderErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
@@ -29,7 +30,6 @@ public class OrderServiceImplement implements OrdersService {
     private final OrdersRepository ordersRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
-    private final CartDetailRepository cartDetailRepository;
     private final CredentialRepository credentialRepository;
     private final OrderStatusRepository orderStatusRepository;
 
@@ -61,19 +61,26 @@ public class OrderServiceImplement implements OrdersService {
                 throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
             }
            OrderDetail orderDetail = OrderDetail.builder()
+                   .orders(order)
                    .quantity(cartDetailList.get(i).getQuantity())
                    .orderStatuses(Arrays.asList(orderStatus))
                    .color(cartDetailList.get(i).getColor())
                    .size(cartDetailList.get(i).getSize())
                    .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
                    .designedProduct(cartDetailList.get(i).getDesignedProduct()).build();
-           Optional<SizeColor> sizeColor = sizeColorRepository.findByColorImageColorAndSizeNameAndProductId(cartDetailList.get(i).getColor(),cartDetailList.get(i).getSize(),cartDetailList.get(i).getDesignedProduct().getProduct().getId());
-           Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory(),sizeColor.get());
-           if(sizeColorByFactory.get().getQuantity() < cartDetailList.get(i).getQuantity()){
+            orderStatus.setOrderDetail(orderDetail);
+            int finalI = i;
+            SizeColor sizeColor = sizeColorRepository
+                   .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(),orderDetail.getSize(),orderDetail.getDesignedProduct().getProduct().getId())
+                   .orElseThrow(() -> new SizeNotFoundException(String.format(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION,cartDetailList.get(finalI).getColor(),cartDetailList.get(finalI).getSize(),cartDetailList.get(finalI).getDesignedProduct().getProduct().getName())));
+
+            SizeColorByFactory sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(),sizeColor)
+                   .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXISTED_IN_FACTORY_EXCEPTION));
+           if(sizeColorByFactory.getQuantity() < cartDetailList.get(i).getQuantity()){
                throw new QuantityNotEnoughException(ProductErrorMessage.QUANTITY_BY_FACTORY_NOT_ENOUGH);
            }
-           sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity()-cartDetailList.get(i).getQuantity());
-           sizeColorByFactories.add(sizeColorByFactory.get());
+           sizeColorByFactory.setQuantity(sizeColorByFactory.getQuantity()-cartDetailList.get(i).getQuantity());
+           sizeColorByFactories.add(sizeColorByFactory);
            orderDetails.add(orderDetail);
            totalPrice += cartDetailList.get(i).getQuantity()* ( cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
         }
