@@ -16,4 +16,5 @@ public class CartDetailDto {
     private String color;
     private String size;
     private int quantity;
+    private boolean publish;
 }
