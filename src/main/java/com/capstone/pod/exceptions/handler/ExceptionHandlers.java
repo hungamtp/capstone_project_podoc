@@ -46,6 +46,18 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = PriceByFactoryExistedException.class)
+    public ResponseEntity<Object> pricebyFactoryExistedException(PriceByFactoryExistedException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = PriceByFactoryNotExistedException.class)
+    public ResponseEntity<Object> pricebyFactoryNotExistedException(PriceByFactoryNotExistedException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
     @ExceptionHandler(value = SizeExistedException.class)
     public ResponseEntity<Object> categoryExistedException(SizeExistedException exception) {
         ResponseDto dto = new ResponseDto();

@@ -8,6 +8,7 @@ import com.capstone.pod.dto.factory.AddFactoryResponse;
 import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.http.ResponseDto;
+import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
 import com.capstone.pod.dto.user.UpdatePasswordDto;
 import com.capstone.pod.dto.user.UserDto;
@@ -20,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("factory")
@@ -82,6 +85,30 @@ public class FactoryController {
         UserDto checkDTO = factoryService.updatePassword(user, id);
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_FACTORY_SUCCESS);
         responseDTO.setData(checkDTO);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PostMapping("add-price")
+    public ResponseEntity<ResponseDto> AddPriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price ) {
+        ResponseDto<Void> responseDTO = new ResponseDto();
+        factoryService.addPriceByFactoryToProduct(factoryId, productId, price);
+        responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_PRICE_TO_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PatchMapping("update-price")
+    public ResponseEntity<ResponseDto> UpdatePriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price) {
+        ResponseDto<Void> responseDTO = new ResponseDto();
+        factoryService.updatePriceByFactoryToProduct(factoryId, productId, price);
+        responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_PRICE_TO_PRODUCT_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PostMapping("add-size-color")
+    public ResponseEntity<ResponseDto> AddSizeAndColorByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestBody List<SizeColorInFactoryDetailDto> sizeColors) {
+        ResponseDto<Void> responseDTO = new ResponseDto();
+        factoryService.addSizeColorToProduct(factoryId, productId, sizeColors);
+        responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_SIZE_COLOR_TO_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 }

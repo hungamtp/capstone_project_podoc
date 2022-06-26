@@ -8,6 +8,8 @@ public final class ProductErrorMessage {
     public static final String PRODUCT_NOT_HAVE_COLOR_AND_SIZE = "This product don't have price and color";
     public static final String COLOR_NOT_FOUND = "Color not found";
     public static final String SIZE_NOT_FOUND = "Size not found";
+    public static final String PRICE_BY_FACTORY_EXISTED = "Price by factory already existed";
+    public static final String PRICE_BY_FACTORY_NOT_EXISTED = "Price by factory not existed";
 
 
 }

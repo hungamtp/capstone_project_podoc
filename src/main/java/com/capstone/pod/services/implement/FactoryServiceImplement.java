@@ -3,8 +3,10 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.factory.FactoryErrorMessage;
+import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.role.RoleErrorMessage;
 import com.capstone.pod.constant.role.RoleName;
+import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
@@ -18,10 +20,7 @@ import com.capstone.pod.dto.user.UpdatePasswordDto;
 import com.capstone.pod.dto.user.UserDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
-import com.capstone.pod.repositories.CredentialRepository;
-import com.capstone.pod.repositories.FactoryRepository;
-import com.capstone.pod.repositories.RoleRepository;
-import com.capstone.pod.repositories.SizeColorByFactoryRepository;
+import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.FactoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -42,6 +41,9 @@ public class FactoryServiceImplement implements FactoryService {
     private final FactoryRepository factoryRepository;
     private final CredentialRepository credentialRepository;
     private final RoleRepository roleRepository;
+    private final PriceByFactoryRepository priceByFactoryRepository;
+    private final ProductRepository productRepository;
+    private final SizeColorRepository sizeColorRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -153,12 +155,41 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
-    public void addSizeColorToProduct(int productId) {
-
+    public void addSizeColorToProduct(int factoryId, int productId, List<SizeColorInFactoryDetailDto> sizeColors) {
+        Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
+        Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
+        for (int i = 0; i < sizeColors.size(); i++) {
+            SizeColor sizeColor = sizeColorRepository.findByColorNameAndSizeNameAndProductId(sizeColors.get(i).getColor(),sizeColors.get(i).getSize(), product.getId())
+                    .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION));
+            Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryIdAndSizeColorId(factoryId,sizeColor.getId());
+            if(sizeColorByFactory.isPresent()){
+                throw new SizeExistedException(SizeColorErrorMessage.SIZE_AND_COLOR_EXISTED_IN_FACTORY_EXCEPTION);
+            }
+            SizeColorByFactory sizeColorByFactoryAdd = SizeColorByFactory.builder().factory(factory).sizeColor(sizeColor).quantity(sizeColors.get(i).getQuantity()).build();
+            sizeColorByFactories.add(sizeColorByFactoryAdd);
+        }
+        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
 
     @Override
-    public void addPriceByFactoryToProduct(int productId) {
+    public void addPriceByFactoryToProduct(int factoryId, int productId, double price) {
+       Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+       Factory factory = factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
+       Optional<PriceByFactory> priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId);
+       if(priceByFactoryInRepo.isPresent()){
+           throw new PriceByFactoryExistedException(ProductErrorMessage.PRICE_BY_FACTORY_EXISTED);
+       }
+       PriceByFactory priceByFactory = PriceByFactory.builder().factory(factory).product(product).price(price).build();
+       priceByFactoryRepository.save(priceByFactory);
+    }
 
+    @Override
+    public void updatePriceByFactoryToProduct(int factoryId, int productId, double price) {
+        productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
+        PriceByFactory priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId).orElseThrow(() -> new PriceByFactoryNotExistedException(ProductErrorMessage.PRICE_BY_FACTORY_NOT_EXISTED));
+        priceByFactoryInRepo.setPrice(price);
+        priceByFactoryRepository.save(priceByFactoryInRepo);
     }
 }

@@ -15,4 +15,6 @@ import java.util.Optional;
 public interface SizeColorRepository extends JpaRepository<SizeColor,Integer> , SizeColorRepositoryCustom {
     public Page<SizeColor> findSizeColorByProductId(Pageable pageable, String productId);
     Optional<SizeColor> findSizeColorByColorAndSizeAndProduct(Color color , Size size , Product product);
+
+    Optional<SizeColor> findByColorNameAndSizeNameAndProductId(String colorName, String sizeName, int productId);
 }

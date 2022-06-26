@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface SizeColorByFactoryRepository extends JpaRepository<SizeColorByFactory , Integer> {
     Optional<SizeColorByFactory> findByFactoryAndSizeColor(Factory factory , SizeColor sizeColor);
     List<SizeColorByFactory> findAllBySizeColorProductId(int productId);
+
+    Optional<SizeColorByFactory> findByFactoryIdAndSizeColorId(int factoryId, int sizeColorId);
 }
