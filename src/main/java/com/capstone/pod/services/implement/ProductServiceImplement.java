@@ -122,9 +122,9 @@ public class ProductServiceImplement implements ProductService {
 
     }
     @Override
-    public Page<ProductGetAllByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
+    public Page<ProductByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable) {
         Page<Product> pageProduct = productRepository.findAll(specification, pageable);
-        Page<ProductGetAllByAdminDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductGetAllByAdminDto.class));
+        Page<ProductByAdminDto> pageProductDTO = pageProduct.map(product -> modelMapper.map(product, ProductByAdminDto.class));
         return pageProductDTO;
     }
 
@@ -199,9 +199,9 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto getProductByIdAdmin(int productId) {
+    public ProductByAdminDto getProductByIdAdmin(int productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        return modelMapper.map(product,ProductDto.class);
+        return modelMapper.map(product,ProductByAdminDto.class);
     }
 
     @Override

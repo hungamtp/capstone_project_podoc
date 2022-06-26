@@ -15,7 +15,7 @@ import java.util.List;
 public interface ProductService {
       ProductDto addProduct(AddProductDto productDto);
       PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
-      Page<ProductGetAllByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
+      Page<ProductByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
       ProductDto updateProduct(UpdateProductDto dto, int productId);
       ProductDto publishProduct(int productId);
@@ -23,7 +23,7 @@ public interface ProductService {
       ProductDto deleteProduct(int productId);
 
       ProductDetailDto getProductById(int id);
-      ProductDto getProductByIdAdmin(int id);
+      ProductByAdminDto getProductByIdAdmin(int id);
 
       List<ProductBluePrintDto> getProductBluePrintByProductId(int productId);
 

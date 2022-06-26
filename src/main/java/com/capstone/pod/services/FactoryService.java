@@ -17,4 +17,6 @@ public interface FactoryService {
     public UserDto updatePassword(UpdatePasswordDto user, int userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar, int userId);
     public void updateCollaborating(int factoryId, boolean isCollaborating);
+    public void addSizeColorToProduct(int productId);
+    public void addPriceByFactoryToProduct(int productId);
 }

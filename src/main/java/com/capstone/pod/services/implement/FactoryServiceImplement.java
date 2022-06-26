@@ -150,5 +150,15 @@ public class FactoryServiceImplement implements FactoryService {
       Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
       factory.setCollaborating(isCollaborating);
       factoryRepository.save(factory);
-    };
+    }
+
+    @Override
+    public void addSizeColorToProduct(int productId) {
+
+    }
+
+    @Override
+    public void addPriceByFactoryToProduct(int productId) {
+
+    }
 }
