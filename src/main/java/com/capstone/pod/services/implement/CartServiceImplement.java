@@ -58,7 +58,7 @@ public class CartServiceImplement implements CartService {
     public void updateCart(List<CartDetailDto> dtos, String email) {
         Cart cart = getCartByEmail(email);
         cart.setCartDetails(cartDetailConverter.dtoToEntities(dtos, cart.getId()));
-            cartRepository.save(cart);
+        cartRepository.save(cart);
     }
 
     public List<CartNotEnoughDto> checkQuantityBeforeOrder(List<CartDetailDto> cartDetails, String email) {
@@ -90,14 +90,18 @@ public class CartServiceImplement implements CartService {
         Cart cart = getCartByEmail(email);
         DesignedProduct designedProduct = designedProductRepository.findById(addToCartDto.getDesignId())
             .orElseThrow(() -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
-        );
+            );
+
+        if (!designedProduct.isPublish())
+            throw new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND);
+
 
         Optional<CartDetail> cartDetail = cartDetailRepository
             .findByDesignedProductAndColorAndSize(designedProduct, addToCartDto.getColor(), addToCartDto.getSize());
 
         if (cartDetail.isPresent()) {
             CartDetail savedCartDetail = cartDetail.get();
-            savedCartDetail.setQuantity(savedCartDetail.getQuantity() + 1);
+            savedCartDetail.setQuantity(savedCartDetail.getQuantity() + addToCartDto.getQuantity());
             cartDetailRepository.save(savedCartDetail);
         } else {
             cartDetailRepository.save(
@@ -105,7 +109,7 @@ public class CartServiceImplement implements CartService {
                     .cart(cart)
                     .size(addToCartDto.getSize())
                     .color(addToCartDto.getColor())
-                    .quantity(1)
+                    .quantity(addToCartDto.getQuantity())
                     .designedProduct(designedProduct)
                     .build());
         }

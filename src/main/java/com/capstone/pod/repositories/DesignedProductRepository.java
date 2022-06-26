@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface DesignedProductRepository extends JpaRepository<DesignedProduct,Integer> , DesignedProductRepositoryCustom, JpaSpecificationExecutor<DesignedProduct> {
     Page<DesignedProduct> findAllByUserId(Pageable page, int userId);

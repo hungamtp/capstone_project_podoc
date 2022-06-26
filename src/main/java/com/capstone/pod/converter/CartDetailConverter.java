@@ -29,6 +29,7 @@ public class CartDetailConverter {
             .designedProductName(cartDetail.getDesignedProduct().getName())
             .color(cartDetail.getColor())
             .size(cartDetail.getSize())
+            .publish(cartDetail.getDesignedProduct().isPublish())
             .designedImage(cartDetail.getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
             .price(Double.valueOf(cartDetail.getDesignedProduct().getDesignedPrice() + cartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
             .quantity(cartDetail.getQuantity())
