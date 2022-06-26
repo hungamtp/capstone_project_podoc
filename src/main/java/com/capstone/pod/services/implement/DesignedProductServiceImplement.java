@@ -1,9 +1,12 @@
 package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.common.CommonMessage;
+import com.capstone.pod.constant.common.EntityName;
+import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
@@ -21,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -315,6 +319,29 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductRepository.delete(designedProduct);
 
+    }
+
+    @Override
+    public boolean publishOrUnpublishDesign(int designId, String email , boolean publish) {
+        Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
+            ()  -> new EntityNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
+        );
+
+        if(credential.getUser() == null)
+            throw new EntityNotFoundException(EntityName.USER + ErrorMessage.NOT_FOUND);
+
+
+        DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
+        );
+
+        if(designedProduct.getUser().getId() != credential.getUser().getId()){
+            throw new EntityNotFoundException(ValidationMessage.WRONG_OWNER);
+        }
+
+        designedProduct.setPublish(publish);
+        designedProductRepository.save(designedProduct);
+        return true;
     }
 
     @Override

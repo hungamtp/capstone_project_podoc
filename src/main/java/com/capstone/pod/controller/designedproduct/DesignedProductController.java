@@ -2,6 +2,7 @@ package com.capstone.pod.controller.designedproduct;
 
 import com.capstone.pod.constant.designedproduct.DesignedProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.common.ResponseDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.services.DesignedProductService;
@@ -19,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -131,5 +133,23 @@ public class DesignedProductController {
         responseDto.setData(designedProductService.editDesignedProductPrice(dto, designId));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.UPDATE_DESIGNED_PRODUCT_PRICE_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
+    }
+
+    @PutMapping("/publish/{designId}")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity<Boolean> publishDesign(HttpServletRequest request , @PathVariable Integer designId){
+        String jwt = request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
+        designedProductService.publishOrUnpublishDesign(designId , email , true);
+        return ResponseEntity.ok().body(true);
+    }
+
+    @PutMapping("/unpublish/{designId}")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity<Boolean> unpublishDesign(HttpServletRequest request , @PathVariable Integer designId){
+        String jwt = request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
+        designedProductService.publishOrUnpublishDesign(designId , email , false);
+        return ResponseEntity.ok().body(true);
     }
 }
