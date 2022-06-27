@@ -55,8 +55,13 @@ public class EmailServiceImplement implements EmailService {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(credential.getEmail());
-        mimeMessageHelper.setSubject("Email address verification");
-        mimeMessageHelper.setText("Please click this link to verify your email"+" http://localhost:8080/auth/confirm/"+credential.getEmail()+"/"+token);
+        mimeMessageHelper.setSubject("Email address verification from PODOC");
+        mimeMessageHelper.setText("Thank you for verifying your account, please click the link below to verify your email \n"+"http://localhost:8080/auth/confirm/"
+                +credential.getEmail()+"/"
+                +token
+                +"\nThank you & Best Regards, \n" +
+                "\n" +
+                "On behalf of the PODOC Team");
         javaMailSender.send(mimeMessage);
     }
 
