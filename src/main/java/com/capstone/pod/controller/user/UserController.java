@@ -154,7 +154,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PermitAll
-    @GetMapping("confirm/{emai}")
+    @GetMapping("confirm/{email}")
     public ResponseEntity<ResponseDto> confirm(@PathVariable(name = "email") String email) {
         ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
         emailService.confirm(email);
