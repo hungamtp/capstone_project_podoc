@@ -30,6 +30,7 @@ public class Credential extends Auditable{
     private String address;
     private String phone;
     private String image;
+    private boolean isMailVerified;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private Role role;

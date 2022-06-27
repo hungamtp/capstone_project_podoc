@@ -5,6 +5,7 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.constant.user.UserSuccessMessage;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.user.*;
+import com.capstone.pod.services.EmailService;
 import com.capstone.pod.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,11 +14,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
+import javax.mail.MessagingException;
+
 @RestController
 @RequestMapping("user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final EmailService emailService;
     @GetMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<ResponseDto> getUserById(@PathVariable(name = "id") int userId)  {
@@ -138,6 +143,22 @@ public class UserController {
         Page<UserDto> userPage = userService.getAllByRoleName(pageNumber, pageSize, roleName);
         responseDTO.setData(userPage);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_USER_BY_ROLE_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PermitAll
+    @GetMapping("verify")
+    public ResponseEntity<ResponseDto> sendEmailToVerify() throws MessagingException {
+        ResponseDto<Void> responseDTO = new ResponseDto();
+        emailService.sendEmail();
+        responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_EMAIL_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PermitAll
+    @GetMapping("confirm/{emai}")
+    public ResponseEntity<ResponseDto> confirm(@PathVariable(name = "email") String email) {
+        ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
+        emailService.confirm(email);
+        responseDTO.setSuccessMessage(UserSuccessMessage.VERIFY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 
