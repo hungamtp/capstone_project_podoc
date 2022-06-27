@@ -153,8 +153,8 @@ public class UserController {
         responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PermitAll
-    @GetMapping("confirm/{email}")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PatchMapping("confirm/{email}")
     public ResponseEntity<ResponseDto> confirm(@PathVariable(name = "email") String email) {
         ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
         emailService.confirm(email);
