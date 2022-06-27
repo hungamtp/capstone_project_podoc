@@ -229,7 +229,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .publish(designedProduct.isPublish())
                 .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
                 .build()).collect(Collectors.toList());
-        Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos,page,viewMyDesignDtos.size());
+        Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos,page,designedProductPage.getTotalElements());
         return dtoPage;
     }
     @Override
