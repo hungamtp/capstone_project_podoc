@@ -1,5 +1,7 @@
 package com.capstone.pod.dto.designedProduct;
 
+import com.capstone.pod.dto.color.ColorDto;
+import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.user.UserDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
@@ -23,7 +25,7 @@ public class ViewOtherDesignDto {
     private double rating;
     private int sold;
     private List<String> tagName;
-    private Set colors;
+    private Set<ColorInDesignDto> colors;
     private Set sizes;
     private String description;
     private String factoryName;

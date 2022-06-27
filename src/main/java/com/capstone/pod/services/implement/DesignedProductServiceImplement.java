@@ -7,6 +7,7 @@ import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
+import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
@@ -281,10 +282,16 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         }
         else price = designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice();
 
+        Set<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
+                .map(designColor -> ColorInDesignDto.builder()
+                        .id(designColor.getId())
+                        .image(designColor.getColor().getImageColor())
+                        .name(designColor.getColor().getName()).build())
+                .collect(Collectors.toSet());
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
                 .id(designedProduct.getId())
                 .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
-                .colors(designedProduct.getDesignColors().stream().map(designColor -> designColor.getColor().getName()).collect(Collectors.toSet()))
+                .colors(colors)
                 .sizes(sizes)
                 .description(designedProduct.getDescription())
                 .price(price)
