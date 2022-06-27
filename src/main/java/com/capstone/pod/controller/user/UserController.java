@@ -154,10 +154,10 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    @PatchMapping("confirm/{email}")
-    public ResponseEntity<ResponseDto> confirm(@PathVariable(name = "email") String email) {
+    @PatchMapping("confirm/{email}/{token}")
+    public ResponseEntity<ResponseDto> confirm(@PathVariable(name = "email") String email,@PathVariable(name = "token") String token) {
         ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
-        emailService.confirm(email);
+        emailService.confirm(email,token);
         responseDTO.setSuccessMessage(UserSuccessMessage.VERIFY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

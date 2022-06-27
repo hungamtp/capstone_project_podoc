@@ -32,6 +32,7 @@ public class VerificationTokenServiceImplement implements VerificationTokenServi
         VerificationToken verificationToken = VerificationToken.builder().expiryDate(calculateExpiryTime(24*60)).token(token).credential(credential).build();
          verificationRepository.save(verificationToken);
     }
+
     private Timestamp calculateExpiryTime(int expiryTimeInMinutes){
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, expiryTimeInMinutes);

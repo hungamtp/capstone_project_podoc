@@ -6,5 +6,5 @@ import javax.mail.MessagingException;
 
 public interface EmailService {
     public void sendEmail() throws MessagingException;
-    public void confirm(String email);
+    public void confirm(String email, String token);
 }
