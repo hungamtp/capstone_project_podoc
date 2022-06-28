@@ -441,6 +441,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
                                                        `id` INT NOT NULL,
                                                        `create_date` DATE NULL DEFAULT NULL,
                                                        `last_modified_date` DATE NULL DEFAULT NULL,
+                                                       `transaction_id` VARCHAR(255) NULL DEFAULT NULL,
                                                        `address` VARCHAR(255) NULL DEFAULT NULL,
                                                        `customer_name` VARCHAR(255) NULL DEFAULT NULL,
                                                        `is_paid` BIT(1) NOT NULL,
