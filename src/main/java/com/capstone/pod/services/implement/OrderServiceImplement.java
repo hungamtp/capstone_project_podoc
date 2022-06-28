@@ -3,16 +3,16 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.cart.CartErrorMessage;
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
-import com.capstone.pod.constant.order.OrderErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
+import com.capstone.pod.dto.order.ReturnOrderDTO;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.OrdersService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.criterion.Order;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +32,7 @@ public class OrderServiceImplement implements OrdersService {
     private final SizeColorRepository sizeColorRepository;
     private final CredentialRepository credentialRepository;
     private final OrderStatusRepository orderStatusRepository;
+    private final ModelMapper modelMapper;
 
     private Credential getCredential(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,7 +42,7 @@ public class OrderServiceImplement implements OrdersService {
     }
     @Override
     @Transactional
-    public int addOrder(int cartId) {
+    public ReturnOrderDTO addOrder(int cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR));
         if(cart.getUser().getId() != getCredential().getUser().getId()){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
@@ -91,8 +91,8 @@ public class OrderServiceImplement implements OrdersService {
         order.setPrice(totalPrice);
         order.setPaid(false);
         order.setTransactionId("");
-        ordersRepository.save(order);
+        Orders savedOrder = ordersRepository.save(order);
         cartDetailRepository.deleteAllInBatch(cartDetailList);
-        return order.getId();
+        return modelMapper.map(savedOrder , ReturnOrderDTO.class);
     }
 }
