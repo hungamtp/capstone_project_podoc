@@ -69,7 +69,7 @@ public class UserServiceImplement implements UserService {
         List<UserDto> listUserDto = credentials.stream()
                 .filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_USER)|| credential.getRole().getName().equals(RoleName.ROLE_ADMIN)).
                 map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
-        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,credentials.getTotalElements());
         return pageUserDTO;
     }
 

@@ -177,11 +177,13 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProduct,DesignedProductReturnDto.class);
-        List<String> colors = new ArrayList<>();
-        for (int i = 0; i < designedProduct.getDesignColors().size(); i++) {
-            colors.add(designedProduct.getDesignColors().get(i).getColor().getName());
-        }
-        designedProductReturnDto.setColors(colors);
+        Set<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
+                .map(designColor -> ColorInDesignDto.builder()
+                        .id(designColor.getId())
+                        .image(designColor.getColor().getImageColor())
+                        .name(designColor.getColor().getName()).build())
+                .collect(Collectors.toSet());
+        designedProductReturnDto.setColorsObj(colors);
         designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }

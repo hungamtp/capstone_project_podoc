@@ -23,7 +23,6 @@ USE `capstone_pod` ;
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`user` (
                                                      `id` INT NOT NULL,
                                                      `first_name` VARCHAR(255) NULL DEFAULT NULL,
-                                                     `is_mail_verified` BIT(1) NOT NULL,
                                                      `last_name` VARCHAR(255) NULL DEFAULT NULL,
                                                      `status` VARCHAR(255) NULL DEFAULT NULL,
                                                      PRIMARY KEY (`id`))
@@ -255,6 +254,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
                                                            `address` VARCHAR(255) NULL DEFAULT NULL,
                                                            `email` VARCHAR(255) NULL DEFAULT NULL,
                                                            `image` VARCHAR(255) NULL DEFAULT NULL,
+                                                           `is_mail_verified` BIT(1) NOT NULL,
                                                            `password` VARCHAR(255) NULL DEFAULT NULL,
                                                            `phone` VARCHAR(255) NULL DEFAULT NULL,
                                                            `factory_id` INT NULL DEFAULT NULL,
@@ -682,6 +682,24 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color_by_factory` (
                                                                       CONSTRAINT `FKpb3ltk705b1sm8sxrixsilin4`
                                                                           FOREIGN KEY (`factory_id`)
                                                                               REFERENCES `capstone_pod`.`factory` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`verification_token`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`verification_token` (
+                                                                   `id` INT NOT NULL,
+                                                                   `expiry_date` DATETIME NULL DEFAULT NULL,
+                                                                   `token` VARCHAR(255) NULL DEFAULT NULL,
+                                                                   `credential_id` INT NULL DEFAULT NULL,
+                                                                   PRIMARY KEY (`id`),
+                                                                   INDEX `FKmsnuyxtj0395n1s1y9qaw6pr5` (`credential_id` ASC) VISIBLE,
+                                                                   CONSTRAINT `FKmsnuyxtj0395n1s1y9qaw6pr5`
+                                                                       FOREIGN KEY (`credential_id`)
+                                                                           REFERENCES `capstone_pod`.`credential` (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;

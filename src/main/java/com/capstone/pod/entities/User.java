@@ -19,7 +19,6 @@ public class User{
     private int id;
     private String firstName;
     private String lastName;
-    private boolean isMailVerified;
     private String status;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
