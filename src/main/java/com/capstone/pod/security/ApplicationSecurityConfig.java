@@ -48,7 +48,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/v3/api-docs/",
                         "/swagger-ui/**",
                         "/design/**",
-                        "/category/**")
+                        "/category/**",
+                        "/order/**")
                 .permitAll().anyRequest().authenticated();
     }
 
