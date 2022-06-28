@@ -42,7 +42,7 @@ public class OrderServiceImplement implements OrdersService {
     }
     @Override
     @Transactional
-    public void addOrder(int cartId) {
+    public int addOrder(int cartId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR));
         if(cart.getUser().getId() != getCredential().getUser().getId()){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
@@ -90,7 +90,9 @@ public class OrderServiceImplement implements OrdersService {
         order.setOrderDetails(orderDetails);
         order.setPrice(totalPrice);
         order.setPaid(false);
+        order.setTransactionId("");
         ordersRepository.save(order);
         cartDetailRepository.deleteAllInBatch(cartDetailList);
+        return order.getId();
     }
 }

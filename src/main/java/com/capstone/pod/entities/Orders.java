@@ -17,6 +17,7 @@ public class Orders extends Auditable {
     @Id
     @GeneratedValue
     private int id;
+    private String transactionId;
     private double price;
     private String address;
     private String phone;
@@ -27,5 +28,4 @@ public class Orders extends Auditable {
 
     @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
     Collection<OrderDetail> orderDetails;
-
 }

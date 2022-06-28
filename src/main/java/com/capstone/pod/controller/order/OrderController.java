@@ -20,8 +20,8 @@ public class OrderController {
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<ResponseDto> addOrder(@RequestParam int cartId){
-        ResponseDto<Void> responseDto = new ResponseDto();
-        ordersService.addOrder(cartId);
+        ResponseDto<Integer> responseDto = new ResponseDto();
+        responseDto.setData(ordersService.addOrder(cartId));
         responseDto.setSuccessMessage(OrderSuccessMessage.ORDER_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
