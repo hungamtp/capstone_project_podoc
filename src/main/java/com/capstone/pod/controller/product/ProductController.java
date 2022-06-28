@@ -123,6 +123,14 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @GetMapping("/product-for-factory")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> getProductFactoryNotHaveYet(@RequestParam int factoryId){
+        ResponseDto<List<GetProductFactoryDto>> responseDTO = new ResponseDto();
+        responseDTO.setData(productService.getAllProductForFactoryDoNotHaveYet(factoryId));
+        responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_FOR_FACTORY_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PatchMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> deleteProductById(@PathVariable(name="id") int productId){

@@ -232,4 +232,10 @@ public class ProductServiceImplement implements ProductService {
         List<ColorInDesignDto> colorsReturn =  colors.stream().distinct().collect(Collectors.toList());
         return colorsReturn;
     }
+
+    @Override
+    public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId) {
+        List<Product> productList = productRepository.findAllByPriceByFactoriesFactoryId(factoryId);
+        return productList.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).collect(Collectors.toList());
+    }
 }

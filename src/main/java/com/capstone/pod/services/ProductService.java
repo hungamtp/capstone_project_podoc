@@ -29,4 +29,6 @@ public interface ProductService {
 
       SizeColorByProductIdDto getSizesAndColorByProductId(int productId);
       List<ColorInDesignDto> getColorsByProductNameAndFactoryName(int productId, int factoryId);
+
+      List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId);
 }
