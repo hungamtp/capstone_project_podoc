@@ -98,7 +98,7 @@ public class SizeColorServiceImplement implements SizeColorService {
     public ColorDto addColor(ColorDto colorDto) {
         Optional<Color> colorInRepo =  colorRepository.findByName(colorDto.getName());
         if(colorInRepo.isPresent()) throw new SizeExistedException(String.format(SizeColorErrorMessage.COLOR_EXISTED_EXCEPTION,colorDto.getName()));
-        Color color = Color.builder().name(colorDto.getName()).build();
+        Color color = Color.builder().imageColor(colorDto.getImageColor()).name(colorDto.getName()).build();
         return modelMapper.map(colorRepository.save(color),ColorDto.class);
     }
 }
