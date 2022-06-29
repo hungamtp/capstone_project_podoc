@@ -233,9 +233,24 @@ public class ProductServiceImplement implements ProductService {
 
     @Override
     public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId) {
-       List<PriceByFactory> priceByFactories = priceByFactoryRepository.findAll();
-       List<PriceByFactory> priceByFactories2 =  priceByFactories.stream().filter(priceByFactory -> priceByFactory.getFactory().getId() != factoryId).collect(Collectors.toList());
-       List<Product> products =  priceByFactories2.stream().map(priceByFactory -> priceByFactory.getProduct()).collect(Collectors.toList());
-       return products.stream().map(product -> GetProductFactoryDto.builder().name(product.getName()).id(product.getId()).build()).collect(Collectors.toList());
+       List<PriceByFactory> priceByFactoriesAll = priceByFactoryRepository.findAll();
+       List<PriceByFactory> priceByFactoriesInFactory =  priceByFactoriesAll.stream().filter(priceByFactory -> priceByFactory.getFactory().getId() == factoryId).collect(Collectors.toList());
+
+       List<Product> productsAll=  productRepository.findAll();
+       List<Product> productsInFactory =  priceByFactoriesInFactory.stream().map(priceByFactory -> priceByFactory.getProduct()).distinct().collect(Collectors.toList());
+       List<Product> productsReturn =  new ArrayList<>();
+       boolean tmp = true;
+        for (int i = 0; i < productsAll.size(); i++) {
+            for (int j = 0; j < productsInFactory.size(); j++) {
+                if(productsAll.get(i).equals(productsInFactory.get(j))){
+                    tmp = false;
+                }
+            }
+            if(tmp) {
+                productsReturn.add(productsAll.get(i));
+            }
+            tmp= true;
+        }
+        return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).collect(Collectors.toList());
     }
 }
