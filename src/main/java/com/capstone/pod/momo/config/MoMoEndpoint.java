@@ -10,8 +10,10 @@ public class MoMoEndpoint {
     private String tokenBind;
     private String tokenCbInquiry;
     private String tokenDelete;
+    private String redirectUrl;
+    private String notiUrl;
 
-    public MoMoEndpoint(String endpoint, String create, String refund, String query, String confirm, String tokenPay, String tokenBind, String tokenQueryCb, String tokenDelete) {
+    public MoMoEndpoint(String endpoint, String create, String refund, String query, String confirm, String tokenPay, String tokenBind, String tokenQueryCb, String tokenDelete , String returnUrl , String notiUrl) {
         this.endpoint = endpoint;
         this.create = create;
         this.confirm = confirm;
@@ -21,6 +23,8 @@ public class MoMoEndpoint {
         this.tokenBind = tokenBind;
         this.tokenCbInquiry = tokenQueryCb;
         this.tokenDelete = tokenDelete;
+        this.redirectUrl = returnUrl;
+        this.notiUrl = notiUrl;
     }
 
     public String getCreateUrl() {
@@ -53,5 +57,21 @@ public class MoMoEndpoint {
 
     public String getTokenDeleteUrl() {
         return endpoint + tokenDelete;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getNotiUrl() {
+        return notiUrl;
+    }
+
+    public void setNotiUrl(String notiUrl) {
+        this.notiUrl = notiUrl;
     }
 }

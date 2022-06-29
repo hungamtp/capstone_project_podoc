@@ -1,7 +1,10 @@
 package com.capstone.pod.services;
 
 
-public interface OrdersService {
-    public int addOrder(int cartId);
+import com.capstone.pod.dto.order.ReturnOrderDTO;
 
+public interface OrdersService {
+    public ReturnOrderDTO addOrder(int cartId);
+    void setPaymentIdForOrder(int orderId , String paymentId);
+    void completeOrder(String paymentId);
 }
