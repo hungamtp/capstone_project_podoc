@@ -17,4 +17,5 @@ public class ImagePreviewDto {
     private String image;
     @NotBlank(message = ValidationMessage.POSITION_VALID_MESSAGE)
     private String position;
+    private String color;
 }

@@ -72,7 +72,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
 
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
-            imagePreviews.add(ImagePreview.builder().designedProduct(designedProduct).image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
+            imagePreviews.add(ImagePreview.builder().designedProduct(designedProduct).image(dto.getImagePreviews().get(i).getImage()).color(dto.getImagePreviews().get(i).getColor()).position(dto.getImagePreviews().get(i).getPosition()).build());
         }
         designedProduct.setImagePreviews(imagePreviews);
         designedProduct.setBluePrints(new ArrayList<>());
@@ -120,7 +120,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
-            imagePreviews.add(ImagePreview.builder().designedProduct(designedProductInRepo).image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
+            imagePreviews.add(ImagePreview.builder().designedProduct(designedProductInRepo).color(dto.getImagePreviews().get(i).getColor()).image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
         }
         designedProductInRepo.setDescription(dto.getDescription());
         designedProductInRepo.setName(dto.getName());
