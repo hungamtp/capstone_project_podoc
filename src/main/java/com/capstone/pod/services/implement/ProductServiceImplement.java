@@ -235,7 +235,6 @@ public class ProductServiceImplement implements ProductService {
     public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId) {
        List<PriceByFactory> priceByFactoriesAll = priceByFactoryRepository.findAll();
        List<PriceByFactory> priceByFactoriesInFactory =  priceByFactoriesAll.stream().filter(priceByFactory -> priceByFactory.getFactory().getId() == factoryId).collect(Collectors.toList());
-
        List<Product> productsAll=  productRepository.findAll();
        List<Product> productsInFactory =  priceByFactoriesInFactory.stream().map(priceByFactory -> priceByFactory.getProduct()).distinct().collect(Collectors.toList());
        List<Product> productsReturn =  new ArrayList<>();
