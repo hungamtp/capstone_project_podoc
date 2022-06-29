@@ -1,6 +1,9 @@
 package com.capstone.pod.controller.order;
 
+import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.common.ResponseDTO;
+import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.momo.config.Environment;
@@ -13,6 +16,7 @@ import com.capstone.pod.services.PayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +28,7 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<PaymentResponse> addOrder(@RequestParam int cartId, @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+    public ResponseEntity<PaymentResponse> addOrder(@RequestParam int cartId,@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
         ReturnOrderDto returnOrderDTO = ordersService.addOrder(cartId, shippingInfoDto);
         String orderInfo = new StringBuilder().append(
                 returnOrderDTO.getCustomerName()
@@ -56,6 +60,15 @@ public class OrderController {
 
         PaymentResponse captureWalletMoMoResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.toString(amount), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
         return ResponseEntity.ok().body(captureWalletMoMoResponse);
+    }
+
+    @GetMapping("shippinginfos")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity<ResponseDto> getAllShippingInfos(){
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setData(ordersService.getMyShippingInfo());
+        responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/complete")

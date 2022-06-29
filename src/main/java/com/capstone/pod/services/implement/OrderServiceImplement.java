@@ -25,6 +25,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -141,5 +142,18 @@ public class OrderServiceImplement implements OrdersService {
 
         orders.setPaid(true);
         ordersRepository.save(orders);
+    }
+
+    @Override
+    public List<ShippingInfoDto> getMyShippingInfo() {
+        List<ShippingInfo> shippingInfoList = shippingInfoRepository.findAllByUserId(getCredential().getUser().getId());
+        List<ShippingInfoDto> shippingInfoDtos = shippingInfoList.stream().map(shippingInfo -> ShippingInfoDto.builder()
+                .id(shippingInfo.getId())
+                .address(shippingInfo.getShippingAddress())
+                .name(shippingInfo.getName())
+                .email(shippingInfo.getEmailAddress())
+                .phone(shippingInfo.getPhoneNumber())
+                .build()).collect(Collectors.toList());
+        return shippingInfoDtos;
     }
 }
