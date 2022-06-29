@@ -89,7 +89,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("add-price")
-    public ResponseEntity<ResponseDto> AddPriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price ) {
+    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price ) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.addPriceByFactoryToProduct(factoryId, productId, price);
         responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_PRICE_TO_PRODUCT_SUCCESS);
@@ -97,7 +97,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("update-price")
-    public ResponseEntity<ResponseDto> UpdatePriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price) {
+    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.updatePriceByFactoryToProduct(factoryId, productId, price);
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_PRICE_TO_PRODUCT_SUCCESS);
@@ -105,7 +105,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("add-size-color")
-    public ResponseEntity<ResponseDto> AddSizeAndColorByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestBody List<SizeColorInFactoryDetailDto> sizeColors) {
+    public ResponseEntity<ResponseDto> addSizeAndColorByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestBody List<SizeColorInFactoryDetailDto> sizeColors) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.addSizeColorToProduct(factoryId, productId, sizeColors);
         responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_SIZE_COLOR_TO_PRODUCT_SUCCESS);

@@ -12,5 +12,5 @@ import lombok.Setter;
 public class SizeColorInFactoryDetailDto {
     private int quantity;
     private String size;
-    private String color;
+    private String colorImage;
 }

@@ -31,6 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -115,7 +116,7 @@ public class FactoryServiceImplement implements FactoryService {
                     .isDeleted(product.isDeleted())
                     .productImages(product.getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
                     .categoryName(product.getCategory().getName())
-                    .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).color(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
+                    .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
                     .build()).sorted(Comparator.comparing(productDto -> productDto.getId())).collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
@@ -155,12 +156,13 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
+    @Transactional
     public void addSizeColorToProduct(int factoryId, int productId, List<SizeColorInFactoryDetailDto> sizeColors) {
         Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
         Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
         for (int i = 0; i < sizeColors.size(); i++) {
-            SizeColor sizeColor = sizeColorRepository.findByColorNameAndSizeNameAndProductId(sizeColors.get(i).getColor(),sizeColors.get(i).getSize(), product.getId())
+            SizeColor sizeColor = sizeColorRepository.findByColorImageColorAndSizeNameAndProductId(sizeColors.get(i).getColorImage(),sizeColors.get(i).getSize(), product.getId())
                     .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION));
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryIdAndSizeColorId(factoryId,sizeColor.getId());
             if(sizeColorByFactory.isPresent()){
