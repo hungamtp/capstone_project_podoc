@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Builder
@@ -25,4 +26,6 @@ public class ShippingInfoDto {
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
     @Size(min = ValidationSize.ADDRESS_MIN, message = ValidationMessage.ADDRESS_SIZE_VALID_MESSAGE)
     private String address;
+    @NotNull(message = ValidationMessage.ADDRESS_VALID_MESSAGE)
+    private boolean shouldSave;
 }

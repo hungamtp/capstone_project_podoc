@@ -39,6 +39,7 @@ public final class ValidationMessage {
     public static final String DESIGN_INFOS_VALID_MESSAGE = "Design details must be filled";
     public static final String PHONE_FORMAT_VALID_MESSAGE = "Phone must be numeric";
     public static final String WRONG_OWNER = "WRONG OWNER";
+    public static final String SHOULD_SAVE = "Should save can not be null";
 
 
 

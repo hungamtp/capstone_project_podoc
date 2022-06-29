@@ -60,7 +60,9 @@ public class OrderServiceImplement implements OrdersService {
                 .emailAddress(shippingInfoDto.getEmail())
                 .user(getCredential().getUser())
                 .build();
-        shippingInfoRepository.save(shippingInfo);
+        if(shippingInfoDto.isShouldSave()) {
+            shippingInfoRepository.save(shippingInfo);
+        }
         List<CartDetail> cartDetailList = cart.getCartDetails();
         if(cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
         Credential currentCredential = getCredential();
