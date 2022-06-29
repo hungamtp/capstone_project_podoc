@@ -14,10 +14,7 @@ import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
-import com.capstone.pod.repositories.CategoryRepository;
-import com.capstone.pod.repositories.ProductBluePrintRepository;
-import com.capstone.pod.repositories.ProductImagesRepository;
-import com.capstone.pod.repositories.ProductRepository;
+import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,6 +33,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class ProductServiceImplement implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final PriceByFactoryRepository priceByFactoryRepository;
     private final ModelMapper modelMapper;
     private final ProductBluePrintRepository productBluePrintRepository;
 
@@ -235,6 +233,9 @@ public class ProductServiceImplement implements ProductService {
 
     @Override
     public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId) {
-        return null;
+       List<PriceByFactory> priceByFactories = priceByFactoryRepository.findAll();
+       List<PriceByFactory> priceByFactories2 =  priceByFactories.stream().filter(priceByFactory -> priceByFactory.getFactory().getId() != factoryId).collect(Collectors.toList());
+       List<Product> products =  priceByFactories2.stream().map(priceByFactory -> priceByFactory.getProduct()).collect(Collectors.toList());
+       return products.stream().map(product -> GetProductFactoryDto.builder().name(product.getName()).id(product.getId()).build()).collect(Collectors.toList());
     }
 }

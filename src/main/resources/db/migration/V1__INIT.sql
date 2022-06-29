@@ -423,6 +423,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
                                                               `id` INT NOT NULL,
                                                               `image` VARCHAR(255) NULL DEFAULT NULL,
                                                               `position` VARCHAR(255) NULL DEFAULT NULL,
+                                                              `color` VARCHAR(255) NULL DEFAULT NULL,
                                                               `designed_product_id` INT NULL DEFAULT NULL,
                                                               PRIMARY KEY (`id`),
                                                               INDEX `FKkhpt0kvab2o7vns3ikvne5fk9` (`designed_product_id` ASC) VISIBLE,
