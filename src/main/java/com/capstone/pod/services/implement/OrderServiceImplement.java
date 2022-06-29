@@ -8,7 +8,8 @@ import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
-import com.capstone.pod.dto.order.ReturnOrderDTO;
+import com.capstone.pod.dto.order.ReturnOrderDto;
+import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
@@ -31,6 +32,7 @@ public class OrderServiceImplement implements OrdersService {
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
     private final OrdersRepository ordersRepository;
+    private final ShippingInfoRepository shippingInfoRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
     private final CredentialRepository credentialRepository;
@@ -45,12 +47,21 @@ public class OrderServiceImplement implements OrdersService {
     }
     @Override
     @Transactional
-    public ReturnOrderDTO addOrder(int cartId) {
+    public ReturnOrderDto addOrder(int cartId, ShippingInfoDto shippingInfoDto) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR));
         if(cart.getUser().getId() != getCredential().getUser().getId()){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
+        ShippingInfo shippingInfo = ShippingInfo.builder()
+                .phoneNumber(shippingInfoDto.getPhone())
+                .name(shippingInfoDto.getName())
+                .shippingAddress(shippingInfoDto.getAddress())
+                .emailAddress(shippingInfoDto.getEmail())
+                .user(getCredential().getUser())
+                .build();
+        shippingInfoRepository.save(shippingInfo);
         List<CartDetail> cartDetailList = cart.getCartDetails();
+        if(cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
         Credential currentCredential = getCredential();
         double totalPrice = 0;
         String address  = currentCredential.getAddress();
@@ -92,11 +103,20 @@ public class OrderServiceImplement implements OrdersService {
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
         order.setOrderDetails(orderDetails);
         order.setPrice(totalPrice);
+        order.setAddress(shippingInfo.getEmailAddress());
+        order.setPhone(shippingInfo.getPhoneNumber());
+        order.setCustomerName(shippingInfo.getName());
         order.setPaid(false);
         order.setTransactionId("");
-        Orders savedOrder = ordersRepository.save(order);
+        ordersRepository.save(order);
         cartDetailRepository.deleteAllInBatch(cartDetailList);
-        return modelMapper.map(savedOrder , ReturnOrderDTO.class);
+        return ReturnOrderDto.builder().id(order.getId())
+                .address(shippingInfo.getShippingAddress())
+                .phone(shippingInfo.getPhoneNumber())
+                .price(totalPrice)
+                .transactionId(order.getTransactionId())
+                .customerName(shippingInfoDto.getName())
+                .build();
     }
 
     @Override

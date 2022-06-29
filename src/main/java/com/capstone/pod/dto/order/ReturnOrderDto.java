@@ -7,7 +7,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ReturnOrderDTO {
+public class ReturnOrderDto {
     private int id;
     private String transactionId;
     private double price;

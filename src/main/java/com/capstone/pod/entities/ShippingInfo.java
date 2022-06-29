@@ -21,7 +21,6 @@ public class ShippingInfo {
     private String phoneNumber;
     private String emailAddress;
     private String shippingAddress;
-
     @ManyToOne
     User user;
 }

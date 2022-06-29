@@ -1,9 +1,8 @@
 package com.capstone.pod.controller.order;
 
-import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.dto.http.ResponseDto;
-import com.capstone.pod.dto.order.ReturnOrderDTO;
+import com.capstone.pod.dto.order.ReturnOrderDto;
+import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.momo.config.Environment;
 import com.capstone.pod.momo.enums.RequestType;
 import com.capstone.pod.momo.models.PaymentResponse;
@@ -25,9 +24,8 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<PaymentResponse> addOrder(@RequestParam int cartId) throws Exception {
-
-        ReturnOrderDTO returnOrderDTO = ordersService.addOrder(cartId);
+    public ResponseEntity<PaymentResponse> addOrder(@RequestParam int cartId, @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+        ReturnOrderDto returnOrderDTO = ordersService.addOrder(cartId, shippingInfoDto);
         String orderInfo = new StringBuilder().append(
                 returnOrderDTO.getCustomerName()
             )
