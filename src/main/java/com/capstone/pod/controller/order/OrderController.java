@@ -1,5 +1,6 @@
 package com.capstone.pod.controller.order;
 
+import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.ResponseDTO;
@@ -30,11 +31,11 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<PaymentResponse> addOrder(@RequestParam int cartId,@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+    public ResponseEntity<ResponseDTO> addOrder(@RequestParam int cartId,@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+        LogUtils.init();
+        ResponseDTO responseDTO = new ResponseDTO();
         ReturnOrderDto returnOrderDTO = ordersService.addOrder(cartId, shippingInfoDto);
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-
-        String orderInfo = ow.writeValueAsString(returnOrderDTO);
+        String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s" , returnOrderDTO.getId() , returnOrderDTO.getPrice() , returnOrderDTO.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
         Double amount = returnOrderDTO.getPrice();
@@ -42,11 +43,20 @@ public class OrderController {
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
 
-        PaymentResponse paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId, Double.toString(amount), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
+        PaymentResponse paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId,Long.valueOf(amount.longValue()).toString() , orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
 
         //set paymentId to order
+        if(amount < 1000 || amount > 50000000){
+            responseDTO.setErrorMessage(ErrorMessage.PRICE_ERROR);
+            return  ResponseEntity.ok().body(responseDTO);
+        }
+        if(paymentResponse == null){
+            responseDTO.setErrorMessage(ErrorMessage.MOMO_ERROR);
+            return  ResponseEntity.ok().body(responseDTO);
+        }
         ordersService.setPaymentIdForOrder(returnOrderDTO.getId(), paymentResponse.getOrderId());
-        return ResponseEntity.ok().body(paymentResponse);
+        responseDTO.setData(paymentResponse);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping

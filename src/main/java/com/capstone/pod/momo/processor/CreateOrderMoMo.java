@@ -44,7 +44,7 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
 
             return captureMoMoResponse;
         } catch (Exception exception) {
-            LogUtils.error("[CreateOrderMoMoProcess] "+ exception);
+            System.out.println("[CreateOrderMoMoProcess] "+ exception);
         }
         return null;
     }
@@ -70,12 +70,10 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
                     "&" + Parameter.PAY_URL + "=" + captureMoMoResponse.getPayUrl() +
                     "&" + Parameter.RESULT_CODE + "=" + captureMoMoResponse.getResultCode();
 
-            LogUtils.info("[PaymentMoMoResponse] rawData: " + responserawData);
-
             return captureMoMoResponse;
 
         } catch (Exception exception) {
-            LogUtils.error("[PaymentMoMoResponse] "+ exception);
+            System.out.println("[PaymentMoMoResponse] "+ exception);
             throw new IllegalArgumentException("Invalid params capture MoMo Request");
         }
     }
@@ -108,12 +106,11 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
                     .toString();
 
             String signRequest = Encoder.signHmacSHA256(requestRawData, partnerInfo.getSecretKey());
-            LogUtils.debug("[PaymentRequest] rawData: " + requestRawData + ", [Signature] -> " + signRequest);
 
-            return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo, Long.valueOf(amount), "test MoMo", null, requestType,
+            return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo,  Long.valueOf(amount), "test MoMo", null, requestType,
                     returnUrl, notifyUrl, "test store ID", extraData, null, autoCapture, null, signRequest);
         } catch (Exception e) {
-            LogUtils.error("[PaymentRequest] "+ e);
+            System.out.println("[PaymentRequest] "+ e);
         }
 
         return null;
