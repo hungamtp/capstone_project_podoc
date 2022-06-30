@@ -33,7 +33,6 @@ public class CartServiceImplement implements CartService {
 
     public List<CartDetailDto> getCard(String email) {
         Cart cart = getCartByEmail(email);
-
         if (cart.getCartDetails() == null) {
             return null;
         }

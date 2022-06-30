@@ -24,7 +24,7 @@ public class CartDetailConverter {
 
     public CartDetailDto entityToDto(CartDetail cartDetail) {
         return CartDetailDto.builder()
-            .id(cartDetail.getId())
+            .id(cartDetail.getId()).cartId(cartDetail.getCart().getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
             .designedProductName(cartDetail.getDesignedProduct().getName())
             .color(cartDetail.getColor())

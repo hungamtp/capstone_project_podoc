@@ -9,6 +9,7 @@ import lombok.*;
 @Builder
 public class CartDetailDto {
     private int id;
+    private int cartId;
     private int designedProductId;
     private Float price;
     private String designedProductName;
