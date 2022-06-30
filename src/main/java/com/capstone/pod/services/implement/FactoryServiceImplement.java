@@ -104,10 +104,10 @@ public class FactoryServiceImplement implements FactoryService {
     public FactoryByIdDto getFactorybyCredentialId(int credentialId) {
         Credential credential = credentialRepository.findById(credentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         if(credential.getFactory() != null){
-            List<SizeColorByFactory>  sizeColorByFactories = (List<SizeColorByFactory>) credential.getFactory().getSizeColorByFactories();
+            List<PriceByFactory>  priceByFactories = (List<PriceByFactory>) credential.getFactory().getPriceByFactories();
             Set<Product> productList = new HashSet<>();
-            for (int i = 0; i < sizeColorByFactories.size(); i++) {
-               productList.add(sizeColorByFactories.get(i).getSizeColor().getProduct());
+            for (int i = 0; i < priceByFactories.size(); i++) {
+               productList.add(priceByFactories.get(i).getProduct());
             }
             List<ProductDto> productDtoList = productList.stream().map(product -> ProductDto.builder()
                     .id(product.getId())
@@ -117,7 +117,7 @@ public class FactoryServiceImplement implements FactoryService {
                     .productImages(product.getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
                     .categoryName(product.getCategory().getName())
                     .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
-                    .build()).sorted(Comparator.comparing(productDto -> productDto.getId())).collect(Collectors.toList());
+                    .build()).sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
                         .name(credential.getFactory()
