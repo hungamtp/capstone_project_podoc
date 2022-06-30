@@ -212,7 +212,7 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public SizeColorByProductIdDto getSizesAndColorByProductId(int productId) {
         Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        List<String> colors = product.getSizeColors().stream().map(sizeColor -> sizeColor.getColor().getName()).distinct().collect(Collectors.toList());
+        List<ColorInDesignDto> colors = product.getSizeColors().stream().map(sizeColor -> ColorInDesignDto.builder().name(sizeColor.getColor().getName()).image(sizeColor.getColor().getImageColor()).id(sizeColor.getColor().getId()).build()).distinct().collect(Collectors.toList());
         List<String> sizes = product.getSizeColors().stream().map(sizeColor -> sizeColor.getSize().getName()).distinct().collect(Collectors.toList());
         return SizeColorByProductIdDto.builder().colors(colors).sizes(sizes).build();
     }

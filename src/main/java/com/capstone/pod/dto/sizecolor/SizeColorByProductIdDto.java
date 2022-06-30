@@ -1,5 +1,6 @@
 package com.capstone.pod.dto.sizecolor;
 
+import com.capstone.pod.dto.color.ColorInDesignDto;
 import lombok.*;
 
 import java.util.List;
@@ -11,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 public class SizeColorByProductIdDto {
     private List<String> sizes;
-    private List<String> colors;
+    private List<ColorInDesignDto> colors;
 }
