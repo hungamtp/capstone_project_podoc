@@ -1,5 +1,6 @@
 package com.capstone.pod.controller.order;
 
+import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.ResponseDTO;
@@ -13,6 +14,8 @@ import com.capstone.pod.momo.processor.CreateOrderMoMo;
 import com.capstone.pod.momo.shared.utils.LogUtils;
 import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.services.PayService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,18 +31,32 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<PaymentResponse> addOrder(@RequestParam int cartId,@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+    public ResponseEntity<ResponseDTO> addOrder(@RequestParam int cartId,@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+        LogUtils.init();
+        ResponseDTO responseDTO = new ResponseDTO();
         ReturnOrderDto returnOrderDTO = ordersService.addOrder(cartId, shippingInfoDto);
-        String orderInfo = new StringBuilder().append(
-                returnOrderDTO.getCustomerName()
-            )
-            .append(returnOrderDTO.getPhone())
-            .append(returnOrderDTO.getAddress()).toString();
+        String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s" , returnOrderDTO.getId() , returnOrderDTO.getPrice() , returnOrderDTO.getPhone());
+        String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        PaymentResponse paymentResponse = payService.createOrder(orderId, Double.valueOf(returnOrderDTO.getPrice()).toString(), orderInfo, "", true);
-        String paymentId = paymentResponse.getOrderId();
-        ordersService.setPaymentIdForOrder(returnOrderDTO.getId(), paymentId);
-        return ResponseEntity.ok().body(paymentResponse);
+        Double amount = returnOrderDTO.getPrice();
+        Environment environment = Environment.selectEnv("dev");
+        String returnURL = environment.getMomoEndpoint().getRedirectUrl();
+        String notifyURL = environment.getMomoEndpoint().getNotiUrl();
+
+        PaymentResponse paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId,Long.valueOf(amount.longValue()).toString() , orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
+
+        //set paymentId to order
+        if(amount < 1000 || amount > 50000000){
+            responseDTO.setErrorMessage(ErrorMessage.PRICE_ERROR);
+            return  ResponseEntity.ok().body(responseDTO);
+        }
+        if(paymentResponse == null){
+            responseDTO.setErrorMessage(ErrorMessage.MOMO_ERROR);
+            return  ResponseEntity.ok().body(responseDTO);
+        }
+        ordersService.setPaymentIdForOrder(returnOrderDTO.getId(), paymentResponse.getOrderId());
+        responseDTO.setData(paymentResponse);
+        return ResponseEntity.ok().body(responseDTO);
     }
 
     @GetMapping
@@ -47,28 +64,14 @@ public class OrderController {
         LogUtils.init();
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Long transId = 2L;
         long amount = 50000;
         Environment environment = Environment.selectEnv("dev");
-
-        String partnerClientId = "partnerClientId";
         String orderInfo = "Pay With MoMo";
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
-        String callbackToken = "callbackToken";
-        String token = "";
 
         PaymentResponse captureWalletMoMoResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.toString(amount), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
         return ResponseEntity.ok().body(captureWalletMoMoResponse);
-    }
-
-    @GetMapping("shippinginfos")
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<ResponseDto> getAllShippingInfos(){
-        ResponseDto responseDto = new ResponseDto();
-        responseDto.setData(ordersService.getMyShippingInfo());
-        responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
-        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/complete")

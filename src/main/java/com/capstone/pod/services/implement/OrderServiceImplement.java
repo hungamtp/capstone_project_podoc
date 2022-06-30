@@ -133,7 +133,7 @@ public class OrderServiceImplement implements OrdersService {
         }
 
         orders.setTransactionId(paymentId);
-        ordersRepository.save(orders);
+        ordersRepository.updatePaymentId(orderId , paymentId);
     }
 
     @Override
