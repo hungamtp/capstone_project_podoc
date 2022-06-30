@@ -8,6 +8,7 @@ import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
+import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
@@ -103,6 +104,8 @@ public class OrderServiceImplement implements OrdersService {
            orderDetails.add(orderDetail);
            totalPrice += cartDetailList.get(i).getQuantity()* ( cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
         }
+        if(totalPrice < 1000 || totalPrice > 50000000) throw new PermissionException(ValidationMessage.PRICE_TOTAL_SHOULD_VALID);
+
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
         order.setOrderDetails(orderDetails);
         order.setPrice(totalPrice);

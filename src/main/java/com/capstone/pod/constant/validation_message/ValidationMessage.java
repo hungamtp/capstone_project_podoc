@@ -40,6 +40,7 @@ public final class ValidationMessage {
     public static final String PHONE_FORMAT_VALID_MESSAGE = "Phone must be numeric";
     public static final String WRONG_OWNER = "WRONG OWNER";
     public static final String SHOULD_SAVE = "Should save can not be null";
+    public static final String PRICE_TOTAL_SHOULD_VALID = "The price should be greater than 1000VND and smaller than 50.000.000VND";
 
 
 
