@@ -6,6 +6,8 @@ public class PaymentResponse extends Response {
         this.resultCode = resultCode;
         this.message = message;
     }
+    public PaymentResponse() {
+    }
 
     private String requestId;
 
