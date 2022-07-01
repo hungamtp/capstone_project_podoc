@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DesignedProductRepositoryCustom {
     List<DesignedProductDetailDto> get4HighestRateDesignedProduct();
-    List<DesignedProductDetailDto> get4HighestRateDesignedProductByProductId(int productId);
+    List<DesignedProductDetailDto> get4HighestRateDesignedProductByProductId(String productId);
 }

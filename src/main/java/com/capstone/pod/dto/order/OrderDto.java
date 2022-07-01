@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class OrderDto {
-    private int id;
+    private String id;
     private double totalPrice;
     private String address;
     private String phone;

@@ -44,7 +44,7 @@ public class OrderServiceImplement implements OrdersService {
     private Credential getCredential(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         return credential;
     }
     @Override
@@ -127,7 +127,7 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public void setPaymentIdForOrder(int orderId, String paymentId) {
+    public void setPaymentIdForOrder(String orderId, String paymentId) {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );

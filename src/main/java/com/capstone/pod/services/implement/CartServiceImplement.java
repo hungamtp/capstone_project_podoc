@@ -41,7 +41,7 @@ public class CartServiceImplement implements CartService {
         return cartDetailConverter.entityToDtos(cart.getCartDetails());
     }
 
-    public Integer deleteCartDetail(final Integer cartDetailId, String email) {
+    public String deleteCartDetail(final String cartDetailId, String email) {
         //The deleteById in Spring Data JPA first does a findById which in your case, loads the associated entities eagerly.
         // Can not use fetch EAGER in ManyToOne To deleteById
         Cart cart = getCartByEmail(email);
@@ -139,7 +139,7 @@ public class CartServiceImplement implements CartService {
         }
     }
 
-    private Integer checkSizeColorQuantity(String sizeName, String colorName, int designedProductId, int quantity) {
+    private Integer checkSizeColorQuantity(String sizeName, String colorName, String designedProductId, int quantity) {
         Size size = sizeRepository.findByName(sizeName).orElseThrow(
             () -> new EntityNotFoundException(EntityName.SIZE + ErrorMessage.NOT_FOUND)
         );

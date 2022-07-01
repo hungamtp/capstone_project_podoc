@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface DesignedProductTagRepository extends JpaRepository<DesignedProductTag, Integer> {
-    List<DesignedProductTag> findAllByDesignedProductId(int designId);
+public interface DesignedProductTagRepository extends JpaRepository<DesignedProductTag, String> {
+    List<DesignedProductTag> findAllByDesignedProductId(String designId);
 }

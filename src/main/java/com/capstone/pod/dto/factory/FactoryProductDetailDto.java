@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class FactoryProductDetailDto {
-    private int id;
+    private String id;
     private String name;
     private String location;
     private Double price;

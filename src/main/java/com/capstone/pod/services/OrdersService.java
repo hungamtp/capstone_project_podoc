@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrdersService {
     public ReturnOrderDto addOrder(ShippingInfoDto shippingInfoDto);
-    void setPaymentIdForOrder(int orderId , String paymentId);
+    void setPaymentIdForOrder(String orderId , String paymentId);
     void completeOrder(String paymentId);
 
     List<ShippingInfoDto> getMyShippingInfo();

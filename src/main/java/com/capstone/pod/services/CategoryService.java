@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface CategoryService {
     Page<CategoryDto> getAllCategory(Pageable pageable);
-    public CategoryDto deleteCategory(int categoryId);
+    public CategoryDto deleteCategory(String categoryId);
     public CategoryDto addCategory(CategoryDto categoryDto);
-    public CategoryDto updateCategory(UpdateCategoryDto categoryDto, int categoryId);
+    public CategoryDto updateCategory(UpdateCategoryDto categoryDto, String categoryId);
     List<CategoryHomePageDto> getAllCategory();
 }

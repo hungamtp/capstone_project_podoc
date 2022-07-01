@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SizeColorRepository extends JpaRepository<SizeColor,Integer> , SizeColorRepositoryCustom {
+public interface SizeColorRepository extends JpaRepository<SizeColor,String> , SizeColorRepositoryCustom {
     public Page<SizeColor> findSizeColorByProductId(Pageable pageable, String productId);
     Optional<SizeColor> findSizeColorByColorAndSizeAndProduct(Color color , Size size , Product product);
 
-    Optional<SizeColor> findByColorNameAndSizeNameAndProductId(String colorName, String sizeName, int productId);
-    Optional<SizeColor> findByColorImageColorAndSizeNameAndProductId(String imageColor, String sizeName, int productId);
+    Optional<SizeColor> findByColorNameAndSizeNameAndProductId(String colorName, String sizeName, String productId);
+    Optional<SizeColor> findByColorImageColorAndSizeNameAndProductId(String imageColor, String sizeName, String productId);
 }

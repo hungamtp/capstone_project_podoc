@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AddFactoryResponse {
-    private int id;
+    private String id;
     private String email;
     private String roleName;
     private String phone;

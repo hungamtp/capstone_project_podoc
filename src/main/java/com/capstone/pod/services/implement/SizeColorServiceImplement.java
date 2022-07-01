@@ -25,10 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,7 +37,7 @@ public class SizeColorServiceImplement implements SizeColorService {
     private final SizeRepository sizeRepository;
     private final ModelMapper modelMapper;
     @Override
-    public List<SizeColorReturnDto> addSizeColor(int productId, SizeColorDto dto) {
+    public List<SizeColorReturnDto> addSizeColor(String productId, SizeColorDto dto) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<Color> colors = new ArrayList<>();
         List<Size> sizes = new ArrayList<>();
@@ -55,7 +52,7 @@ public class SizeColorServiceImplement implements SizeColorService {
         List<SizeColor> sizeColors = new ArrayList<>();
         for (int i = 0; i < colors.size(); i++) {
             for (int j = 0; j < sizes.size(); j++) {
-                SizeColor sizeColor = SizeColor.builder().id((int) Math.random()*1000+i+j).product(product).color(colors.get(i)).size(sizes.get(j)).build();
+                SizeColor sizeColor = SizeColor.builder().id(UUID.randomUUID().toString()).product(product).color(colors.get(i)).size(sizes.get(j)).build();
                    sizeColors.add(sizeColor);
             }
         }

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product,Integer>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends JpaRepository<Product,String>, JpaSpecificationExecutor<Product> {
     public Optional<Product> findByName(String name);
 }

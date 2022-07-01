@@ -2,6 +2,7 @@ package com.capstone.pod.entities;
 
 import lombok.*;
 import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -17,8 +18,10 @@ import java.util.List;
 })
 public class Cart {
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @Column(length = 36)
+    private String id;
 
     @OneToOne
     @JoinColumn(name = "user_id")

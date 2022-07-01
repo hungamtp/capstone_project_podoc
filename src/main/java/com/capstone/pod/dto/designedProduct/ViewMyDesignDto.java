@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @Setter
 public class ViewMyDesignDto {
-    private int id;
+    private String id;
     private String name;
     private boolean publish;
     private double designedPrice;

@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 public class FactoryByIdDto {
-    private int id;
+    private String id;
     private String email;
     private String name;
     private String location;

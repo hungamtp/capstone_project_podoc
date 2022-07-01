@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CategoryHomePageDto {
-    private int id;
+    private String id;
     private String name;
     private String image;
 }

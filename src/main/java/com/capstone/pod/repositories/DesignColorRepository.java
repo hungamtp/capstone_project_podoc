@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DesignColorRepository extends JpaRepository<DesignColor,Integer> {
+public interface DesignColorRepository extends JpaRepository<DesignColor,String> {
 }

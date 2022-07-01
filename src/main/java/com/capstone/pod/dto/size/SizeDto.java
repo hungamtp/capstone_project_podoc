@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SizeDto {
-    private int id;
+    private String id;
     private String name;
 }

@@ -48,7 +48,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
     }
 
     @Override
-    public List<DesignedProductDetailDto> get4HighestRateDesignedProductByProductId(int productId) {
+    public List<DesignedProductDetailDto> get4HighestRateDesignedProductByProductId(String productId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<DesignedProductDetailDto> query = criteriaBuilder.createQuery(DesignedProductDetailDto.class);
         Root<DesignedProduct> root = query.from(DesignedProduct.class);

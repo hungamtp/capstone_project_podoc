@@ -43,7 +43,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getFactoryByCredentialId(@PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> getFactoryByCredentialId(@PathVariable(name = "id") String id) {
         ResponseDto<FactoryByIdDto> responseDTO = new ResponseDto();
         FactoryByIdDto factory = factoryService.getFactorybyCredentialId(id);
         responseDTO.setData(factory);
@@ -62,7 +62,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
     @PostMapping("avatar/{id}")
-    public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") String id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = factoryService.updateAvatar(avatar, id);
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_FACTORY_SUCCESS);
@@ -71,7 +71,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("collaborating/{id}")
-    public ResponseEntity<ResponseDto> updateCollaborating(@RequestParam boolean collaborating, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> updateCollaborating(@RequestParam boolean collaborating, @PathVariable(name = "id") String id) {
         ResponseDto<FactoryPageResponseDto> responseDTO = new ResponseDto();
         factoryService.updateCollaborating(id, collaborating);
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_COLLABORATING_FACTORY_SUCCESS);
@@ -79,7 +79,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PostMapping("password-change/{id}")
-    public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") String id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = factoryService.updatePassword(user, id);
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_FACTORY_SUCCESS);
@@ -88,7 +88,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("add-price")
-    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price ) {
+    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestParam double price ) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.addPriceByFactoryToProduct(factoryId, productId, price);
         responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_PRICE_TO_PRODUCT_SUCCESS);
@@ -96,7 +96,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("update-price")
-    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestParam double price) {
+    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestParam double price) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.updatePriceByFactoryToProduct(factoryId, productId, price);
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_PRICE_TO_PRODUCT_SUCCESS);
@@ -104,7 +104,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("add-size-color")
-    public ResponseEntity<ResponseDto> addSizeAndColorByFactoryToProduct(@RequestParam int factoryId, @RequestParam int productId, @RequestBody List<SizeColorInFactoryDetailDto> sizeColors) {
+    public ResponseEntity<ResponseDto> addSizeAndColorByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestBody List<SizeColorInFactoryDetailDto> sizeColors) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.addSizeColorToProduct(factoryId, productId, sizeColors);
         responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_SIZE_COLOR_TO_PRODUCT_SUCCESS);

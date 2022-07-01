@@ -10,7 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterResponseDto implements Serializable {
-    private int credentialId;
+    private String credentialId;
     private String email;
     private String roleName;
     private String phone;

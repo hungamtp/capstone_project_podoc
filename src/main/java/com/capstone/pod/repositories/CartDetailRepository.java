@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CartDetailRepository extends JpaRepository<CartDetail , Integer> {
+public interface CartDetailRepository extends JpaRepository<CartDetail , String> {
     Optional<CartDetail> findByDesignedProductAndColorAndSize(DesignedProduct designedProduct , String color , String size);
 }

@@ -15,7 +15,7 @@ import java.util.Set;
 @Setter
 @Builder
 public class DesignedProductReturnDto {
-    private int id;
+    private String id;
     private String name;
     private String description;
     private boolean publish;

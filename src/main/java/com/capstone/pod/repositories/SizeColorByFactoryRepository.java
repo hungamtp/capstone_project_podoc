@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface SizeColorByFactoryRepository extends JpaRepository<SizeColorByFactory , Integer> {
+public interface SizeColorByFactoryRepository extends JpaRepository<SizeColorByFactory , String> {
     Optional<SizeColorByFactory> findByFactoryAndSizeColor(Factory factory , SizeColor sizeColor);
-    List<SizeColorByFactory> findAllBySizeColorProductId(int productId);
+    List<SizeColorByFactory> findAllBySizeColorProductId(String productId);
 
-    Optional<SizeColorByFactory> findByFactoryIdAndSizeColorId(int factoryId, int sizeColorId);
+    Optional<SizeColorByFactory> findByFactoryIdAndSizeColorId(String factoryId, String sizeColorId);
 }

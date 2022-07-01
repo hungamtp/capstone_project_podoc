@@ -8,6 +8,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GetProductFactoryDto {
-    private int id;
+    private String id;
     private String name;
 }

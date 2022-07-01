@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductBluePrintRepository extends JpaRepository<ProductBluePrint,Integer> {
-   public List<ProductBluePrint> getAllByProductId(int productId);
+public interface ProductBluePrintRepository extends JpaRepository<ProductBluePrint,String> {
+   public List<ProductBluePrint> getAllByProductId(String productId);
 }

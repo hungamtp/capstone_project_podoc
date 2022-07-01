@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @Builder
 public class AddToCartDto {
-    private Integer designId;
+    private String designId;
     private String size;
     private String color;
     private Integer quantity;

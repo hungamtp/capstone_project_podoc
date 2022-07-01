@@ -38,7 +38,7 @@ public class UserServiceImplement implements UserService {
     private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
-    private  Credential getPermittedCredential(int credentialId) {
+    private  Credential getPermittedCredential(String credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -49,7 +49,7 @@ public class UserServiceImplement implements UserService {
         return credential;
     }
     @Override
-    public UserDto deleteUserById(int credentialId) {
+    public UserDto deleteUserById(String credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         if(credential.getUser()!=null) {
@@ -82,7 +82,7 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserDto getUserById(int userId) {
+    public UserDto getUserById(String userId) {
         Credential credential = getPermittedCredential(userId);
         UserDto userDto = modelMapper.map(credential, UserDto.class);
         return userDto;
@@ -96,7 +96,7 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserDto getUserByIdRoleAdmin(int userId) {
+    public UserDto getUserByIdRoleAdmin(String userId) {
         Credential credential = credentialRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         UserDto userDto = modelMapper.map(credential, UserDto.class);
@@ -179,7 +179,7 @@ public class UserServiceImplement implements UserService {
         return userDTO;
     }
     @Override
-    public UserDto updateUser(UpdateUserDto user,int credentialId) {
+    public UserDto updateUser(UpdateUserDto user,String credentialId) {
         Credential credential =  getPermittedCredential(credentialId);
         credential.setAddress(user.getAddress());
         credential.setPhone(user.getPhone());
@@ -188,7 +188,7 @@ public class UserServiceImplement implements UserService {
         return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
     @Override
-    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int credentialId) {
+    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, String credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new UserNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Role role = roleRepository.findByName(user.getRoleName()).orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND) );
@@ -201,7 +201,7 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserDto updatePassword(UpdatePasswordDto user, int credentialId) {
+    public UserDto updatePassword(UpdatePasswordDto user, String credentialId) {
         Credential credential =  getPermittedCredential(credentialId);
         if(!passwordEncoder.matches(user.getOldPassword(),credential.getPassword())){
             throw new PasswordNotMatchException(UserErrorMessage.PASSWORD_DOES_NOT_MATCH);
@@ -211,7 +211,7 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserDto updateAvatar(UpdateAvatarDto avatar, int userId) {
+    public UserDto updateAvatar(UpdateAvatarDto avatar, String userId) {
         Credential credential =  getPermittedCredential(userId);
         credential.setImage(avatar.getImage());
         return modelMapper.map(credentialRepository.save(credential),UserDto.class);

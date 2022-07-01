@@ -40,7 +40,7 @@ public class CategoryController {
         return ResponseEntity.ok().body(responseDto);
     }
     @PutMapping("/{categoryId}")
-    public ResponseEntity<ResponseDto> updateCategory(@RequestBody UpdateCategoryDto categoryDto, @PathVariable(name = "categoryId") int categoryId){
+    public ResponseEntity<ResponseDto> updateCategory(@RequestBody UpdateCategoryDto categoryDto, @PathVariable(name = "categoryId") String categoryId){
         ResponseDto<CategoryDto> responseDto = new ResponseDto();
         CategoryDto categoryDtoPage= categoryService.updateCategory(categoryDto,categoryId);
         responseDto.setData(categoryDtoPage);
@@ -48,7 +48,7 @@ public class CategoryController {
         return ResponseEntity.ok().body(responseDto);
     }
     @PatchMapping("/{categoryId}")
-    public ResponseEntity<ResponseDto> deleteCategory(@PathVariable(name = "categoryId") int categoryId){
+    public ResponseEntity<ResponseDto> deleteCategory(@PathVariable(name = "categoryId") String categoryId){
         ResponseDto<CategoryDto> responseDto = new ResponseDto();
         CategoryDto categoryDtoPage= categoryService.deleteCategory(categoryId);
         responseDto.setData(categoryDtoPage);

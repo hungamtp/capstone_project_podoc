@@ -25,7 +25,7 @@ public class UserController {
     private final EmailService emailService;
     @GetMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<ResponseDto> getUserById(@PathVariable(name = "id") int userId)  {
+    public ResponseEntity<ResponseDto> getUserById(@PathVariable(name = "id") String userId)  {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto userDto = userService.getUserById(userId);
         responseDTO.setData(userDto);
@@ -34,7 +34,7 @@ public class UserController {
     };
     @GetMapping("admin/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getUserByIdRoleAdmin(@PathVariable(name = "id") int userId)  {
+    public ResponseEntity<ResponseDto> getUserByIdRoleAdmin(@PathVariable(name = "id") String userId)  {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto userDto = userService.getUserByIdRoleAdmin(userId);
         responseDTO.setData(userDto);
@@ -43,7 +43,7 @@ public class UserController {
     };
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("/{id}")
-    public ResponseEntity<ResponseDto> delete(@PathVariable(name = "id") int userId) {
+    public ResponseEntity<ResponseDto> delete(@PathVariable(name = "id") String userId) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.deleteUserById(userId);
         if (checkDTO != null) {
@@ -84,7 +84,7 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PutMapping("update/{id}")
-    public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateUserDto user, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateUserDto user, @PathVariable(name = "id") String id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateUser(user, id);
         responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
@@ -93,7 +93,7 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PutMapping("update-by-admin/{id}")
-    public ResponseEntity<ResponseDto> updateByAdmin(@Validated @RequestBody UpdateUserDtoByAdmin user, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> updateByAdmin(@Validated @RequestBody UpdateUserDtoByAdmin user, @PathVariable(name = "id") String id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateUserByAdmin(user, id);
         responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
@@ -102,7 +102,7 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @PatchMapping("password-change/{id}")
-    public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> updatePassword(@Validated @RequestBody UpdatePasswordDto user, @PathVariable(name = "id") String id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updatePassword(user, id);
         responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);
@@ -111,7 +111,7 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
     @PatchMapping("avatar/{id}")
-    public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") int id) {
+    public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") String id) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto checkDTO = userService.updateAvatar(avatar, id);
         responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_USER_SUCCESS);

@@ -8,7 +8,7 @@ import java.util.List;
 @Setter
 @Getter
 public class GetDetailsProductDto {
-    private int id;
+    private String id;
     private String name;
     private String description;
     private boolean isPublic;

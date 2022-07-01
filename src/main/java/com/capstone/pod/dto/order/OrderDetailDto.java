@@ -10,10 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 public class OrderDetailDto {
-    private int id;
+    private String id;
     private double designedPrice;
     private double priceFromFactory;
-    private int designedProductId;
+    private String designedProductId;
     private String designedProductName;
     private String designedImage;
     private String color;

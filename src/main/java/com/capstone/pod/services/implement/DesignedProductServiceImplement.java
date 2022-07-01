@@ -48,11 +48,11 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
-        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
+        Optional<Credential> credential = credentialRepository.findById(currentCredentialId.toString());
         return credential.get().getUser();
     }
     @Override
-    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, int productId,int factoryId) {
+    public DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, String productId,String factoryId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         DesignedProduct designedProduct = DesignedProduct.builder().publish(false).product(productInRepo).designedPrice(dto.getDesignedPrice()).name(productInRepo.getName()).build();
         designedProduct.setDescription(dto.getDescription());
@@ -114,7 +114,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, int designId) {
+    public DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, String designId) {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
@@ -172,7 +172,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
 
 
     @Override
-    public DesignedProductReturnDto getDesignedProductById(int designId) {
+    public DesignedProductReturnDto getDesignedProductById(String designId) {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
@@ -189,7 +189,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public DesignedProductReturnDto unPublishDesignedProduct(int designId) {
+    public DesignedProductReturnDto unPublishDesignedProduct(String designId) {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
@@ -204,7 +204,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         return designedProductReturnDto;
     }
     @Override
-    public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, int designId) {
+    public DesignedProductReturnDto editDesignedProductPrice(DesignedProductPriceDto dto, String designId) {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
@@ -223,7 +223,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     public Page<ViewMyDesignDto> viewMyDesign(Pageable page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
         List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
                 .id(designedProduct.getId())
@@ -253,7 +253,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         return dtoPage;
     }
     @Override
-    public Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, int userId) {
+    public Page<ViewOtherDesignDto> viewOtherDesign(Pageable page, String userId) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, userId);
         List<ViewOtherDesignDto> viewOtherDesignDtos = designedProductPage.stream().filter(designedProduct -> designedProduct.isPublish()==true).map(designedProduct -> ViewOtherDesignDto.builder()
                 .id(designedProduct.getId())
@@ -271,7 +271,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public ViewOtherDesignDto viewDesignDetailsByDesignId(int designId) {
+    public ViewOtherDesignDto viewDesignDetailsByDesignId(String designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         Set sizes = new HashSet<>();
         for (int i = 0; i < designedProduct.getProduct().getSizeColors().size(); i++) {
@@ -309,7 +309,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public void deleteDesignedProduct(int designId) {
+    public void deleteDesignedProduct(String designId) {
         if(!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
                 .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
@@ -318,7 +318,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public boolean publishOrUnpublishDesign(int designId, String email , boolean publish) {
+    public boolean publishOrUnpublishDesign(String designId, String email , boolean publish) {
         Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
             ()  -> new EntityNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
         );
@@ -363,7 +363,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
-    public List<DesignedProductDto> get4HighestRateDesignedProductByProductId(int productId) {
+    public List<DesignedProductDto> get4HighestRateDesignedProductByProductId(String productId) {
         List<DesignedProductDetailDto> designedProductDetailDtos = designedProductRepository.get4HighestRateDesignedProductByProductId(productId);
         return calculate4HighestRateDesignedProduct(designedProductDetailDtos);
     }
@@ -419,10 +419,10 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         return result;
     }
 
-    private  boolean isPermittedUser(int designId) {
+    private  boolean isPermittedUser(String designId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int currentCredentialId = (Integer)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId)
+        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId.toString())
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         if(designedProduct.getUser().getId() == credential.getUser().getId()) return true;

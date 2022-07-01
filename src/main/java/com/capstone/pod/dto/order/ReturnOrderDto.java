@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class ReturnOrderDto {
-    private int id;
+    private String id;
     private String transactionId;
     private double price;
     private String address;

@@ -57,7 +57,7 @@ public class ProductServiceImplement implements ProductService {
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
     @Override
-    public ProductDto updateProduct(UpdateProductDto productDto,int productId) {
+    public ProductDto updateProduct(UpdateProductDto productDto,String productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
         productImagesRepository.deleteAllInBatch(productInRepo.getProductImages());
@@ -72,7 +72,7 @@ public class ProductServiceImplement implements ProductService {
         return modelMapper.map(productRepository.save(productInRepo),ProductDto.class);
     }
     @Override
-    public ProductDto publishProduct(int productId) {
+    public ProductDto publishProduct(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if(product.getSizeColors().isEmpty()){
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
@@ -87,7 +87,7 @@ public class ProductServiceImplement implements ProductService {
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
     @Override
-    public ProductDto unPublishProduct(int productId) {
+    public ProductDto unPublishProduct(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         product.setPublic(false);
         return modelMapper.map(productRepository.save(product),ProductDto.class);
@@ -127,14 +127,14 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto deleteProduct(int productId) {
+    public ProductDto deleteProduct(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         product.setDeleted(true);
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }
 
     @Override
-    public ProductDetailDto getProductById(int productId) {
+    public ProductDetailDto getProductById(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if (!product.isPublic() || product.isDeleted()) {
@@ -197,20 +197,20 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductByAdminDto getProductByIdAdmin(int productId) {
+    public ProductByAdminDto getProductByIdAdmin(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         return modelMapper.map(product,ProductByAdminDto.class);
     }
 
     @Override
-    public List<ProductBluePrintDto> getProductBluePrintByProductId(int productId) {
+    public List<ProductBluePrintDto> getProductBluePrintByProductId(String productId) {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ProductBluePrint> productBluePrintDtos = productBluePrintRepository.getAllByProductId(productId);
         return productBluePrintDtos.stream().map(blueprint -> ProductBluePrintDto.builder().frameImage(blueprint.getFrameImage()).position(blueprint.getPosition()).placeholder(PlaceHolderDto.builder().height(blueprint.getPlaceHolderHeight()).width(blueprint.getPlaceHolderWidth()).build()).build()).collect(Collectors.toList());
     }
 
     @Override
-    public SizeColorByProductIdDto getSizesAndColorByProductId(int productId) {
+    public SizeColorByProductIdDto getSizesAndColorByProductId(String productId) {
         Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ColorInDesignDto> colors = product.getSizeColors().stream().map(sizeColor -> ColorInDesignDto.builder().name(sizeColor.getColor().getName()).image(sizeColor.getColor().getImageColor()).id(sizeColor.getColor().getId()).build()).distinct().collect(Collectors.toList());
         List<String> sizes = product.getSizeColors().stream().map(sizeColor -> sizeColor.getSize().getName()).distinct().collect(Collectors.toList());
@@ -218,7 +218,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public List<ColorInDesignDto> getColorsByProductNameAndFactoryName(int productId, int factoryId) {
+    public List<ColorInDesignDto> getColorsByProductNameAndFactoryName(String productId, String factoryId) {
         Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ColorInDesignDto> colors = new ArrayList();
          for (int i = 0; i < product.getSizeColors().size(); i++) {
@@ -232,7 +232,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId) {
+    public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(String factoryId) {
        List<PriceByFactory> priceByFactoriesAll = priceByFactoryRepository.findAll();
        List<PriceByFactory> priceByFactoriesInFactory =  priceByFactoriesAll.stream().filter(priceByFactory -> priceByFactory.getFactory().getId() == factoryId).collect(Collectors.toList());
        List<Product> productsAll=  productRepository.findAll();

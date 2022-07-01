@@ -33,7 +33,7 @@ public class CategoryServiceImplement implements CategoryService {
     }
 
     @Override
-    public CategoryDto deleteCategory(int categoryId) {
+    public CategoryDto deleteCategory(String categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_ID_NOT_FOUND));
         category.setDeleted(true);
         return modelMapper.map(categoryRepository.save(category),CategoryDto.class);
@@ -50,7 +50,7 @@ public class CategoryServiceImplement implements CategoryService {
     }
 
     @Override
-    public CategoryDto updateCategory(UpdateCategoryDto categoryDto,int categoryId) {
+    public CategoryDto updateCategory(UpdateCategoryDto categoryDto,String categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_ID_NOT_FOUND));
         category.setImage(categoryDto.getImage());
         category.setName(categoryDto.getName());

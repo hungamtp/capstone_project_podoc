@@ -49,7 +49,7 @@ public class FactoryServiceImplement implements FactoryService {
 
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
-    private  Credential getPermittedCredential(int credentialId) {
+    private  Credential getPermittedCredential(String credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -101,7 +101,7 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
-    public FactoryByIdDto getFactorybyCredentialId(int credentialId) {
+    public FactoryByIdDto getFactorybyCredentialId(String credentialId) {
         Credential credential = credentialRepository.findById(credentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         if(credential.getFactory() != null){
             List<PriceByFactory>  priceByFactories = (List<PriceByFactory>) credential.getFactory().getPriceByFactories();
@@ -133,7 +133,7 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
-    public UserDto updatePassword(UpdatePasswordDto user, int credentialId) {
+    public UserDto updatePassword(UpdatePasswordDto user, String credentialId) {
         Credential userRepo =  getPermittedCredential(credentialId);
         if(!passwordEncoder.matches(user.getOldPassword(),userRepo.getPassword())){
             throw new PasswordNotMatchException(UserErrorMessage.PASSWORD_DOES_NOT_MATCH);
@@ -142,14 +142,14 @@ public class FactoryServiceImplement implements FactoryService {
         return modelMapper.map(credentialRepository.save(userRepo),UserDto.class);
     }
     @Override
-    public UserDto updateAvatar(UpdateAvatarDto avatar, int userId) {
+    public UserDto updateAvatar(UpdateAvatarDto avatar, String userId) {
         Credential credential =  getPermittedCredential(userId);
         credential.setImage(avatar.getImage());
         return modelMapper.map(credentialRepository.save(credential),UserDto.class);
     }
 
     @Override
-    public void updateCollaborating(int factoryId, boolean isCollaborating) {
+    public void updateCollaborating(String factoryId, boolean isCollaborating) {
       Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
       factory.setCollaborating(isCollaborating);
       factoryRepository.save(factory);
@@ -157,7 +157,7 @@ public class FactoryServiceImplement implements FactoryService {
 
     @Override
     @Transactional
-    public void addSizeColorToProduct(int factoryId, int productId, List<SizeColorInFactoryDetailDto> sizeColors) {
+    public void addSizeColorToProduct(String factoryId, String productId, List<SizeColorInFactoryDetailDto> sizeColors) {
         Product product =  productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
         Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
@@ -175,7 +175,7 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
-    public void addPriceByFactoryToProduct(int factoryId, int productId, double price) {
+    public void addPriceByFactoryToProduct(String factoryId, String productId, double price) {
        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
        Factory factory = factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
        Optional<PriceByFactory> priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId);
@@ -187,7 +187,7 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
-    public void updatePriceByFactoryToProduct(int factoryId, int productId, double price) {
+    public void updatePriceByFactoryToProduct(String factoryId, String productId, double price) {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
         PriceByFactory priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId).orElseThrow(() -> new PriceByFactoryNotExistedException(ProductErrorMessage.PRICE_BY_FACTORY_NOT_EXISTED));

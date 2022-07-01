@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class LoginResponseDto {
-    private int credentialId;
+    private String credentialId;
     private String email;
     private String roleName;
     private String token;

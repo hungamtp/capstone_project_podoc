@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ShippingInfoDto {
-    private int id;
+    private String id;
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
     @NotBlank(message = ValidationMessage.PHONE_NOT_EMPTY_VALID_MESSAGE)

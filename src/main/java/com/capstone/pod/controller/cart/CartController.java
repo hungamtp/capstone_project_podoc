@@ -39,7 +39,7 @@ public class CartController {
 
     @DeleteMapping("/{cartDetailId}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity deleteCartDetail(HttpServletRequest request , @PathVariable int cartDetailId){
+    public ResponseEntity deleteCartDetail(HttpServletRequest request , @PathVariable String cartDetailId){
         String jwt =request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
         return ResponseEntity.ok().body(cartService.deleteCartDetail(cartDetailId,email));

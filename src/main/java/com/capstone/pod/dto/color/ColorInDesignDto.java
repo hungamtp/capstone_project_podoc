@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class ColorInDesignDto {
-    private int id;
+    private String id;
     private String name;
     private String image;
 }

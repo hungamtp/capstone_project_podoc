@@ -17,18 +17,18 @@ public interface ProductService {
       PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
       Page<ProductByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
-      ProductDto updateProduct(UpdateProductDto dto, int productId);
-      ProductDto publishProduct(int productId);
-      ProductDto unPublishProduct(int productId);
-      ProductDto deleteProduct(int productId);
+      ProductDto updateProduct(UpdateProductDto dto, String productId);
+      ProductDto publishProduct(String productId);
+      ProductDto unPublishProduct(String productId);
+      ProductDto deleteProduct(String productId);
 
-      ProductDetailDto getProductById(int id);
-      ProductByAdminDto getProductByIdAdmin(int id);
+      ProductDetailDto getProductById(String id);
+      ProductByAdminDto getProductByIdAdmin(String id);
 
-      List<ProductBluePrintDto> getProductBluePrintByProductId(int productId);
+      List<ProductBluePrintDto> getProductBluePrintByProductId(String productId);
 
-      SizeColorByProductIdDto getSizesAndColorByProductId(int productId);
-      List<ColorInDesignDto> getColorsByProductNameAndFactoryName(int productId, int factoryId);
+      SizeColorByProductIdDto getSizesAndColorByProductId(String productId);
+      List<ColorInDesignDto> getColorsByProductNameAndFactoryName(String productId, String factoryId);
 
-      List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(int factoryId);
+      List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(String factoryId);
 }

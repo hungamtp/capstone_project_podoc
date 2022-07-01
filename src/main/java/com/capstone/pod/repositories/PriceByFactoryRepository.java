@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 @Repository
-public interface PriceByFactoryRepository extends JpaRepository<PriceByFactory,Integer> {
-    Optional<PriceByFactory> getByProductIdAndFactoryId(int productId, int factoryId);
+public interface PriceByFactoryRepository extends JpaRepository<PriceByFactory,String> {
+    Optional<PriceByFactory> getByProductIdAndFactoryId(String productId, String factoryId);
 }

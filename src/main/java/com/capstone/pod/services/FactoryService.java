@@ -17,11 +17,11 @@ import java.util.List;
 public interface FactoryService {
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable);
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto);
-    public FactoryByIdDto getFactorybyCredentialId(int credentialId);
-    public UserDto updatePassword(UpdatePasswordDto user, int userId);
-    public UserDto updateAvatar(UpdateAvatarDto avatar, int userId);
-    public void updateCollaborating(int factoryId, boolean isCollaborating);
-    public void addSizeColorToProduct(int factoryId, int productId, List<SizeColorInFactoryDetailDto> sizeColors);
-    public void addPriceByFactoryToProduct(int factoryId, int productId, double price);
-    public void updatePriceByFactoryToProduct(int factoryId, int productId, double price);
+    public FactoryByIdDto getFactorybyCredentialId(String credentialId);
+    public UserDto updatePassword(UpdatePasswordDto user, String userId);
+    public UserDto updateAvatar(UpdateAvatarDto avatar, String userId);
+    public void updateCollaborating(String factoryId, boolean isCollaborating);
+    public void addSizeColorToProduct(String factoryId, String productId, List<SizeColorInFactoryDetailDto> sizeColors);
+    public void addPriceByFactoryToProduct(String factoryId, String productId, double price);
+    public void updatePriceByFactoryToProduct(String factoryId, String productId, double price);
 }

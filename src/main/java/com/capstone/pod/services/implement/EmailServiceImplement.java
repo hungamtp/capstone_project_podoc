@@ -42,7 +42,7 @@ public class EmailServiceImplement implements EmailService {
     public void sendEmail() throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Integer currentCredentialId = (Integer)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId)
+        Credential credential = credentialRepository.findById(currentCredentialId.toString())
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         String token = UUID.randomUUID().toString();
         Optional<VerificationToken> verificationToken = Optional.ofNullable(verificationTokenService.findByCredential(credential));

@@ -45,7 +45,7 @@ public class ProductController {
     }
     @PutMapping("{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody UpdateProductDto updateProductDto, @PathVariable(name="id") int productId){
+    public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody UpdateProductDto updateProductDto, @PathVariable(name="id") String productId){
         ResponseDto<ProductDto> responseDto = new ResponseDto();
         ProductDto productDto = productService.updateProduct(updateProductDto, productId);
         responseDto.setData(productDto);
@@ -86,14 +86,14 @@ public class ProductController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getProductById(@PathVariable(name = "id") int productId){
+    public ResponseEntity<ResponseDto> getProductById(@PathVariable(name = "id") String productId){
         ResponseDto<ProductDetailDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductById(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("design/{id}")
-    public ResponseEntity<ResponseDto> getBluePrintByProductId(@PathVariable(name = "id") int productId){
+    public ResponseEntity<ResponseDto> getBluePrintByProductId(@PathVariable(name = "id") String productId){
         ResponseDto<List<ProductBluePrintDto>> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductBluePrintByProductId(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_BLUEPRINTS_PRODUCT_SUCCESS);
@@ -101,7 +101,7 @@ public class ProductController {
     }
     @GetMapping("/admin/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getProductByIdAdmin(@PathVariable(name = "id") int productId){
+    public ResponseEntity<ResponseDto> getProductByIdAdmin(@PathVariable(name = "id") String productId){
         ResponseDto<ProductByAdminDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductByIdAdmin(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
@@ -109,7 +109,7 @@ public class ProductController {
     }
     @GetMapping("/admin/size-color/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getSizeColorProductById(@PathVariable(name = "id") int productId){
+    public ResponseEntity<ResponseDto> getSizeColorProductById(@PathVariable(name = "id") String productId){
         ResponseDto<SizeColorByProductIdDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getSizesAndColorByProductId(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_SIZES_COLORS_SUCCESS);
@@ -117,7 +117,7 @@ public class ProductController {
     }
     @GetMapping("/colors")
     @PermitAll
-    public ResponseEntity<ResponseDto> getColorsByProductNameAndFactoryName(@RequestParam int productId, @RequestParam int factoryId){
+    public ResponseEntity<ResponseDto> getColorsByProductNameAndFactoryName(@RequestParam String productId, @RequestParam String factoryId){
         ResponseDto<List<ColorInDesignDto>> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productId, factoryId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
@@ -125,7 +125,7 @@ public class ProductController {
     }
     @GetMapping("/product-for-factory")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getProductFactoryNotHaveYet(@RequestParam int factoryId){
+    public ResponseEntity<ResponseDto> getProductFactoryNotHaveYet(@RequestParam String factoryId){
         ResponseDto<List<GetProductFactoryDto>> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getAllProductForFactoryDoNotHaveYet(factoryId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_FOR_FACTORY_SUCCESS);
@@ -133,7 +133,7 @@ public class ProductController {
     }
     @PatchMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> deleteProductById(@PathVariable(name="id") int productId){
+    public ResponseEntity<ResponseDto> deleteProductById(@PathVariable(name="id") String productId){
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.deleteProduct(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.DELETE_PRODUCT_SUCCESS);
@@ -141,7 +141,7 @@ public class ProductController {
     }
     @PatchMapping("/publish/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> publishProduct(@PathVariable(name="id") int productId){
+    public ResponseEntity<ResponseDto> publishProduct(@PathVariable(name="id") String productId){
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.publishProduct(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.PUBLISH_PRODUCT_SUCCESS);
@@ -149,7 +149,7 @@ public class ProductController {
     }
     @PatchMapping("/un-publish/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> unPublishProduct(@PathVariable(name="id") int productId){
+    public ResponseEntity<ResponseDto> unPublishProduct(@PathVariable(name="id") String productId){
         ResponseDto<ProductDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.unPublishProduct(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.UN_PUBLISH_PRODUCT_SUCCESS);
@@ -157,7 +157,7 @@ public class ProductController {
     }
     @PostMapping("/size-color/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> addSizeColorToProduct(@PathVariable(name = "id") int id, @Validated @RequestBody SizeColorDto dto){
+    public ResponseEntity<ResponseDto> addSizeColorToProduct(@PathVariable(name = "id") String id, @Validated @RequestBody SizeColorDto dto){
         ResponseDto<List<SizeColorReturnDto>> responseDto = new ResponseDto();
         List<SizeColorReturnDto> sizeColorDtos = sizeColorService.addSizeColor(id, dto);
         responseDto.setData(sizeColorDtos);

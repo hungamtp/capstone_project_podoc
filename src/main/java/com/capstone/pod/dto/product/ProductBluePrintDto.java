@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class ProductBluePrintDto {
-    private int id;
+    private String id;
     private String frameImage;
     private String position;
     private PlaceHolderDto placeholder;

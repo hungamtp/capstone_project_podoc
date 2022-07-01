@@ -8,6 +8,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CartNotEnoughDto {
-    private Integer id;
+    private String id;
     private Integer quantityAvailable;
 }

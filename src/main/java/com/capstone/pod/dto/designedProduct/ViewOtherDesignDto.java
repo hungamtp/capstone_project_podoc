@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @Builder
 public class ViewOtherDesignDto {
-    private int id;
+    private String id;
     private String name;
     private boolean publish;
     private double price;

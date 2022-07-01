@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ColorDto {
-    private int id;
+    private String id;
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
     private String imageColor;

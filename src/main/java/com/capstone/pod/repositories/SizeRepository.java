@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface SizeRepository extends JpaRepository<Size,Integer> {
+public interface SizeRepository extends JpaRepository<Size,String> {
     Optional<Size> findByName(String name);
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @Builder
 public class ViewAllDesignDto {
-    private int id;
+    private String id;
     private String name;
     private boolean publish;
     private double price;

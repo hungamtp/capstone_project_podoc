@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface DesignedProductRepository extends JpaRepository<DesignedProduct,Integer> , DesignedProductRepositoryCustom, JpaSpecificationExecutor<DesignedProduct> {
-    Page<DesignedProduct> findAllByUserId(Pageable page, int userId);
+public interface DesignedProductRepository extends JpaRepository<DesignedProduct,String> , DesignedProductRepositoryCustom, JpaSpecificationExecutor<DesignedProduct> {
+    Page<DesignedProduct> findAllByUserId(Pageable page, String userId);
 }

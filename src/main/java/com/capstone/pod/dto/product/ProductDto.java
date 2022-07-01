@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductDto {
-    private int id;
+    private String id;
     private String name;
     private String description;
     private boolean isPublic;

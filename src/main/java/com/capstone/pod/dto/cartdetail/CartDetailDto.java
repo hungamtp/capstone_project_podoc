@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CartDetailDto {
-    private int id;
-    private int cartId;
-    private int designedProductId;
+    private String id;
+    private String cartId;
+    private String designedProductId;
     private Float price;
     private String designedProductName;
     private String designedImage;

@@ -21,7 +21,7 @@ USE `capstone_pod` ;
 -- Table `capstone_pod`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`user` (
-                                                     `id` INT NOT NULL,
+                                                     `id` VARCHAR(36) NOT NULL,
                                                      `first_name` VARCHAR(255) NULL DEFAULT NULL,
                                                      `last_name` VARCHAR(255) NULL DEFAULT NULL,
                                                      `status` VARCHAR(255) NULL DEFAULT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`user` (
 -- Table `capstone_pod`.`category`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`category` (
-                                                         `id` INT NOT NULL,
+                                                         `id` VARCHAR(36) NOT NULL,
                                                          `image` VARCHAR(255) NULL DEFAULT NULL,
                                                          `is_deleted` BIT(1) NOT NULL,
                                                          `name` VARCHAR(255) NULL DEFAULT NULL,
@@ -51,14 +51,14 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`category` (
 -- Table `capstone_pod`.`product`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product` (
-                                                        `id` INT NOT NULL,
+                                                        `id` VARCHAR(36) NOT NULL,
                                                         `create_date` DATE NULL DEFAULT NULL,
                                                         `last_modified_date` DATE NULL DEFAULT NULL,
                                                         `description` VARCHAR(255) NULL DEFAULT NULL,
                                                         `is_deleted` BIT(1) NOT NULL,
                                                         `is_public` BIT(1) NOT NULL,
                                                         `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                        `category_id` INT NULL DEFAULT NULL,
+                                                        `category_id` VARCHAR(36) NULL DEFAULT NULL,
                                                         PRIMARY KEY (`id`),
                                                         UNIQUE INDEX `UKjmivyxk9rmgysrmsqw15lqr5b` (`name` ASC) VISIBLE,
                                                         INDEX `IDXjlu2orma9568avd6hy2665fbd` (`name` ASC, `is_deleted` ASC, `is_public` ASC) VISIBLE,
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product` (
 -- Table `capstone_pod`.`factory`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`factory` (
-                                                        `id` INT NOT NULL,
+                                                        `id` VARCHAR(36) NOT NULL,
                                                         `is_collaborating` BIT(1) NOT NULL,
                                                         `location` VARCHAR(255) NULL DEFAULT NULL,
                                                         `name` VARCHAR(255) NULL DEFAULT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`factory` (
 -- Table `capstone_pod`.`discount`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`discount` (
-                                                         `id` INT NOT NULL,
+                                                         `id` VARCHAR(36) NOT NULL,
                                                          `discount_percent` FLOAT NOT NULL,
                                                          `name` VARCHAR(255) NULL DEFAULT NULL,
                                                          PRIMARY KEY (`id`))
@@ -102,11 +102,11 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`discount` (
 -- Table `capstone_pod`.`price_by_factory`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`price_by_factory` (
-                                                                 `id` INT NOT NULL,
+                                                                 `id` VARCHAR(36) NOT NULL,
                                                                  `price` DOUBLE NOT NULL,
-                                                                 `discount_id` INT NULL DEFAULT NULL,
-                                                                 `factory_id` INT NULL DEFAULT NULL,
-                                                                 `product_id` INT NULL DEFAULT NULL,
+                                                                 `discount_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                                 `factory_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                                 `product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                  PRIMARY KEY (`id`),
                                                                  INDEX `FK9yuq8ho9f2b9l8uqv5l5p42s5` (`discount_id` ASC) VISIBLE,
                                                                  INDEX `FK62dp9k9lh0rq3a5aa5ww2ju6t` (`factory_id` ASC) VISIBLE,
@@ -129,16 +129,16 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`price_by_factory` (
 -- Table `capstone_pod`.`designed_product`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
-                                                                 `id` INT NOT NULL,
+                                                                 `id` VARCHAR(36) NOT NULL,
                                                                  `create_date` DATE NULL DEFAULT NULL,
                                                                  `last_modified_date` DATE NULL DEFAULT NULL,
                                                                  `description` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `designed_price` DOUBLE NOT NULL,
                                                                  `name` VARCHAR(255) NULL DEFAULT NULL,
                                                                  `publish` BIT(1) NOT NULL,
-                                                                 `price_by_factory_id` INT NULL DEFAULT NULL,
-                                                                 `product_id` INT NULL DEFAULT NULL,
-                                                                 `user_id` INT NULL DEFAULT NULL,
+                                                                 `price_by_factory_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                                 `product_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                                 `user_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                  PRIMARY KEY (`id`),
                                                                  INDEX `FKy63f7jxm32cewsttin3a7evg` (`price_by_factory_id` ASC) VISIBLE,
                                                                  INDEX `FKeor46gb2vt6k4p41wurmeo450` (`product_id` ASC) VISIBLE,
@@ -161,10 +161,10 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
 -- Table `capstone_pod`.`blue_print`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`blue_print` (
-                                                           `id` INT NOT NULL,
+                                                           `id` VARCHAR(36) NOT NULL,
                                                            `frame_image` VARCHAR(255) NULL DEFAULT NULL,
                                                            `position` VARCHAR(255) NULL DEFAULT NULL,
-                                                           `designed_product_id` INT NULL DEFAULT NULL,
+                                                           `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                            PRIMARY KEY (`id`),
                                                            INDEX `FKf3yfxp808fpnm4gtbbxmh6fc7` (`designed_product_id` ASC) VISIBLE,
                                                            CONSTRAINT `FKf3yfxp808fpnm4gtbbxmh6fc7`
@@ -179,8 +179,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`blue_print` (
 -- Table `capstone_pod`.`cart`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`cart` (
-                                                     `id` INT NOT NULL,
-                                                     `user_id` INT NULL DEFAULT NULL,
+                                                     `id` VARCHAR(36) NOT NULL,
+                                                     `user_id` VARCHAR(36) NULL DEFAULT NULL,
                                                      PRIMARY KEY (`id`),
                                                      UNIQUE INDEX `unique_user` (`user_id` ASC) VISIBLE,
                                                      CONSTRAINT `FKl70asp4l4w0jmbm1tqyofho4o`
@@ -195,12 +195,12 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`cart` (
 -- Table `capstone_pod`.`cart_detail`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`cart_detail` (
-                                                            `id` INT NOT NULL,
+                                                            `id` VARCHAR(36) NOT NULL,
                                                             `color` VARCHAR(255) NULL DEFAULT NULL,
                                                             `quantity` INT NOT NULL,
                                                             `size` VARCHAR(255) NULL DEFAULT NULL,
-                                                            `cart_id` INT NULL DEFAULT NULL,
-                                                            `designed_product_id` INT NULL DEFAULT NULL,
+                                                            `cart_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                            `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             INDEX `FKrg4yopd2252nwj8bfcgq5f4jp` (`cart_id` ASC) VISIBLE,
                                                             INDEX `FKk3vd994ail3ndk6uitppwrhu5` (`designed_product_id` ASC) VISIBLE,
@@ -219,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`cart_detail` (
 -- Table `capstone_pod`.`color`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`color` (
-                                                      `id` INT NOT NULL,
+                                                      `id` VARCHAR(36) NOT NULL,
                                                       `image_color` VARCHAR(255) NULL DEFAULT NULL,
                                                       `name` VARCHAR(255) NULL DEFAULT NULL,
                                                       PRIMARY KEY (`id`),
@@ -234,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`color` (
 -- Table `capstone_pod`.`role`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`role` (
-                                                     `id` INT NOT NULL,
+                                                     `id` VARCHAR(36) NOT NULL,
                                                      `name` VARCHAR(255) NULL DEFAULT NULL,
                                                      PRIMARY KEY (`id`),
                                                      UNIQUE INDEX `UK8sewwnpamngi6b1dwaa88askk` (`name` ASC) VISIBLE,
@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`role` (
 -- Table `capstone_pod`.`credential`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
-                                                           `id` INT NOT NULL,
+                                                           `id` VARCHAR(36) NOT NULL,
                                                            `create_date` DATE NULL DEFAULT NULL,
                                                            `last_modified_date` DATE NULL DEFAULT NULL,
                                                            `address` VARCHAR(255) NULL DEFAULT NULL,
@@ -257,9 +257,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
                                                            `is_mail_verified` BIT(1) NOT NULL,
                                                            `password` VARCHAR(255) NULL DEFAULT NULL,
                                                            `phone` VARCHAR(255) NULL DEFAULT NULL,
-                                                           `factory_id` INT NULL DEFAULT NULL,
-                                                           `role_id` INT NULL DEFAULT NULL,
-                                                           `user_id` INT NULL DEFAULT NULL,
+                                                           `factory_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                           `role_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                           `user_id` VARCHAR(36) NULL DEFAULT NULL,
                                                            PRIMARY KEY (`id`),
                                                            UNIQUE INDEX `UK87sfas6wh5j3lvj191bnt1s2y` (`email` ASC) VISIBLE,
                                                            INDEX `IDXim72bqfq0ipw8sa7k9odt4sfj` (`email` ASC, `phone` ASC) VISIBLE,
@@ -284,9 +284,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
 -- Table `capstone_pod`.`design_color`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_color` (
-                                                             `id` INT NOT NULL,
-                                                             `color_id` INT NULL DEFAULT NULL,
-                                                             `designed_product_id` INT NULL DEFAULT NULL,
+                                                             `id` VARCHAR(36) NOT NULL,
+                                                             `color_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                             `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                              PRIMARY KEY (`id`),
                                                              INDEX `FKr3abfh8wr83cwh2squnq6btcp` (`color_id` ASC) VISIBLE,
                                                              INDEX `FK8t1np3l29jjjscdvxy85m5a9y` (`designed_product_id` ASC) VISIBLE,
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_color` (
 -- Table `capstone_pod`.`design_info`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
-                                                            `id` INT NOT NULL,
+                                                            `id` VARCHAR(36) NOT NULL,
                                                             `font` VARCHAR(255) NULL DEFAULT NULL,
                                                             `height` DOUBLE NOT NULL,
                                                             `left_position` DOUBLE NOT NULL,
@@ -317,7 +317,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
                                                             `top_position` DOUBLE NOT NULL,
                                                             `types` VARCHAR(255) NULL DEFAULT NULL,
                                                             `width` DOUBLE NOT NULL,
-                                                            `blue_print_id` INT NULL DEFAULT NULL,
+                                                            `blue_print_id` VARCHAR(36) NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             INDEX `FKh5uyam68u3624g7gqf7ysnbuh` (`blue_print_id` ASC) VISIBLE,
                                                             CONSTRAINT `FKh5uyam68u3624g7gqf7ysnbuh`
@@ -332,7 +332,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
 -- Table `capstone_pod`.`tag`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`tag` (
-                                                    `id` INT NOT NULL,
+                                                    `id` VARCHAR(36) NOT NULL,
                                                     `is_exist` BIT(1) NOT NULL,
                                                     `name` VARCHAR(255) NULL DEFAULT NULL,
                                                     PRIMARY KEY (`id`),
@@ -347,9 +347,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`tag` (
 -- Table `capstone_pod`.`designed_product_tag`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product_tag` (
-                                                                     `id` INT NOT NULL,
-                                                                     `designed_product_id` INT NULL DEFAULT NULL,
-                                                                     `tag_id` INT NULL DEFAULT NULL,
+                                                                     `id` VARCHAR(36) NOT NULL,
+                                                                     `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                                     `tag_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                      PRIMARY KEY (`id`),
                                                                      INDEX `FKeivmw9wmsoqjhix1fr8ndv557` (`designed_product_id` ASC) VISIBLE,
                                                                      INDEX `FK825nqjm9fis6l1m5tk87vpgoi` (`tag_id` ASC) VISIBLE,
@@ -368,13 +368,13 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product_tag` (
 -- Table `capstone_pod`.`discount_time`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`discount_time` (
-                                                              `id` INT NOT NULL,
+                                                              `id` VARCHAR(36) NOT NULL,
                                                               `create_date` DATE NULL DEFAULT NULL,
                                                               `last_modified_date` DATE NULL DEFAULT NULL,
                                                               `end_date` DATE NULL DEFAULT NULL,
                                                               `is_expired` BIT(1) NOT NULL,
                                                               `start_date` DATE NULL DEFAULT NULL,
-                                                              `discount_id` INT NULL DEFAULT NULL,
+                                                              `discount_id` VARCHAR(36) NULL DEFAULT NULL,
                                                               PRIMARY KEY (`id`),
                                                               INDEX `FKkcd898uu8dxsfvfgclqcjtpfg` (`discount_id` ASC) VISIBLE,
                                                               CONSTRAINT `FKkcd898uu8dxsfvfgclqcjtpfg`
@@ -407,24 +407,14 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`flyway_schema_history` (
 
 
 -- -----------------------------------------------------
--- Table `capstone_pod`.`hibernate_sequence`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `capstone_pod`.`hibernate_sequence` (
-    `next_val` BIGINT NULL DEFAULT NULL)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `capstone_pod`.`image_preview`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
-                                                              `id` INT NOT NULL,
+                                                              `id` VARCHAR(36) NOT NULL,
+                                                              `color` VARCHAR(255) NULL DEFAULT NULL,
                                                               `image` VARCHAR(255) NULL DEFAULT NULL,
                                                               `position` VARCHAR(255) NULL DEFAULT NULL,
-                                                              `color` VARCHAR(255) NULL DEFAULT NULL,
-                                                              `designed_product_id` INT NULL DEFAULT NULL,
+                                                              `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                               PRIMARY KEY (`id`),
                                                               INDEX `FKkhpt0kvab2o7vns3ikvne5fk9` (`designed_product_id` ASC) VISIBLE,
                                                               CONSTRAINT `FKkhpt0kvab2o7vns3ikvne5fk9`
@@ -439,16 +429,16 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
 -- Table `capstone_pod`.`orders`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
-                                                       `id` INT NOT NULL,
+                                                       `id` VARCHAR(36) NOT NULL,
                                                        `create_date` DATE NULL DEFAULT NULL,
                                                        `last_modified_date` DATE NULL DEFAULT NULL,
-                                                       `transaction_id` VARCHAR(255) NULL DEFAULT NULL,
                                                        `address` VARCHAR(255) NULL DEFAULT NULL,
                                                        `customer_name` VARCHAR(255) NULL DEFAULT NULL,
                                                        `is_paid` BIT(1) NOT NULL,
                                                        `phone` VARCHAR(255) NULL DEFAULT NULL,
                                                        `price` DOUBLE NOT NULL,
-                                                       `user_id` INT NULL DEFAULT NULL,
+                                                       `transaction_id` VARCHAR(255) NULL DEFAULT NULL,
+                                                       `user_id` VARCHAR(36) NULL DEFAULT NULL,
                                                        PRIMARY KEY (`id`),
                                                        INDEX `FKel9kyl84ego2otj2accfd8mr7` (`user_id` ASC) VISIBLE,
                                                        CONSTRAINT `FKel9kyl84ego2otj2accfd8mr7`
@@ -463,13 +453,13 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
 -- Table `capstone_pod`.`order_detail`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
-                                                             `id` INT NOT NULL,
+                                                             `id` VARCHAR(36) NOT NULL,
                                                              `color` VARCHAR(255) NULL DEFAULT NULL,
                                                              `quantity` INT NOT NULL,
                                                              `size` VARCHAR(255) NULL DEFAULT NULL,
-                                                             `designed_product_id` INT NULL DEFAULT NULL,
-                                                             `factory_id` INT NULL DEFAULT NULL,
-                                                             `orders_id` INT NULL DEFAULT NULL,
+                                                             `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                             `factory_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                             `orders_id` VARCHAR(36) NULL DEFAULT NULL,
                                                              PRIMARY KEY (`id`),
                                                              INDEX `FKrm4hw5w55k4634tlhnhyiciiv` (`designed_product_id` ASC) VISIBLE,
                                                              INDEX `FKqj83wbodxud24dmcp8q7cftem` (`factory_id` ASC) VISIBLE,
@@ -492,11 +482,11 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
 -- Table `capstone_pod`.`order_status`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
-                                                             `id` INT NOT NULL,
+                                                             `id` VARCHAR(36) NOT NULL,
                                                              `create_date` DATE NULL DEFAULT NULL,
                                                              `last_modified_date` DATE NULL DEFAULT NULL,
                                                              `name` VARCHAR(255) NULL DEFAULT NULL,
-                                                             `order_detail_id` INT NULL DEFAULT NULL,
+                                                             `order_detail_id` VARCHAR(36) NULL DEFAULT NULL,
                                                              PRIMARY KEY (`id`),
                                                              INDEX `FKm1pbooh547jg5x2s01lv37i12` (`order_detail_id` ASC) VISIBLE,
                                                              CONSTRAINT `FKm1pbooh547jg5x2s01lv37i12`
@@ -511,10 +501,10 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
 -- Table `capstone_pod`.`placeholder`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
-                                                            `id` INT NOT NULL,
+                                                            `id` VARCHAR(36) NOT NULL,
                                                             `height` DOUBLE NOT NULL,
                                                             `width` DOUBLE NOT NULL,
-                                                            `blue_print_id` INT NULL DEFAULT NULL,
+                                                            `blue_print_id` VARCHAR(36) NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             INDEX `FKd3nbe4gk5ewrogucgqfby4qo6` (`blue_print_id` ASC) VISIBLE,
                                                             CONSTRAINT `FKd3nbe4gk5ewrogucgqfby4qo6`
@@ -529,12 +519,12 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
 -- Table `capstone_pod`.`product_blue_print`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_blue_print` (
-                                                                   `id` INT NOT NULL,
+                                                                   `id` VARCHAR(36) NOT NULL,
                                                                    `frame_image` VARCHAR(255) NULL DEFAULT NULL,
                                                                    `place_holder_height` DOUBLE NOT NULL,
                                                                    `place_holder_width` DOUBLE NOT NULL,
                                                                    `position` VARCHAR(255) NULL DEFAULT NULL,
-                                                                   `product_id` INT NULL DEFAULT NULL,
+                                                                   `product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                    PRIMARY KEY (`id`),
                                                                    INDEX `FK5xjg0h2wljlori7vvag6oh24t` (`product_id` ASC) VISIBLE,
                                                                    CONSTRAINT `FK5xjg0h2wljlori7vvag6oh24t`
@@ -549,9 +539,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_blue_print` (
 -- Table `capstone_pod`.`product_images`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_images` (
-                                                               `id` INT NOT NULL,
+                                                               `id` VARCHAR(36) NOT NULL,
                                                                `image` VARCHAR(255) NULL DEFAULT NULL,
-                                                               `product_id` INT NULL DEFAULT NULL,
+                                                               `product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                PRIMARY KEY (`id`),
                                                                INDEX `FKi8jnqq05sk5nkma3pfp3ylqrt` (`product_id` ASC) VISIBLE,
                                                                CONSTRAINT `FKi8jnqq05sk5nkma3pfp3ylqrt`
@@ -566,9 +556,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_images` (
 -- Table `capstone_pod`.`product_tag`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_tag` (
-                                                            `id` INT NOT NULL,
-                                                            `product_id` INT NULL DEFAULT NULL,
-                                                            `tag_id` INT NULL DEFAULT NULL,
+                                                            `id` VARCHAR(36) NOT NULL,
+                                                            `product_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                            `tag_id` VARCHAR(36) NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             INDEX `FK2rf7w3d88x20p7vuc2m9mvv91` (`product_id` ASC) VISIBLE,
                                                             INDEX `FK3b3a7hu5g2kh24wf0cwv3lgsm` (`tag_id` ASC) VISIBLE,
@@ -587,12 +577,12 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_tag` (
 -- Table `capstone_pod`.`rating`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`rating` (
-                                                       `id` INT NOT NULL,
+                                                       `id` VARCHAR(36) NOT NULL,
                                                        `comment` VARCHAR(255) NULL DEFAULT NULL,
                                                        `rating_date` DATE NULL DEFAULT NULL,
                                                        `rating_star` FLOAT NOT NULL,
-                                                       `designed_product_id` INT NULL DEFAULT NULL,
-                                                       `user_id` INT NULL DEFAULT NULL,
+                                                       `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                       `user_id` VARCHAR(36) NULL DEFAULT NULL,
                                                        PRIMARY KEY (`id`),
                                                        INDEX `FKalwao11jcmob3wpik6raaxq0o` (`designed_product_id` ASC) VISIBLE,
                                                        INDEX `FKpn05vbx6usw0c65tcyuce4dw5` (`user_id` ASC) VISIBLE,
@@ -611,12 +601,12 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`rating` (
 -- Table `capstone_pod`.`shipping_info`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`shipping_info` (
-                                                              `id` INT NOT NULL,
+                                                              `id` VARCHAR(36) NOT NULL,
                                                               `email_address` VARCHAR(255) NULL DEFAULT NULL,
                                                               `name` VARCHAR(255) NULL DEFAULT NULL,
                                                               `phone_number` VARCHAR(255) NULL DEFAULT NULL,
                                                               `shipping_address` VARCHAR(255) NULL DEFAULT NULL,
-                                                              `user_id` INT NULL DEFAULT NULL,
+                                                              `user_id` VARCHAR(36) NULL DEFAULT NULL,
                                                               PRIMARY KEY (`id`),
                                                               INDEX `FK6xc5qwgr4w4n5lssdfwug0ya4` (`user_id` ASC) VISIBLE,
                                                               CONSTRAINT `FK6xc5qwgr4w4n5lssdfwug0ya4`
@@ -631,7 +621,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`shipping_info` (
 -- Table `capstone_pod`.`size`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`size` (
-                                                     `id` INT NOT NULL,
+                                                     `id` VARCHAR(36) NOT NULL,
                                                      `name` VARCHAR(255) NULL DEFAULT NULL,
                                                      PRIMARY KEY (`id`),
                                                      UNIQUE INDEX `UK8mx44qvbn71lwrou3igoc1nwm` (`name` ASC) VISIBLE,
@@ -645,10 +635,10 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`size` (
 -- Table `capstone_pod`.`size_color`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color` (
-                                                           `id` INT NOT NULL,
-                                                           `color_id` INT NULL DEFAULT NULL,
-                                                           `product_id` INT NULL DEFAULT NULL,
-                                                           `size_id` INT NULL DEFAULT NULL,
+                                                           `id` VARCHAR(36) NOT NULL,
+                                                           `color_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                           `product_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                           `size_id` VARCHAR(36) NULL DEFAULT NULL,
                                                            PRIMARY KEY (`id`),
                                                            INDEX `FKr20og5xkuy57sboi0k251qe` (`color_id` ASC) VISIBLE,
                                                            INDEX `FKphjge8u8tektxx5dve1d2av76` (`product_id` ASC) VISIBLE,
@@ -671,10 +661,10 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color` (
 -- Table `capstone_pod`.`size_color_by_factory`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color_by_factory` (
-                                                                      `id` INT NOT NULL,
+                                                                      `id` VARCHAR(36) NOT NULL,
                                                                       `quantity` INT NOT NULL,
-                                                                      `factory_id` INT NULL DEFAULT NULL,
-                                                                      `size_color_id` INT NULL DEFAULT NULL,
+                                                                      `factory_id` VARCHAR(36) NULL DEFAULT NULL,
+                                                                      `size_color_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                       PRIMARY KEY (`id`),
                                                                       INDEX `FKpb3ltk705b1sm8sxrixsilin4` (`factory_id` ASC) VISIBLE,
                                                                       INDEX `FK1j4j2vs9ack4yuqqolb02l5ow` (`size_color_id` ASC) VISIBLE,
@@ -693,10 +683,10 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color_by_factory` (
 -- Table `capstone_pod`.`verification_token`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`verification_token` (
-                                                                   `id` INT NOT NULL,
+                                                                   `id` VARCHAR(36) NOT NULL,
                                                                    `expiry_date` DATETIME NULL DEFAULT NULL,
                                                                    `token` VARCHAR(255) NULL DEFAULT NULL,
-                                                                   `credential_id` INT NULL DEFAULT NULL,
+                                                                   `credential_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                    PRIMARY KEY (`id`),
                                                                    INDEX `FKmsnuyxtj0395n1s1y9qaw6pr5` (`credential_id` ASC) VISIBLE,
                                                                    CONSTRAINT `FKmsnuyxtj0395n1s1y9qaw6pr5`

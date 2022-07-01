@@ -18,7 +18,7 @@ public class CartDetailConverter {
         return cartDetails.stream().map((cartDetail -> entityToDto(cartDetail))).collect(Collectors.toList());
     }
 
-    public List<CartDetail> dtoToEntities(List<CartDetailDto> dtos , int cartId) {
+    public List<CartDetail> dtoToEntities(List<CartDetailDto> dtos , String cartId) {
         return dtos.stream().map((dto -> dtoToEntity(dto , cartId))).collect(Collectors.toList());
     }
 
@@ -36,7 +36,7 @@ public class CartDetailConverter {
             .build();
     }
 
-    private CartDetail dtoToEntity(CartDetailDto cartDetailDTO , int cartId) {
+    private CartDetail dtoToEntity(CartDetailDto cartDetailDTO , String cartId) {
         return CartDetail.builder()
             .id(cartDetailDTO.getId())
             .designedProduct(DesignedProduct.builder().id(cartDetailDTO.getDesignedProductId()).build())

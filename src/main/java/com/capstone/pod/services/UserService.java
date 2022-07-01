@@ -6,17 +6,17 @@ import org.springframework.data.domain.Page;
 
 public interface UserService {
 
-    public UserDto deleteUserById(int userId);
+    public UserDto deleteUserById(String userId);
     public Page<UserDto> getAllUser(int pageNum, int pageSize);
-    public UserDto getUserById(int userId);
-    public UserDto getUserByIdRoleAdmin(int userId);
+    public UserDto getUserById(String userId);
+    public UserDto getUserByIdRoleAdmin(String userId);
     public UserDto addUser(AddUserDto user);
     public UserDto addAdmin(AddUserDto user);
     public UserDto addFactory(AddUserDto user);
-    public UserDto updateUser(UpdateUserDto user,int userId);
-    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, int userId);
-    public UserDto updatePassword(UpdatePasswordDto user,int userId);
-    public UserDto updateAvatar(UpdateAvatarDto avatar,int userId);
+    public UserDto updateUser(UpdateUserDto user,String userId);
+    public UserDto updateUserByAdmin(UpdateUserDtoByAdmin user, String userId);
+    public UserDto updatePassword(UpdatePasswordDto user,String userId);
+    public UserDto updateAvatar(UpdateAvatarDto avatar,String userId);
     public UserDto findByEmail(String email);
     public Page<UserDto> getAllByRoleName(int pageNumber, int pageSize, String roleName);
 }
