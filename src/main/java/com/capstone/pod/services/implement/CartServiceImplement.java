@@ -102,6 +102,7 @@ public class CartServiceImplement implements CartService {
         if (cartDetail.isPresent()) {
             CartDetail savedCartDetail = cartDetail.get();
             savedCartDetail.setQuantity(savedCartDetail.getQuantity() + addToCartDto.getQuantity());
+            cartDetailRepository.save(savedCartDetail);
            return CartDetailDto
                .builder()
                .id(cartDetail.get().getId())
@@ -113,10 +114,10 @@ public class CartServiceImplement implements CartService {
                .publish(true)
                .designedImage(cartDetail.get().getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
                .price(Double.valueOf(cartDetail.get().getDesignedProduct().getDesignedPrice() + cartDetail.get().getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
-               .quantity(cartDetail.get().getQuantity())
+               .quantity(savedCartDetail.getQuantity())
                .build();
         } else {
-        CartDetail savedCartDetail =    cartDetailRepository.save(
+        CartDetail savedCartDetail = cartDetailRepository.save(
                 CartDetail.builder()
                     .cart(cart)
                     .size(addToCartDto.getSize())
