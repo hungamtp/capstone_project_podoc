@@ -7,7 +7,7 @@ import com.capstone.pod.dto.order.ShippingInfoDto;
 import java.util.List;
 
 public interface OrdersService {
-    public ReturnOrderDto addOrder(int cartId, ShippingInfoDto shippingInfoDto);
+    public ReturnOrderDto addOrder(ShippingInfoDto shippingInfoDto);
     void setPaymentIdForOrder(int orderId , String paymentId);
     void completeOrder(String paymentId);
 

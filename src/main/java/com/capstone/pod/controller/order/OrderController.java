@@ -31,10 +31,10 @@ public class OrderController {
 
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<ResponseDTO> addOrder(@RequestParam int cartId,@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
+    public ResponseEntity<ResponseDTO> addOrder(@Validated @RequestBody ShippingInfoDto shippingInfoDto) throws Exception {
         LogUtils.init();
         ResponseDTO responseDTO = new ResponseDTO();
-        ReturnOrderDto returnOrderDTO = ordersService.addOrder(cartId, shippingInfoDto);
+        ReturnOrderDto returnOrderDTO = ordersService.addOrder(shippingInfoDto);
         String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s" , returnOrderDTO.getId() , returnOrderDTO.getPrice() , returnOrderDTO.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
