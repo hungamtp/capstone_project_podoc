@@ -17,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -101,7 +102,19 @@ public class CartServiceImplement implements CartService {
         if (cartDetail.isPresent()) {
             CartDetail savedCartDetail = cartDetail.get();
             savedCartDetail.setQuantity(savedCartDetail.getQuantity() + addToCartDto.getQuantity());
-           return cartDetailConverter.entityToDto( cartDetailRepository.save(savedCartDetail));
+           return CartDetailDto
+               .builder()
+               .id(cartDetail.get().getId())
+               .cartId(cartDetail.get().getCart().getId())
+               .designedProductId(cartDetail.get().getDesignedProduct().getId())
+               .designedProductName(cartDetail.get().getDesignedProduct().getName())
+               .color(cartDetail.get().getColor())
+               .size(cartDetail.get().getSize())
+               .publish(true)
+               .designedImage(cartDetail.get().getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
+               .price(Double.valueOf(cartDetail.get().getDesignedProduct().getDesignedPrice() + cartDetail.get().getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
+               .quantity(cartDetail.get().getQuantity())
+               .build();
         } else {
         CartDetail savedCartDetail =    cartDetailRepository.save(
                 CartDetail.builder()
@@ -113,6 +126,15 @@ public class CartServiceImplement implements CartService {
                     .build());
             return CartDetailDto.builder()
                 .id(savedCartDetail.getId())
+                .cartId(savedCartDetail.getCart().getId())
+                .designedProductId(savedCartDetail.getDesignedProduct().getId())
+                .designedProductName(savedCartDetail.getDesignedProduct().getName())
+                .color(savedCartDetail.getColor())
+                .size(savedCartDetail.getSize())
+                .publish(true)
+                .designedImage(savedCartDetail.getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
+                .price(Double.valueOf(savedCartDetail.getDesignedProduct().getDesignedPrice() + savedCartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
+                .quantity(savedCartDetail.getQuantity())
                 .build();
         }
     }
