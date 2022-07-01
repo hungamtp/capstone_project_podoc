@@ -51,7 +51,7 @@ public class OrderServiceImplement implements OrdersService {
     @Transactional
     public ReturnOrderDto addOrder(ShippingInfoDto shippingInfoDto) {
         Cart cart = cartRepository.findCartByUser(getCredential().getUser());
-        if(cart != null) throw new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR);
+        if(cart == null) throw new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR);
         if(cart.getUser().getId() != getCredential().getUser().getId()){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
