@@ -62,7 +62,7 @@ public class FactoryServiceImplement implements FactoryService {
 
     @Override
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable) {
-        List<Credential> factoriesCredential = credentialRepository.findAll(pageable).stream().filter(credential -> credential.getFactory().getId() != null).collect(Collectors.toList());
+        List<Credential> factoriesCredential = credentialRepository.findAll(pageable).stream().filter(credential -> credential.getFactory() != null).collect(Collectors.toList());
         List<FactoryPageResponseDto> credentialFactories= factoriesCredential.stream().filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_FACTORY))
                 .map(credential -> FactoryPageResponseDto.builder().email(credential.getEmail())
                         .id(credential.getFactory().getId())
