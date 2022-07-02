@@ -96,6 +96,7 @@ public class FactoryServiceImplement implements FactoryService {
                 .address(factoryDto.getAddress())
                 .phone(factoryDto.getPhone())
                 .role(role)
+                .image(factoryDto.getLogo())
                 .factory(factory)
                 .password(passwordEncoder.encode(factoryDto.getPassword())).build();
         factoryRepository.save(factory);
