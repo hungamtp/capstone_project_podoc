@@ -86,6 +86,7 @@ public class FactoryServiceImplement implements FactoryService {
         }
         Factory factory = Factory.builder()
                 .isCollaborating(true)
+                .name(factoryDto.getName())
                 .build();
         Role role = roleRepository.findByName(RoleName.ROLE_FACTORY)
                 .orElseThrow(() -> new RoleNotFoundException(RoleErrorMessage.ROLE_NOT_FOUND));
