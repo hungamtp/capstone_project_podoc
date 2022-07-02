@@ -27,10 +27,12 @@ public class VerificationTokenServiceImplement implements VerificationTokenServi
     }
 
     @Override
-    public void save(Credential credential, String token) {
+    public void save(Credential credential, String token, boolean isForgotPassword) {
         //set expiry date to 24 hours
-        VerificationToken verificationToken = VerificationToken.builder().expiryDate(calculateExpiryTime(24*60)).token(token).credential(credential).build();
-         verificationRepository.save(verificationToken);
+
+        VerificationToken verificationToken =isForgotPassword ? VerificationToken.builder().expiryDate(calculateExpiryTime(60)).token(token).credential(credential).build():
+                VerificationToken.builder().expiryDate(calculateExpiryTime(24*60)).token(token).credential(credential).build();
+        verificationRepository.save(verificationToken);
     }
 
     private Timestamp calculateExpiryTime(int expiryTimeInMinutes){

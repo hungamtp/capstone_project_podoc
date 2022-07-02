@@ -37,7 +37,7 @@ public class TokenVerifier extends OncePerRequestFilter {
             Jws<Claims> claimsJws = Jwts.parserBuilder().setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes())).build().parseClaimsJws(token);
             Claims body = claimsJws.getBody();
             String name = body.getSubject();
-            Integer id =  (Integer)body.get("credentialId");
+            String id =  (String)body.get("credentialId");
             var authorities = (List<Map<String, String>>) body.get("authorities");
             Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authorities.stream()
                     .map(m -> new SimpleGrantedAuthority("ROLE_" + m.get("authority"))).collect(Collectors.toSet());

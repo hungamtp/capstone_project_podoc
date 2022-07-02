@@ -1,4 +1,4 @@
-package com.capstone.pod.utils;
+package com.capstone.pod.dto.utils;
 
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;

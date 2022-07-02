@@ -6,5 +6,5 @@ import com.capstone.pod.entities.VerificationToken;
 public interface VerificationTokenService {
     public VerificationToken findByToken(String token);
     public VerificationToken findByCredential(Credential credential);
-    public void save(Credential credential, String token);
+    public void save(Credential credential, String token, boolean isForgotPassword);
 }

@@ -19,7 +19,7 @@ import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.RoleRepository;
 import com.capstone.pod.repositories.UserRepository;
 import com.capstone.pod.services.AuthService;
-import com.capstone.pod.utils.Utils;
+import com.capstone.pod.dto.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;

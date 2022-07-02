@@ -40,15 +40,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/product/**",
                         "/products/{id}",
                         "/products/rating/{id}",
-                        "/swagger-resources/**",
-                        "/v2/api-docs",
                         "/webjars/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui.html/**",
-                        "/v3/api-docs/",
-                        "/swagger-ui/**",
                         "/user/confirm/**",
                         "/design/**",
+                        "user/forgot-password",
                         "/category/**",
                         "/order/**")
                 .permitAll().anyRequest().authenticated();

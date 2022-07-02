@@ -145,12 +145,20 @@ public class UserController {
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_USER_BY_ROLE_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PermitAll
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER_AND_FACTORY)
     @GetMapping("verify")
     public ResponseEntity<ResponseDto> sendEmailToVerify() throws MessagingException {
         ResponseDto<Void> responseDTO = new ResponseDto();
-        emailService.sendEmail();
+        emailService.sendEmail(false);
         responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_EMAIL_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PermitAll
+    @GetMapping("forgot-password")
+    public ResponseEntity<ResponseDto> sendEmailToGetPassword() throws MessagingException {
+        ResponseDto<Void> responseDTO = new ResponseDto();
+        emailService.sendEmail(true);
+        responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_USER)

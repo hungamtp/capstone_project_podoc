@@ -11,7 +11,7 @@ import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.services.SizeColorService;
-import com.capstone.pod.utils.Utils;
+import com.capstone.pod.dto.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
