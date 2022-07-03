@@ -15,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
-import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping("user")
@@ -119,7 +118,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<ResponseDto> findAll(@RequestParam int pageNumber, @RequestParam int pageSize) {
         ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
         Page<UserDto> users = userService.getAllUser(pageNumber, pageSize);
@@ -147,21 +146,29 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER_AND_FACTORY)
     @GetMapping("verify")
-    public ResponseEntity<ResponseDto> sendEmailToVerify() throws MessagingException {
+    public ResponseEntity<ResponseDto> sendEmailToVerify() {
         ResponseDto<Void> responseDTO = new ResponseDto();
-        emailService.sendEmail(false);
+        emailService.sendEmail();
         responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PermitAll
     @GetMapping("forgot-password")
-    public ResponseEntity<ResponseDto> sendEmailToGetPassword() throws MessagingException {
+    public ResponseEntity<ResponseDto> sendEmailToGetPassword(@RequestParam String email){
         ResponseDto<Void> responseDTO = new ResponseDto();
-        emailService.sendEmail(true);
+        emailService.sendEmailToGetBackPassword(email);
         responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    @PermitAll
+    @GetMapping("reset")
+    public ResponseEntity<ResponseDto> resetPassword(@RequestParam String email){
+        ResponseDto<Void> responseDTO = new ResponseDto();
+        emailService.sendEmailToGetBackPassword(email);
+        responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER_AND_FACTORY)
     @PatchMapping("confirm/{email}/{token}")
     public ResponseEntity<ResponseDto> confirm(@PathVariable(name = "email") String email,@PathVariable(name = "token") String token) {
         ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();

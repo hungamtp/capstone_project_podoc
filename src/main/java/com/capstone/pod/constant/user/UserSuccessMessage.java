@@ -15,7 +15,7 @@ public final class UserSuccessMessage {
     public final static String GET_ALL_FACTORY_SUCCESS = "Get all factory successfully";
     public final static String GET_FACTORY_SUCCESS = "Get  factory successfully";
     public final static String SEND_LINK_VERIFY_TO_EMAIL_SUCCESS = "Sent link to verify email successfully ";
-    public final static String SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS = "Sent link to password back successfully ";
+    public final static String SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS = "Sent link to get password back successfully ";
     public final static String VERIFY_EMAIL_SUCCESS = "Verify email successfully ";
 
 }

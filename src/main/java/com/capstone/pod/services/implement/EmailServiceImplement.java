@@ -11,6 +11,7 @@ import com.capstone.pod.repositories.VerificationRepository;
 import com.capstone.pod.services.EmailService;
 import com.capstone.pod.services.VerificationTokenService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
@@ -38,8 +39,9 @@ public class EmailServiceImplement implements EmailService {
         return new Timestamp(cal.getTime().getTime());
     }
 
+    @SneakyThrows
     @Override
-    public void sendEmail(boolean isForgotPassword) throws MessagingException {
+    public void sendEmail(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String)authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId)
@@ -48,19 +50,13 @@ public class EmailServiceImplement implements EmailService {
         Optional<VerificationToken> verificationToken = verificationRepository.findByCredential(credential);
         if(verificationToken.isPresent()){
            verificationToken.get().setToken(token);
-           if(isForgotPassword){
-               // forgot password 1 hour the token expire
-               verificationToken.get().setExpiryDate(calculateExpiryTime(60));
-           }
-           else verificationToken.get().setExpiryDate(calculateExpiryTime(24*60)); // verify email token 24hours expire
+           verificationToken.get().setExpiryDate(calculateExpiryTime(24*60)); // verify email token 24hours expire
            verificationRepository.save(verificationToken.get());
         }
-        else { verificationTokenService.save(credential,token, isForgotPassword);}
+        else { verificationTokenService.save(credential,token, false);}
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(credential.getEmail());
-
-        if(!isForgotPassword){
             mimeMessageHelper.setSubject("Thư xác thực email từ PODOC");
             mimeMessageHelper.setText("Cám ơn bạn vì đã xác thực email, vui lòng nhấn đường link bên dưới để email được xác thực  \n"+"http://localhost:8080/auth/confirm/"
                     +credential.getEmail()+"/"
@@ -68,17 +64,32 @@ public class EmailServiceImplement implements EmailService {
                     +"\nChúc bạn một ngày làm việc tốt lành, \n" +
                     "\n" +
                     "Trân Trọng, ");
-        }
-        else {
-            mimeMessageHelper.setSubject("Thư xác lấy lại mật khẩu từ PODOC");
-            mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để cài lại mật khẩu mới  \n"+"http://localhost:8080/auth/confirm/"
-                    +credential.getEmail()+"/"
-                    +token
-                    +"\nChúc bạn một ngày làm việc tốt lành, \n" +
-                    "\n" +
-                    "Trân Trọng, ");
-        }
+        javaMailSender.send(mimeMessage);
+    }
 
+    @SneakyThrows
+    @Override
+    public void sendEmailToGetBackPassword(String email) {
+        Credential credential = credentialRepository.findCredentialByEmail(email)
+                .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        String token = UUID.randomUUID().toString();
+        Optional<VerificationToken> verificationToken = verificationRepository.findByCredential(credential);
+        if(verificationToken.isPresent()){
+            verificationToken.get().setToken(token);
+            verificationToken.get().setExpiryDate(calculateExpiryTime(60));
+            verificationRepository.save(verificationToken.get());
+        }
+        else { verificationTokenService.save(credential,token, true);}
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
+        mimeMessageHelper.setTo(credential.getEmail());
+        mimeMessageHelper.setSubject("Thư lấy lại mật khẩu từ PODOC");
+        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://localhost:3030/auth/reset-password/"
+                +credential.getEmail()+"/"
+                +token
+                +"\nChúc bạn một ngày làm việc tốt lành, \n" +
+                "\n" +
+                "Trân Trọng, ");
         javaMailSender.send(mimeMessage);
     }
 
@@ -91,6 +102,18 @@ public class EmailServiceImplement implements EmailService {
             throw new PermissionException(CommonMessage.TOKEN_EXPIRED_EXCEPTION);
         }
         credential.setMailVerified(true);
+        credentialRepository.save(credential);
+    }
+
+    @Override
+    public void resetPassword(String email, String token, String password) {
+        Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        VerificationToken verificationToken = verificationTokenService.findByToken(token);
+        Timestamp currentTimeStamp = new Timestamp(System.currentTimeMillis());
+        if(verificationToken.getExpiryDate().before(currentTimeStamp)){
+            throw new PermissionException(CommonMessage.TOKEN_EXPIRED_EXCEPTION);
+        }
+        credential.setPassword(password);
         credentialRepository.save(credential);
     }
 }

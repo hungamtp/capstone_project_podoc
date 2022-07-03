@@ -5,7 +5,6 @@ import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.jwt.TokenVerifier;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,9 +40,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/products/{id}",
                         "/products/rating/{id}",
                         "/webjars/**",
-                        "/user/confirm/**",
                         "/design/**",
-                        "user/forgot-password",
+                        "/user/**",
                         "/category/**",
                         "/order/**")
                 .permitAll().anyRequest().authenticated();
