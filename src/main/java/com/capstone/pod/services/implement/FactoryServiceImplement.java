@@ -172,10 +172,13 @@ public class FactoryServiceImplement implements FactoryService {
                     .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION));
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryIdAndSizeColorId(factoryId,sizeColor.getId());
             if(sizeColorByFactory.isPresent()){
-                throw new SizeExistedException(SizeColorErrorMessage.SIZE_AND_COLOR_EXISTED_IN_FACTORY_EXCEPTION);
+               sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity()+sizeColors.get(i).getQuantity());
+               sizeColorByFactories.add(sizeColorByFactory.get());
             }
+            else {
             SizeColorByFactory sizeColorByFactoryAdd = SizeColorByFactory.builder().factory(factory).sizeColor(sizeColor).quantity(sizeColors.get(i).getQuantity()).build();
             sizeColorByFactories.add(sizeColorByFactoryAdd);
+            }
         }
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
