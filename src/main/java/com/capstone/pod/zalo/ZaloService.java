@@ -34,7 +34,7 @@ public class ZaloService {
         return fmt.format(cal.getTimeInMillis());
     }
 
-    public PaymentResponse createZaloPayOrder(Long amount) throws IOException {
+    public PaymentResponse createZaloPayOrder(Long amount , String description) throws IOException {
         Random rand = new Random();
         int random_id = rand.nextInt(1000000);
         final Map embed_data = new HashMap(){{}};
@@ -45,7 +45,7 @@ public class ZaloService {
             put("app_time", System.currentTimeMillis()); // miliseconds
             put("app_user", "user123");
             put("amount", amount);
-            put("description", "Lazada - Payment for the order #"+random_id);
+            put("description", description);
             put("bank_code", "zalopayapp");
             put("item", "[]");
             put("embed_data", new JSONObject(embed_data).toString());
@@ -83,6 +83,8 @@ public class ZaloService {
         }
         PaymentResponse paymentResponse = new PaymentResponse();
         paymentResponse.setPayUrl(result.get("order_url").toString());
+        paymentResponse.setOrderId(result.get("zp_trans_token").toString());
+        paymentResponse.setMessage(result.get("return_message").toString());
         return paymentResponse;
     }
 }
