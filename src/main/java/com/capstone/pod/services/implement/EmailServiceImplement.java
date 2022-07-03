@@ -16,6 +16,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -32,6 +33,7 @@ public class EmailServiceImplement implements EmailService {
     private final VerificationTokenService verificationTokenService;
     private final VerificationRepository verificationRepository;
     private final JavaMailSender javaMailSender;
+    private final PasswordEncoder passwordEncoder;
 
     private Timestamp calculateExpiryTime(int expiryTimeInMinutes){
         Calendar cal = Calendar.getInstance();
@@ -113,7 +115,7 @@ public class EmailServiceImplement implements EmailService {
         if(verificationToken.getExpiryDate().before(currentTimeStamp)){
             throw new PermissionException(CommonMessage.TOKEN_EXPIRED_EXCEPTION);
         }
-        credential.setPassword(password);
+        credential.setPassword(passwordEncoder.encode(password));
         credentialRepository.save(credential);
     }
 }
