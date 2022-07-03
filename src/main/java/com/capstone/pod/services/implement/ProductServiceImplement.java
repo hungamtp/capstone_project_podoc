@@ -225,7 +225,7 @@ public class ProductServiceImplement implements ProductService {
         List<ColorInDesignDto> colors = new ArrayList();
          for (int i = 0; i < product.getSizeColors().size(); i++) {
            List<ColorInDesignDto> colorTmp=  product.getSizeColors().get(i)
-                   .getSizeColorByFactories().stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId()==factoryId)
+                   .getSizeColorByFactories().stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(factoryId))
                    .map(sizeColorByFactory -> ColorInDesignDto.builder().id(sizeColorByFactory.getSizeColor().getColor().getId()).name(sizeColorByFactory.getSizeColor().getColor().getName()).image(sizeColorByFactory.getSizeColor().getColor().getImageColor()).build()).collect(Collectors.toList());
            colors.addAll(colorTmp);
         }

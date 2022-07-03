@@ -135,7 +135,7 @@ public class ProductController {
     }
     @GetMapping("/colors")
     @PermitAll
-    public ResponseEntity<ResponseDto> getColorsByProductNameAndFactoryName(@RequestParam String productId, @RequestParam String factoryId){
+    public ResponseEntity<ResponseDto> getColorsByProductIdAndFactoryId(@RequestParam String productId, @RequestParam String factoryId){
         ResponseDto<List<ColorInDesignDto>> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getColorsByProductNameAndFactoryName(productId, factoryId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_COLORS_SUCCESS);
