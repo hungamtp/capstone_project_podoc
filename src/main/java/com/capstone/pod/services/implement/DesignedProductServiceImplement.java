@@ -47,7 +47,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
 
     private User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        String currentCredentialId = (String)authentication.getCredentials();
         Optional<Credential> credential = credentialRepository.findById(currentCredentialId.toString());
         return credential.get().getUser();
     }
@@ -222,7 +222,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     @Override
     public Page<ViewMyDesignDto> viewMyDesign(Pageable page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        String currentCredentialId = (String)authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
         List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
@@ -421,7 +421,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
 
     private  boolean isPermittedUser(String designId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        String currentCredentialId = (String)authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString())
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));

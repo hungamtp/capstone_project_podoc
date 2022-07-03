@@ -42,7 +42,7 @@ public class UserServiceImplement implements UserService {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        String currentCredentialId = (String)authentication.getCredentials();
         if(!currentCredentialId.equals(credential.getId())){
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
