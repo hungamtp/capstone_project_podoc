@@ -122,7 +122,7 @@ public class FactoryServiceImplement implements FactoryService {
                     .isDeleted(product.isDeleted())
                     .productImages(product.getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
                     .categoryName(product.getCategory().getName())
-                    .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
+                    .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(credential.getFactory().getId())).map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
                     .build()).sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
