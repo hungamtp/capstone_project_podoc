@@ -12,9 +12,15 @@ import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
+import com.capstone.pod.enums.PaymentMethod;
 import com.capstone.pod.exceptions.*;
+import com.capstone.pod.momo.config.Environment;
+import com.capstone.pod.momo.enums.RequestType;
+import com.capstone.pod.momo.models.PaymentResponse;
+import com.capstone.pod.momo.processor.CreateOrderMoMo;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.OrdersService;
+import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
@@ -40,6 +46,7 @@ public class OrderServiceImplement implements OrdersService {
     private final CredentialRepository credentialRepository;
     private final OrderStatusRepository orderStatusRepository;
     private final ModelMapper modelMapper;
+    private final ZaloService zaloService;
 
     private Credential getCredential(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -49,7 +56,7 @@ public class OrderServiceImplement implements OrdersService {
     }
     @Override
     @Transactional
-    public ReturnOrderDto addOrder(ShippingInfoDto shippingInfoDto) {
+    public PaymentResponse addOrder(ShippingInfoDto shippingInfoDto ,int paymentMethod) throws Exception {
         Cart cart = cartRepository.findCartByUser(getCredential().getUser());
         if(cart == null) throw new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR);
         if(cart.getUser().getId() != getCredential().getUser().getId()){
@@ -117,13 +124,24 @@ public class OrderServiceImplement implements OrdersService {
         order.setTransactionId("");
         ordersRepository.save(order);
         cartDetailRepository.deleteAllInBatch(cartDetailList);
-        return ReturnOrderDto.builder().id(order.getId())
-                .address(shippingInfo.getShippingAddress())
-                .phone(shippingInfo.getPhoneNumber())
-                .price(totalPrice)
-                .transactionId(order.getTransactionId())
-                .customerName(shippingInfoDto.getName())
-                .build();
+
+        // create payment info
+        PaymentResponse paymentResponse = null;
+        String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s", order.getId(), order.getPrice(), order.getPhone());
+        String requestId = String.valueOf(System.currentTimeMillis());
+        String orderId = String.valueOf(System.currentTimeMillis());
+        Double amount = order.getPrice();
+        Environment environment = Environment.selectEnv("dev");
+        String returnURL = environment.getMomoEndpoint().getRedirectUrl();
+        String notifyURL = environment.getMomoEndpoint().getNotiUrl();
+        if(PaymentMethod.MOMO.ordinal() == paymentMethod){
+            paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
+        }
+        else if(PaymentMethod.ZALO_PAY.ordinal() == paymentMethod){
+            paymentResponse = zaloService.createZaloPayOrder((Double.doubleToLongBits(order.getPrice())) , orderInfo);
+        }
+
+        return paymentResponse;
     }
 
     @Override
@@ -161,5 +179,23 @@ public class OrderServiceImplement implements OrdersService {
                 .phone(shippingInfo.getPhoneNumber())
                 .build()).collect(Collectors.toList());
         return shippingInfoDtos;
+    }
+
+    private Cart getCartByEmail(String email) {
+        Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
+            () -> new CredentialNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
+        );
+
+        User user = credential.getUser();
+
+        Cart cart = cartRepository.findCartByUser(credential.getUser());
+
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUser(user);
+            return cartRepository.save(cart);
+        }
+
+        return cart;
     }
 }
