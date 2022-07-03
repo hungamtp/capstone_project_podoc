@@ -1,14 +1,13 @@
 package com.capstone.pod.dto.sizecolor;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Builder
 @Getter
 @Setter
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class SizeColorInFactoryDetailDto {
     private int quantity;
     private String size;
