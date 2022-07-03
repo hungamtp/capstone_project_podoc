@@ -43,7 +43,7 @@ public class OrderServiceImplement implements OrdersService {
 
     private Credential getCredential(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Integer currentCredentialId = (Integer)authentication.getCredentials();
+        String currentCredentialId = (String)authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         return credential;
     }

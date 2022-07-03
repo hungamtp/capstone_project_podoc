@@ -17,5 +17,6 @@ public final class UserSuccessMessage {
     public final static String SEND_LINK_VERIFY_TO_EMAIL_SUCCESS = "Sent link to verify email successfully ";
     public final static String SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS = "Sent link to get password back successfully ";
     public final static String VERIFY_EMAIL_SUCCESS = "Verify email successfully ";
+    public final static String RESET_PASSWORD_SUCCESS = "Reset password successfully ";
 
 }

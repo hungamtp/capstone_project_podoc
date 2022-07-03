@@ -162,10 +162,10 @@ public class UserController {
     }
     @PermitAll
     @GetMapping("reset")
-    public ResponseEntity<ResponseDto> resetPassword(@RequestParam String email){
+    public ResponseEntity<ResponseDto> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto){
         ResponseDto<Void> responseDTO = new ResponseDto();
-        emailService.sendEmailToGetBackPassword(email);
-        responseDTO.setSuccessMessage(UserSuccessMessage.SEND_LINK_VERIFY_TO_GET_BACK_PASSWORD_SUCCESS);
+        emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(), resetPasswordDto.getNewPassword());
+        responseDTO.setSuccessMessage(UserSuccessMessage.RESET_PASSWORD_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER_AND_FACTORY)
@@ -176,5 +176,4 @@ public class UserController {
         responseDTO.setSuccessMessage(UserSuccessMessage.VERIFY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-
 }

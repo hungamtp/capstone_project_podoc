@@ -30,6 +30,7 @@ public final class ValidationMessage {
 
     public static final String CATEGORY_NAME_VALID_MESSAGE = "Category name must be filled";
     public static final String DESIGNED_PRODUCT_NAME_VALID_MESSAGE = "Design name must be filled";
+    public static final String TOKEN_VALID_MESSAGE = "Token must be filled";
     public static final String DESIGNED_PRODUCT_PRICE_VALID_MESSAGE = "Design price must be filled";
 
     public static final String DESIGNED_PRODUCT_VALID_MESSAGE = "Design details must be filled";
