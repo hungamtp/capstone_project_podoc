@@ -258,7 +258,7 @@ public class ProductServiceImplement implements ProductService {
 
     @Override
     public AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto) {
-        productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+       Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ProductBluePrint> productBluePrintList = productBluePrintRepository.getAllByProductId(productId);
         for (int i = 0; i < productBluePrintList.size(); i++) {
             if(productBluePrintList.get(i).getPosition().equals(addProductBluePrintDto.getPosition())){
@@ -266,6 +266,7 @@ public class ProductServiceImplement implements ProductService {
             }
         }
         ProductBluePrint productBluePrint = ProductBluePrint.builder()
+                .product(product)
                 .frameImage(addProductBluePrintDto.getFrameImage())
                 .position(addProductBluePrintDto.getPosition())
                 .placeHolderTop(addProductBluePrintDto.getPlaceHolderTop())
