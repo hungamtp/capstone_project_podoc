@@ -100,7 +100,6 @@ public class DesignedProductController {
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_OTHERS_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
     @GetMapping("/details/{id}")
     public ResponseEntity<ResponseDto> viewOtherDesignDetailsByDesignId(@PathVariable(name = "id") String id) {
         ResponseDto<ViewOtherDesignDto> responseDto = new ResponseDto();

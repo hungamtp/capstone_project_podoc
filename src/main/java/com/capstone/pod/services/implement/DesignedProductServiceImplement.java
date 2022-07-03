@@ -276,6 +276,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Set sizes = new HashSet<>();
         for (int i = 0; i < designedProduct.getProduct().getSizeColors().size(); i++) {
             List sizeByFactory = designedProduct.getProduct().getSizeColors().get(i).getSizeColorByFactories().stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getSize().getName()).collect(Collectors.toList());
+            if(!sizeByFactory.isEmpty())
             sizes.add(sizeByFactory.get(0));
         }
         double price = 0;
