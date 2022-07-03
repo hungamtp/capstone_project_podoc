@@ -33,4 +33,5 @@ public interface ProductService {
       List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(String factoryId);
 
       AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto);
+      EditProductBluePrintDto editProductBluePrint(String productBlueprintId, EditProductBluePrintDto dto);
 }

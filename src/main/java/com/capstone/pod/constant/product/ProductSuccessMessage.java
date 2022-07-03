@@ -3,6 +3,7 @@ package com.capstone.pod.constant.product;
 public final class ProductSuccessMessage {
     public static final String ADD_PRODUCT_SUCCESS = "Add product successfully";
     public static final String ADD_PRODUCT_BLUEPRINT_SUCCESS = "Add product blueprint successfully";
+    public static final String UPDATE_PRODUCT_BLUEPRINT_SUCCESS = "Update product blueprint successfully";
     public static final String UPDATE_PRODUCT_SUCCESS = "Update product successfully";
     public static final String GET_BLUEPRINTS_PRODUCT_SUCCESS = "Get product blueprint by product id successfully";
     public static final String GET_ALL_PRODUCT_SUCCESS = "Get all products successfully";

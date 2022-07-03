@@ -275,4 +275,14 @@ public class ProductServiceImplement implements ProductService {
                 .build();
         return modelMapper.map(productBluePrintRepository.save(productBluePrint), AddProductBluePrintDto.class);
     }
+
+    @Override
+    public EditProductBluePrintDto editProductBluePrint(String productBlueprintId, EditProductBluePrintDto dto) {
+        ProductBluePrint productBluePrint = productBluePrintRepository.findById(productBlueprintId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.BLUEPRINT_NOT_FOUND));
+        productBluePrint.setFrameImage(dto.getFrameImage());
+        productBluePrint.setPlaceHolderTop(dto.getPlaceHolderTop());
+        productBluePrint.setPlaceHolderHeight(dto.getPlaceHolderHeight());
+        productBluePrint.setPlaceHolderWidth(dto.getPlaceHolderWidth());
+        return modelMapper.map(productBluePrintRepository.save(productBluePrint),EditProductBluePrintDto.class);
+    }
 }

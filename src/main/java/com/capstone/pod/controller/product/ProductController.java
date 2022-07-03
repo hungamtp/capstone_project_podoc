@@ -52,6 +52,15 @@ public class ProductController {
         responseDto.setSuccessMessage(ProductSuccessMessage.ADD_PRODUCT_BLUEPRINT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
+    @PutMapping("blueprint")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> updateProductBluePrint(@RequestParam String blueprintId, @Validated @RequestBody EditProductBluePrintDto addProductBluePrintDto){
+        ResponseDto<EditProductBluePrintDto> responseDto = new ResponseDto();
+        EditProductBluePrintDto productDto = productService.editProductBluePrint(blueprintId, addProductBluePrintDto);
+        responseDto.setData(productDto);
+        responseDto.setSuccessMessage(ProductSuccessMessage.ADD_PRODUCT_BLUEPRINT_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
     @PutMapping("{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody UpdateProductDto updateProductDto, @PathVariable(name="id") String productId){
