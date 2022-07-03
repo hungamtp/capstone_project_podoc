@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PlaceHolderDto {
+    private double top;
     @NotBlank(message=ValidationMessage.WIDTH_VALID_MESSAGE)
     private double width;
     @NotBlank(message=ValidationMessage.HEIGHT_VALID_MESSAGE)

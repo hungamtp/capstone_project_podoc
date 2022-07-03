@@ -208,7 +208,7 @@ public class ProductServiceImplement implements ProductService {
     public List<ProductBluePrintDto> getProductBluePrintByProductId(String productId) {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         List<ProductBluePrint> productBluePrintDtos = productBluePrintRepository.getAllByProductId(productId);
-        return productBluePrintDtos.stream().map(blueprint -> ProductBluePrintDto.builder().frameImage(blueprint.getFrameImage()).position(blueprint.getPosition()).placeholder(PlaceHolderDto.builder().height(blueprint.getPlaceHolderHeight()).width(blueprint.getPlaceHolderWidth()).build()).build()).collect(Collectors.toList());
+        return productBluePrintDtos.stream().map(blueprint -> ProductBluePrintDto.builder().frameImage(blueprint.getFrameImage()).position(blueprint.getPosition()).placeholder(PlaceHolderDto.builder().top(blueprint.getPlaceHolderTop()).height(blueprint.getPlaceHolderHeight()).width(blueprint.getPlaceHolderWidth()).build()).build()).collect(Collectors.toList());
     }
 
     @Override
