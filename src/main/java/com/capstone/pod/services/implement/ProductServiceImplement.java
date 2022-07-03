@@ -1,6 +1,7 @@
 package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.category.CategoryErrorMessage;
+import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.converter.FactoryConverter;
 import com.capstone.pod.dto.color.ColorInDesignDto;
@@ -12,6 +13,7 @@ import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
 import com.capstone.pod.dto.tag.TagDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
+import com.capstone.pod.exceptions.PermissionException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.*;
@@ -252,5 +254,24 @@ public class ProductServiceImplement implements ProductService {
             tmp= true;
         }
         return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).collect(Collectors.toList());
+    }
+
+    @Override
+    public AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto) {
+        productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        List<ProductBluePrint> productBluePrintList = productBluePrintRepository.getAllByProductId(productId);
+        for (int i = 0; i < productBluePrintList.size(); i++) {
+            if(productBluePrintList.get(i).getPosition().equals(addProductBluePrintDto.getPosition())){
+                throw new PermissionException(CommonMessage.POSITION_EXCEPTION);
+            }
+        }
+        ProductBluePrint productBluePrint = ProductBluePrint.builder()
+                .frameImage(addProductBluePrintDto.getFrameImage())
+                .position(addProductBluePrintDto.getPosition())
+                .placeHolderTop(addProductBluePrintDto.getPlaceHolderTop())
+                .placeHolderHeight(addProductBluePrintDto.getPlaceHolderHeight())
+                .placeHolderWidth(addProductBluePrintDto.getPlaceHolderWidth())
+                .build();
+        return modelMapper.map(productBluePrintRepository.save(productBluePrint), AddProductBluePrintDto.class);
     }
 }

@@ -19,6 +19,7 @@ public class ProductBluePrint {
     private String id;
     private String frameImage;
     private String position;
+    private double placeHolderTop;
     private double placeHolderHeight;
     private double placeHolderWidth;
 

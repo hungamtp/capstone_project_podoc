@@ -521,6 +521,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_blue_print` (
                                                                    `id` VARCHAR(36) NOT NULL,
                                                                    `frame_image` VARCHAR(255) NULL DEFAULT NULL,
+                                                                   `place_holder_top` DOUBLE NOT NULL,
                                                                    `place_holder_height` DOUBLE NOT NULL,
                                                                    `place_holder_width` DOUBLE NOT NULL,
                                                                    `position` VARCHAR(255) NULL DEFAULT NULL,

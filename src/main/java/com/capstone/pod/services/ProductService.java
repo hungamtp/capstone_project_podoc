@@ -31,4 +31,6 @@ public interface ProductService {
       List<ColorInDesignDto> getColorsByProductNameAndFactoryName(String productId, String factoryId);
 
       List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(String factoryId);
+
+      AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto);
 }
