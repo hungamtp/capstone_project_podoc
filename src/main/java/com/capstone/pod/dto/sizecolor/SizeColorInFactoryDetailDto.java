@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SizeColorInFactoryDetailDto {
-    private int quantity;
-    private String size;
-    private String colorImage;
+    int quantity;
+    String size;
+    String colorImage;
 }
