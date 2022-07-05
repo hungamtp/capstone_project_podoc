@@ -6,6 +6,7 @@ import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
+import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
@@ -49,6 +50,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String)authentication.getCredentials();
         Optional<Credential> credential = credentialRepository.findById(currentCredentialId.toString());
+        if(!credential.isPresent()) throw new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND);
         return credential.get().getUser();
     }
     @Override
