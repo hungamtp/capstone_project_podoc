@@ -38,7 +38,6 @@ public class OrderController {
         LogUtils.init();
         ResponseDTO responseDTO = new ResponseDTO();
         PaymentResponse paymentResponse = ordersService.addOrder(shippingInfoDto , paymentMethod);
-        ordersService.setPaymentIdForOrder(paymentResponse.getOrderId(), paymentResponse.getOrderId());
         responseDTO.setData(paymentResponse);
         return ResponseEntity.ok().body(responseDTO);
     }
