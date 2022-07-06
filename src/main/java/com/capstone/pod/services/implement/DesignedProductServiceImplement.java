@@ -8,10 +8,14 @@ import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
+import com.capstone.pod.dto.color.ColorDto;
 import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
+import com.capstone.pod.dto.size.SizeDto;
+import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
+import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
@@ -275,29 +279,48 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     @Override
     public ViewOtherDesignDto viewDesignDetailsByDesignId(String designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        Set sizes = new HashSet<>();
-        for (int i = 0; i < designedProduct.getProduct().getSizeColors().size(); i++) {
-            List sizeByFactory = designedProduct.getProduct().getSizeColors().get(i).getSizeColorByFactories().stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor().getSize().getName()).collect(Collectors.toList());
-            if(!sizeByFactory.isEmpty())
-            sizes.add(sizeByFactory.get(0));
+
+        List<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
+                .map(designColor -> ColorInDesignDto.builder()
+                        .id(designColor.getId())
+                        .image(designColor.getColor().getImageColor())
+                        .name(designColor.getColor().getName()).build()).distinct()
+                .collect(Collectors.toList());
+
+        List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
+        Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
+        for (int i = 0; i < sizeColors.size(); i++) {
+            for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
+                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
+            }
         }
+        List<SizeColor> sizeColorFactoryHave = sizeColorByFactories.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
+
+        List<SizeColor> sizeColorInDesign = new ArrayList<>();
+        for (int i = 0; i < colors.size(); i++) {
+            for (int j = 0; j < sizeColorFactoryHave.size() ; j++) {
+                if(colors.get(i).equals(sizeColorFactoryHave.get(j).getColor())){
+                    sizeColorInDesign.add(sizeColorFactoryHave.get(j));
+                }
+            }
+        }
+        List<SizeColorDesignedAndFactorySellDto> sizeColorDto = sizeColorFactoryHave.stream()
+                .map(sizeColor -> SizeColorDesignedAndFactorySellDto.builder()
+                        .color(sizeColor.getColor().getImageColor())
+                        .size(sizeColor.getSize().getName()).build()).collect(Collectors.toList());
+        Map<String, List<SizeColorDesignedAndFactorySellDto>> colorAndSizes = sizeColorDto.stream().collect(Collectors.groupingBy(sizeColor -> sizeColor.getColor()));
+
         double price = 0;
         if(isPermittedUser(designId)){
             price = designedProduct.getPriceByFactory().getPrice();
         }
         else price = designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice();
 
-        Set<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
-                .map(designColor -> ColorInDesignDto.builder()
-                        .id(designColor.getId())
-                        .image(designColor.getColor().getImageColor())
-                        .name(designColor.getColor().getName()).build())
-                .collect(Collectors.toSet());
+
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
                 .id(designedProduct.getId())
                 .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
-                .colors(colors)
-                .sizes(sizes)
+                .colorAndSizes(colorAndSizes)
                 .description(designedProduct.getDescription())
                 .price(price)
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))

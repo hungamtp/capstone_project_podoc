@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Builder
@@ -31,6 +32,6 @@ public class SizeColor{
     private Product product;
 
     @OneToMany(mappedBy = "sizeColor")
-    private Collection<SizeColorByFactory> sizeColorByFactories;
+    private List<SizeColorByFactory> sizeColorByFactories;
 
 }
