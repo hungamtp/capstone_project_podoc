@@ -26,6 +26,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
@@ -44,7 +45,6 @@ public class OrderServiceImplement implements OrdersService {
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
     private final CredentialRepository credentialRepository;
-    private final OrderStatusRepository orderStatusRepository;
     private final ModelMapper modelMapper;
     private final ZaloService zaloService;
 
@@ -141,11 +141,13 @@ public class OrderServiceImplement implements OrdersService {
             paymentResponse = zaloService.createZaloPayOrder((Double.doubleToLongBits(order.getPrice())) , orderInfo);
         }
 
+        setPaymentIdForOrder(order.getId() , paymentResponse.getOrderId());
+
         return paymentResponse;
     }
 
-    @Override
-    public void setPaymentIdForOrder(String orderId, String paymentId) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    void setPaymentIdForOrder(String orderId, String paymentId) {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
