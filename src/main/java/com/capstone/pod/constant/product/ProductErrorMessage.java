@@ -12,6 +12,7 @@ public final class ProductErrorMessage {
     public static final String PRICE_BY_FACTORY_EXISTED = "Price by factory already existed";
     public static final String PRICE_BY_FACTORY_NOT_EXISTED = "Price by factory not existed";
     public static final String QUANTITY_BY_FACTORY_NOT_ENOUGH = "Quantity by factory not enough";
+    public static final String PRODUCT_HAVE_NO_BLUEPRINT = "Product does not have blueprint";
 
     public static final String PRODUCT_NOT_SUPPORT_FOR_ORDER = "This design is now disable because product has been delete or design has been set yo private";
 

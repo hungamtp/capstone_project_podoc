@@ -85,6 +85,9 @@ public class ProductServiceImplement implements ProductService {
         if(product.getPriceByFactories().isEmpty()){
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_PRICE);
         }
+        if(product.getProductBluePrints().isEmpty()) {
+            throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_HAVE_NO_BLUEPRINT);
+        }
         product.setPublic(true);
         return modelMapper.map(productRepository.save(product),ProductDto.class);
     }

@@ -49,7 +49,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private User getCurrentUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String)authentication.getCredentials();
-        Optional<Credential> credential = credentialRepository.findById(currentCredentialId.toString());
+        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
         if(!credential.isPresent()) throw new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND);
         return credential.get().getUser();
     }
