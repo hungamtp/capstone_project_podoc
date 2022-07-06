@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface OrdersService {
     PaymentResponse addOrder(ShippingInfoDto shippingInfoDto,int paymentMethod) throws Exception;
-    void setPaymentIdForOrder(String orderId , String paymentId);
     void completeOrder(String paymentId);
 
     List<ShippingInfoDto> getMyShippingInfo();
