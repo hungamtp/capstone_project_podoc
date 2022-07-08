@@ -38,7 +38,7 @@ public class OrderController {
         responseDTO.setData(paymentResponse);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PostMapping("/shippinginfos")
+    @GetMapping("/shippinginfos")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> getShippingInfos(){
         com.capstone.pod.dto.http.ResponseDto responseDto= new com.capstone.pod.dto.http.ResponseDto();
