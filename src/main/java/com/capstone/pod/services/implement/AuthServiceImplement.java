@@ -81,6 +81,7 @@ public class AuthServiceImplement implements AuthService {
             }}
             String token = Utils.buildJWT(authenticate, credentialAuthenticated, secretKey, jwtConfig);
             loginResponseDTO = LoginResponseDto.builder()
+                    .image(credentialAuthenticated.getImage())
                     .credentialId(credentialAuthenticated.getId())
                     .email(credentialAuthenticated.getEmail())
                     .phone(credentialAuthenticated.getPhone())
