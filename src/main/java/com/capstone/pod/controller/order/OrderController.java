@@ -1,12 +1,9 @@
 package com.capstone.pod.controller.order;
 
-import com.capstone.pod.constant.common.ErrorMessage;
+import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.dto.common.ResponseDTO;
-import com.capstone.pod.dto.order.ReturnOrderDto;
+import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
-import com.capstone.pod.dto.utils.Utils;
-import com.capstone.pod.enums.PaymentMethod;
 import com.capstone.pod.momo.config.Environment;
 import com.capstone.pod.momo.enums.RequestType;
 import com.capstone.pod.momo.models.PaymentResponse;
@@ -21,8 +18,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("order")
@@ -34,12 +31,21 @@ public class OrderController {
 
     @PostMapping("/{paymentMethod}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<ResponseDTO> addOrder(@Validated @RequestBody ShippingInfoDto shippingInfoDto , @PathVariable int paymentMethod) throws Exception {
+    public ResponseEntity<ResponseDto> addOrder(@Validated @RequestBody ShippingInfoDto shippingInfoDto , @PathVariable int paymentMethod) throws Exception {
         LogUtils.init();
-        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseDto responseDTO = new ResponseDto();
         PaymentResponse paymentResponse = ordersService.addOrder(shippingInfoDto , paymentMethod);
         responseDTO.setData(paymentResponse);
         return ResponseEntity.ok().body(responseDTO);
+    }
+    @PostMapping("/shippinginfos")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> getShippingInfos(){
+        com.capstone.pod.dto.http.ResponseDto responseDto= new com.capstone.pod.dto.http.ResponseDto();
+        List<ShippingInfoDto> shippingInfoDtos = ordersService.getMyShippingInfo();
+        responseDto.setData(shippingInfoDtos);
+        responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @GetMapping

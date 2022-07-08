@@ -3,7 +3,7 @@ package com.capstone.pod.controller.cart;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.cartdetail.AddToCartDto;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
-import com.capstone.pod.dto.common.ResponseDTO;
+import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.services.CartService;
 import com.capstone.pod.dto.utils.Utils;
 import lombok.AllArgsConstructor;
@@ -57,7 +57,7 @@ public class CartController {
     public ResponseEntity addToCart(HttpServletRequest request, @RequestBody AddToCartDto addToCartDto) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
-        ResponseDTO responseDTO = new ResponseDTO();
+        ResponseDto responseDTO = new ResponseDto();
         responseDTO.setData(cartService.addToCart(addToCartDto , email));
         return ResponseEntity.ok().body(responseDTO);
     }
