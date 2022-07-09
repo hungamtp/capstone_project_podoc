@@ -524,6 +524,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_blue_print` (
                                                                    `place_holder_top` DOUBLE NOT NULL,
                                                                    `place_holder_height` DOUBLE NOT NULL,
                                                                    `place_holder_width` DOUBLE NOT NULL,
+                                                                   `width_rate` DOUBLE NOT NULL,
+                                                                   `height_rate` DOUBLE NOT NULL,
                                                                    `position` VARCHAR(255) NULL DEFAULT NULL,
                                                                    `product_id` VARCHAR(36) NULL DEFAULT NULL,
                                                                    PRIMARY KEY (`id`),
