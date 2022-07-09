@@ -21,4 +21,8 @@ public class EditProductBluePrintDto {
     private double placeHolderHeight;
     @NotNull(message = ValidationMessage.WIDTH_VALID_MESSAGE)
     private double placeHolderWidth;
+    @NotNull(message = ValidationMessage.WIDTH_RATE_VALID_MESSAGE)
+    private double widthRate;
+    @NotNull(message = ValidationMessage.HEIGHT_RATE_VALID_MESSAGE)
+    private double heightRate;
 }

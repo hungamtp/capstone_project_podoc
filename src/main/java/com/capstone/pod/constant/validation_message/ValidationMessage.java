@@ -37,7 +37,9 @@ public final class ValidationMessage {
     public static final String DESIGNED_PRODUCT_VALID_MESSAGE = "Design details must be filled";
     public static final String FRAME_IMAGE_VALID_MESSAGE = "Frame image must be filled";
     public static final String WIDTH_VALID_MESSAGE = "Width must be filled";
+    public static final String WIDTH_RATE_VALID_MESSAGE = "Width rate must be filled";
     public static final String HEIGHT_VALID_MESSAGE = "Height must be filled";
+    public static final String HEIGHT_RATE_VALID_MESSAGE = "Height rate must be filled";
     public static final String DESIGN_INFOS_VALID_MESSAGE = "Design details must be filled";
     public static final String PHONE_FORMAT_VALID_MESSAGE = "Phone must be numeric";
     public static final String WRONG_OWNER = "WRONG OWNER";
