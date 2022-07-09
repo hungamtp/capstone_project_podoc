@@ -23,4 +23,6 @@ public class AddProductBluePrintDto {
     private double placeHolderHeight;
     @NotNull(message = ValidationMessage.WIDTH_VALID_MESSAGE)
     private double placeHolderWidth;
+    private double widthRate;
+    private double heightRate;
 }

@@ -270,6 +270,8 @@ public class ProductServiceImplement implements ProductService {
         }
         ProductBluePrint productBluePrint = ProductBluePrint.builder()
                 .product(product)
+                .widthRate(addProductBluePrintDto.getWidthRate())
+                .heightRate(addProductBluePrintDto.getHeightRate())
                 .frameImage(addProductBluePrintDto.getFrameImage())
                 .position(addProductBluePrintDto.getPosition())
                 .placeHolderTop(addProductBluePrintDto.getPlaceHolderTop())

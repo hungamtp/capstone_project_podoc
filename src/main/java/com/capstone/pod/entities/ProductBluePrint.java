@@ -22,6 +22,8 @@ public class ProductBluePrint {
     private double placeHolderTop;
     private double placeHolderHeight;
     private double placeHolderWidth;
+    private double widthRate;
+    private double heightRate;
 
     @ManyToOne
     Product product;
