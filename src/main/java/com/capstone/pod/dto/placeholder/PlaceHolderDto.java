@@ -16,4 +16,6 @@ public class PlaceHolderDto {
     private double width;
     @NotBlank(message=ValidationMessage.HEIGHT_VALID_MESSAGE)
     private double height;
+    private double widthRate;
+    private double heightRate;
 }
