@@ -141,7 +141,16 @@ public class OrderServiceImplement implements OrdersService {
             paymentResponse = zaloService.createZaloPayOrder((Double.doubleToLongBits(order.getPrice())) , orderInfo);
         }
 
-        setPaymentIdForOrder(order.getId() , paymentResponse.getOrderId());
+        if (paymentResponse == null) {
+            if (paymentMethod == PaymentMethod.MOMO.ordinal()) {
+                throw new IllegalStateException(PaymentMethod.MOMO + "_API_ERROR");
+            }
+            if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
+                throw new IllegalStateException(PaymentMethod.ZALO_PAY + "_API_ERROR");
+            }
+        }else{
+            setPaymentIdForOrder(order.getId() , paymentResponse.getOrderId());
+        }
 
         return paymentResponse;
     }
