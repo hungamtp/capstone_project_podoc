@@ -91,7 +91,7 @@ public class OrderController {
     @GetMapping("/zalo/complte")
     public String completeOrderZalo() throws IOException {
         System.out.println("Complte zalo pay");
-        return "complte";
+        return "complete";
     }
 
 }

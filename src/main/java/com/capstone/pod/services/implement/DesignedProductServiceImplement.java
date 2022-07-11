@@ -105,6 +105,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
                         .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                         .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
+                        .pixel(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getPixel())
                         .font(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getFont())
                         .textColor(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTextColor())
                         .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
@@ -163,6 +164,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                         .topPosition(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTopPosition())
                         .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                         .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
+                        .pixel(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getPixel())
                         .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
                         .build();
                 bluePrint.getDesignInfos().add(designInfo);
@@ -190,6 +192,8 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                         .name(designColor.getColor().getName()).build())
                 .collect(Collectors.toSet());
         designedProductReturnDto.setColorsObj(colors);
+        designedProductReturnDto.setFactoryName(designedProduct.getPriceByFactory().getFactory().getName());
+        designedProductReturnDto.setProductName(designedProduct.getProduct().getName());
         designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
     }

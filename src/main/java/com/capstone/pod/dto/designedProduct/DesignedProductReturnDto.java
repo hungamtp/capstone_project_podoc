@@ -18,6 +18,8 @@ public class DesignedProductReturnDto {
     private String id;
     private String name;
     private String description;
+    private String productName;
+    private String factoryName;
     private boolean publish;
     private double designedPrice;
     private double priceFromFactory;
@@ -25,4 +27,5 @@ public class DesignedProductReturnDto {
     private Set<ColorInDesignDto> colorsObj;
     private List<ImagePreviewDto> imagePreviews;
     private List<BluePrintDto> bluePrints;
+
 }
