@@ -27,5 +27,4 @@ public class DesignedProductReturnDto {
     private Set<ColorInDesignDto> colorsObj;
     private List<ImagePreviewDto> imagePreviews;
     private List<BluePrintDto> bluePrints;
-
 }

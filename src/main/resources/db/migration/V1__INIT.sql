@@ -503,8 +503,11 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
                                                             `id` VARCHAR(36) NOT NULL,
+                                                            `top` DOUBLE NOT NULL,
                                                             `height` DOUBLE NOT NULL,
                                                             `width` DOUBLE NOT NULL,
+                                                            `width_rate` DOUBLE NOT NULL,
+                                                            `height_rate` DOUBLE NOT NULL,
                                                             `blue_print_id` VARCHAR(36) NULL DEFAULT NULL,
                                                             PRIMARY KEY (`id`),
                                                             INDEX `FKd3nbe4gk5ewrogucgqfby4qo6` (`blue_print_id` ASC) VISIBLE,

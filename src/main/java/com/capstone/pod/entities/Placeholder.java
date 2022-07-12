@@ -18,8 +18,11 @@ public class Placeholder {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(length = 36)
     private String id;
+    private double top;
     private double width;
     private double height;
+    private double widthRate;
+    private double heightRate;
 
     @OneToOne
     BluePrint bluePrint;

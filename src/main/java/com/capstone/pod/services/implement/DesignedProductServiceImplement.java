@@ -85,7 +85,11 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
                     .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
-                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
+                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth())
+                    .heightRate(dto.getBluePrintDtos().get(i).getPlaceholder().getHeightRate())
+                    .widthRate(dto.getBluePrintDtos().get(i).getPlaceholder().getWidthRate())
+                    .top(dto.getBluePrintDtos().get(i).getPlaceholder().getTop())
+                    .build();
             BluePrint bluePrint = BluePrint.builder()
                     .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
                     .position(dto.getBluePrintDtos().get(i).getPosition())
@@ -144,7 +148,11 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
                     .height(dto.getBluePrintDtos().get(i).getPlaceholder().getHeight())
-                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth()).build();
+                    .width(dto.getBluePrintDtos().get(i).getPlaceholder().getWidth())
+                    .heightRate(dto.getBluePrintDtos().get(i).getPlaceholder().getHeightRate())
+                    .widthRate(dto.getBluePrintDtos().get(i).getPlaceholder().getWidthRate())
+                    .top(dto.getBluePrintDtos().get(i).getPlaceholder().getTop())
+                    .build();
             BluePrint bluePrint = BluePrint.builder()
                     .frameImage(dto.getBluePrintDtos().get(i).getFrameImage())
                     .position(dto.getBluePrintDtos().get(i).getPosition())
@@ -192,6 +200,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                         .name(designColor.getColor().getName()).build())
                 .collect(Collectors.toSet());
         designedProductReturnDto.setColorsObj(colors);
+
         designedProductReturnDto.setFactoryName(designedProduct.getPriceByFactory().getFactory().getName());
         designedProductReturnDto.setProductName(designedProduct.getProduct().getName());
         designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
@@ -233,7 +242,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     public Page<ViewMyDesignDto> viewMyDesign(Pageable page) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
         List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
                 .id(designedProduct.getId())
@@ -245,6 +254,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos,page,designedProductPage.getTotalElements());
         return dtoPage;
     }
+
     @Override
     public PageDTO viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(specification ,page);
