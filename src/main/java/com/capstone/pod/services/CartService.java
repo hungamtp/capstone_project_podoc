@@ -7,7 +7,7 @@ import com.capstone.pod.dto.cartdetail.CartNotEnoughDto;
 import java.util.List;
 
 public interface CartService {
-    List<CartDetailDto> getCard(String email);
+    List<CartDetailDto> getCart(String email);
     void updateCart(List<CartDetailDto> dtos, String email);
     String deleteCartDetail(String cartDetailId, String email);
     CartDetailDto addToCart(AddToCartDto addToCartDto, String email);

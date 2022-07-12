@@ -32,12 +32,11 @@ public class CartServiceImplement implements CartService {
     private DesignedProductRepository designedProductRepository;
     private SizeColorByFactoryRepository sizeColorByFactoryRepository;
 
-    public List<CartDetailDto> getCard(String email) {
+    public List<CartDetailDto> getCart(String email) {
         Cart cart = getCartByEmail(email);
         if (cart.getCartDetails() == null) {
             return null;
         }
-
         return cartDetailConverter.entityToDtos(cart.getCartDetails());
     }
 

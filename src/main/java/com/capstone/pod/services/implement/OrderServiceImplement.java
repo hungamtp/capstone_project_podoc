@@ -84,8 +84,13 @@ public class OrderServiceImplement implements OrdersService {
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
-            if( cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted() || !cartDetailList.get(i).getDesignedProduct().isPublish() ) {
+            if( cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted()) {
                 throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
+            }
+            if(!cartDetailList.get(i).getDesignedProduct().isPublish()){
+                if(!cartDetailList.get(i).getDesignedProduct().getUser().getId().equals(currentCredential.getUser().getId())){
+                    throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
+                }
             }
            OrderDetail orderDetail = OrderDetail.builder()
                    .orders(order)

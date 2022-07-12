@@ -25,7 +25,7 @@ public class CartController {
     public ResponseEntity getCart(HttpServletRequest request){
         String jwt =request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
-        return ResponseEntity.ok().body(cartService.getCard(email));
+        return ResponseEntity.ok().body(cartService.getCart(email));
     }
 
     @PutMapping
