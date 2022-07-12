@@ -325,10 +325,17 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Map<String, List<SizeColorDesignedAndFactorySellDto>> colorAndSizes = sizeColorDto.stream().collect(Collectors.groupingBy(sizeColor -> sizeColor.getColor()));
 
         double price = 0;
-        if(isPermittedUser(designId)){
-            price = designedProduct.getPriceByFactory().getPrice();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String)authentication.getCredentials();
+        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
+
+
+        if(credential.isPresent()) {
+            if (isPermittedUser(designId)) {
+                price = designedProduct.getPriceByFactory().getPrice();
+            } else price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
         }
-        else price = designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice();
+        else price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
 
 
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
@@ -462,7 +469,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private  boolean isPermittedUser(String designId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String)authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId.toString())
+        Credential credential = credentialRepository.findById(currentCredentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(()->new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         if(designedProduct.getUser().getId() == credential.getUser().getId()) return true;
