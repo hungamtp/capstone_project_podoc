@@ -79,14 +79,18 @@ public class OrderController {
 //            &responseTime=1656439248218
 //            &extraData=
 //    &signature=640a8e675597bbf0315f86426e07dee858df920bebc85a56e59db2cd1fe6a6d4
+
+        //ZaloPay
+        //amount=323123
+        // &discountamount=0
+        // &appid=2553&checksum=bb1ee529210b36f63221938bb50a4e1a9fa5566ef294ca4aa70731cd963de033
+        // &apptransid=220713_695232
+        // &pmcid=38
+        // &bankcode=&status=1
         ordersService.completeOrder(orderId);
         return ResponseEntity.ok().body("captureWalletMoMoResponse");
     }
 
-    @GetMapping("/zalo")
-    public ResponseEntity orderZalo() throws IOException {
-        return ResponseEntity.ok().body(zaloService.createZaloPayOrder(1000L , "1") );
-    }
 
     @GetMapping("/zalo/complte")
     public String completeOrderZalo() throws IOException {

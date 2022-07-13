@@ -34,14 +34,13 @@ public class ZaloService {
         return fmt.format(cal.getTimeInMillis());
     }
 
-    public PaymentResponse createZaloPayOrder(Long amount , String description) throws IOException {
+    public PaymentResponse createZaloPayOrder(Long amount , String description , String transactionId) throws IOException {
         Random rand = new Random();
-        int random_id = rand.nextInt(1000000);
         final Map embed_data = new HashMap(){{}};
-
+        embed_data.put("redirecturl" ,"http://localhost:3000/thankyou");
         Map<String, Object> order = new HashMap<String, Object>(){{
             put("app_id", config.get("app_id"));
-            put("app_trans_id", getCurrentTimeString("yyMMdd") +"_"+ random_id); // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
+            put("app_trans_id", transactionId); // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
             put("app_time", System.currentTimeMillis()); // miliseconds
             put("app_user", "user123");
             put("amount", amount);

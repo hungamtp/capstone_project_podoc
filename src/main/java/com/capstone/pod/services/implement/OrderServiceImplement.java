@@ -33,7 +33,10 @@ import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
+
+import static com.capstone.pod.zalo.ZaloService.getCurrentTimeString;
 
 @Service
 @RequiredArgsConstructor
@@ -139,11 +142,13 @@ public class OrderServiceImplement implements OrdersService {
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
+        Random rand = new Random();
+        String transactionId = getCurrentTimeString("yyMMdd") +"_" +rand.nextInt(1000000);
         if(PaymentMethod.MOMO.ordinal() == paymentMethod){
             paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
         }
         else if(PaymentMethod.ZALO_PAY.ordinal() == paymentMethod){
-            paymentResponse = zaloService.createZaloPayOrder((Double.doubleToLongBits(order.getPrice())) , orderInfo);
+            paymentResponse = zaloService.createZaloPayOrder(amount.longValue() , orderInfo , transactionId);
         }
 
         if (paymentResponse == null) {
@@ -154,7 +159,13 @@ public class OrderServiceImplement implements OrdersService {
                 throw new IllegalStateException(PaymentMethod.ZALO_PAY + "_API_ERROR");
             }
         }else{
-            setPaymentIdForOrder(order.getId() , paymentResponse.getOrderId());
+            if( paymentMethod == PaymentMethod.MOMO.ordinal()){
+                setPaymentIdForOrder(order.getId() , paymentResponse.getOrderId());
+            }
+            if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
+                setPaymentIdForOrder(order.getId() , transactionId);
+            }
+
         }
 
         return paymentResponse;
@@ -179,6 +190,9 @@ public class OrderServiceImplement implements OrdersService {
         Orders orders = ordersRepository.findByTransactionId(paymentId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
+        if(orders.isPaid()){
+            throw  new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
+        }
 
         orders.setPaid(true);
         ordersRepository.save(orders);
