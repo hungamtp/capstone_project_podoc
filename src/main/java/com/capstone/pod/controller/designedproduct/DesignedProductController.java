@@ -145,4 +145,12 @@ public class DesignedProductController {
         designedProductService.publishOrUnpublishDesign(designId , email , false);
         return ResponseEntity.ok().body(true);
     }
+
+    @GetMapping("/4bestSeller")
+    @PermitAll
+    public ResponseEntity<com.capstone.pod.dto.common.ResponseDto> get4bestSeller(){
+        com.capstone.pod.dto.common.ResponseDto responseDto = new com.capstone.pod.dto.common.ResponseDto();
+        responseDto.setData(designedProductService.get4BestSeller());
+        return ResponseEntity.ok().body(responseDto);
+    }
 }
