@@ -12,6 +12,7 @@ import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
 import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
+import com.capstone.pod.dto.order.OrderDetailFactoryDto;
 import com.capstone.pod.dto.product.ProductDto;
 import com.capstone.pod.dto.product.ProductImagesDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
@@ -27,7 +28,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,6 +47,7 @@ public class FactoryServiceImplement implements FactoryService {
     private final ProductRepository productRepository;
     private final SizeColorRepository sizeColorRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
+    private final OrderDetailRepository orderDetailRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -202,5 +203,28 @@ public class FactoryServiceImplement implements FactoryService {
         PriceByFactory priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId).orElseThrow(() -> new PriceByFactoryNotExistedException(ProductErrorMessage.PRICE_BY_FACTORY_NOT_EXISTED));
         priceByFactoryInRepo.setPrice(price);
         priceByFactoryRepository.save(priceByFactoryInRepo);
+    }
+
+    @Override
+    public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId) {
+        Optional<Credential> credential = credentialRepository.findById(credentialId);
+        if(credential.isPresent()){
+            if(credential.get().getFactory()!=null){
+               Page<OrderDetail> orderDetailPage= orderDetailRepository.findAllByFactoryId(page, credential.get().getFactory().getId());
+               Page<OrderDetailFactoryDto> orderDetailFactoryDtos = orderDetailPage.map(orderDetail -> OrderDetailFactoryDto.builder()
+                       .id(orderDetail.getId())
+                       .productName(orderDetail.getDesignedProduct().getProduct().getName())
+                       .designName(orderDetail.getDesignedProduct().getName())
+                       .designedImage(orderDetail.getDesignedProduct().getImagePreviews().stream().collect(Collectors.toList()).get(0).getImage())
+                       .color(orderDetail.getColor())
+                       .size(orderDetail.getSize())
+                       .price(orderDetail.getDesignedProduct().getPriceByFactory().getPrice()*orderDetail.getQuantity())
+                       .quantity(orderDetail.getQuantity())
+                       .status(orderDetail.getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
+                       .build());
+               return orderDetailFactoryDtos;
+            }
+        }
+        return null;
     }
 }

@@ -96,8 +96,8 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserDto getUserByIdRoleAdmin(String userId) {
-        Credential credential = credentialRepository.findById(userId)
+    public UserDto getUserByIdRoleAdmin(String credentialId) {
+        Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         UserDto userDto = modelMapper.map(credential, UserDto.class);
         return userDto;

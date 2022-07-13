@@ -9,7 +9,7 @@ public interface UserService {
     public UserDto deleteUserById(String userId);
     public Page<UserDto> getAllUser(int pageNum, int pageSize);
     public UserDto getUserById(String userId);
-    public UserDto getUserByIdRoleAdmin(String userId);
+    public UserDto getUserByIdRoleAdmin(String credentialId);
     public UserDto addUser(AddUserDto user);
     public UserDto addAdmin(AddUserDto user);
     public UserDto addFactory(AddUserDto user);

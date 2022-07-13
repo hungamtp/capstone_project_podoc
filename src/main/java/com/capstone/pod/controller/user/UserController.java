@@ -33,9 +33,9 @@ public class UserController {
     };
     @GetMapping("admin/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getUserByIdRoleAdmin(@PathVariable(name = "id") String userId)  {
+    public ResponseEntity<ResponseDto> getUserByIdRoleAdmin(@PathVariable(name = "id") String credentialId)  {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
-        UserDto userDto = userService.getUserByIdRoleAdmin(userId);
+        UserDto userDto = userService.getUserByIdRoleAdmin(credentialId);
         responseDTO.setData(userDto);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

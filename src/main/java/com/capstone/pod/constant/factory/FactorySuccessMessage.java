@@ -7,4 +7,5 @@ public  final class FactorySuccessMessage {
     public static String ADD_PRICE_TO_PRODUCT_SUCCESS = "Add price by factory to product successfully";
     public static String UPDATE_PRICE_TO_PRODUCT_SUCCESS = "update price by factory to product successfully";
     public static String ADD_SIZE_COLOR_TO_PRODUCT_SUCCESS = "Add size and color by factory to product successfully";
+    public static String GET_ALL_ORDER_DETAIL_SUCCESS = "Get all order details successfully";
 }
