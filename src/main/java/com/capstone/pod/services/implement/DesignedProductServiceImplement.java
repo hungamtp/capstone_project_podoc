@@ -255,15 +255,10 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     @Override
     public PageDTO viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(specification, page);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentCredentialId = (String) authentication.getCredentials();
-        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
-
         List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().map(designedProduct -> {
-
             return ViewAllDesignDto.builder()
                 .id(designedProduct.getId())
-                .price((credential.isPresent() && credential.get().getUser().getId().equals(designedProduct.getUser().getId())) ? designedProduct.getPriceByFactory().getPrice() : designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
+                .price(designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
                 .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
@@ -329,19 +324,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .size(sizeColor.getSize().getName()).build()).collect(Collectors.toList());
         Map<String, List<SizeColorDesignedAndFactorySellDto>> colorAndSizes = sizeColorDto.stream().collect(Collectors.groupingBy(sizeColor -> sizeColor.getColor()));
 
-        double price = 0;
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentCredentialId = (String) authentication.getCredentials();
-        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
-
-
-        if (credential.isPresent()) {
-            if (isPermittedUser(designId)) {
-                price = designedProduct.getPriceByFactory().getPrice();
-            } else price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
-        } else price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
-
-
+        double price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
             .id(designedProduct.getId())
             .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
