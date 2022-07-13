@@ -3,11 +3,14 @@ package com.capstone.pod.entities;
 import com.capstone.pod.dto.support.Auditable;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -30,9 +33,11 @@ public class DesignedProduct  extends Auditable {
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<BluePrint> bluePrints;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     List<DesignColor> designColors;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     Collection<ImagePreview> imagePreviews;
 
@@ -44,14 +49,15 @@ public class DesignedProduct  extends Auditable {
     @ManyToOne
     User user;
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    Collection<Rating> ratings;
+    private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    private Collection<OrderDetail> orderDetails;
+    private Set<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    private Collection<DesignedProductTag> designedProductTags;
+    private Set<DesignedProductTag> designedProductTags;
 
 
 }

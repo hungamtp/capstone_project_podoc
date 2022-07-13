@@ -12,6 +12,8 @@ import java.util.List;
 
 public interface DesignedProductService {
     List<DesignedProductDto> get4HighestRateDesignedProduct();
+    List<DesignedProductDto> get4BestSeller();
+    List<DesignedProductDto> get4BestSellerById(String productId);
     List<DesignedProductDto> get4HighestRateDesignedProductByProductId(String designId);
     DesignedProductReturnDto addDesignedProduct(DesignedProductSaveDto dto, String productId, String factoryId);
     DesignedProductReturnDto editDesignedProduct(DesignedProductSaveDto dto, String designId);
