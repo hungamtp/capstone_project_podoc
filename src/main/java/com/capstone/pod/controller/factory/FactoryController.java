@@ -34,7 +34,7 @@ public class FactoryController {
     @GetMapping
     public ResponseEntity<ResponseDto> getAll(@RequestParam int pageNumber, @RequestParam int pageSize)
     {
-        Pageable pageable = PageRequest.of(0, 50);
+        Pageable pageable = PageRequest.of(0, 10000);
         ResponseDto<Page<FactoryPageResponseDto>> responseDTO = new ResponseDto();
         Page<FactoryPageResponseDto> getAllFactory = factoryService.getAllFactories(pageable);
         responseDTO.setData(getAllFactory);
