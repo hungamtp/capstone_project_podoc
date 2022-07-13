@@ -208,6 +208,7 @@ public class FactoryServiceImplement implements FactoryService {
     @Override
     public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId) {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
+        getPermittedCredential(credentialId);
         if(credential.isPresent()){
             if(credential.get().getFactory()!=null){
                Page<OrderDetail> orderDetailPage= orderDetailRepository.findAllByFactoryId(page, credential.get().getFactory().getId());
