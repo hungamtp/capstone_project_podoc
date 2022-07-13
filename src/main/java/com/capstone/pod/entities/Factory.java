@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Setter
@@ -29,7 +30,7 @@ public class Factory{
     private Credential credential;
 
     @OneToMany(mappedBy = "factory")
-    private Collection<SizeColorByFactory> sizeColorByFactories;
+    private List<SizeColorByFactory> sizeColorByFactories;
 
     @OneToMany(mappedBy = "factory")
     private Collection<PriceByFactory> priceByFactories;
