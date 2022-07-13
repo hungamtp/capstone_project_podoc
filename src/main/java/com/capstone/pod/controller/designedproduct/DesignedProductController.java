@@ -153,4 +153,12 @@ public class DesignedProductController {
         responseDto.setData(designedProductService.get4BestSeller());
         return ResponseEntity.ok().body(responseDto);
     }
+
+    @GetMapping("/4bestSeller/{productId}")
+    @PermitAll
+    public ResponseEntity<com.capstone.pod.dto.common.ResponseDto> get4bestSellerById(@PathVariable String productId){
+        com.capstone.pod.dto.common.ResponseDto responseDto = new com.capstone.pod.dto.common.ResponseDto();
+        responseDto.setData(designedProductService.get4BestSellerById(productId));
+        return ResponseEntity.ok().body(responseDto);
+    }
 }

@@ -403,6 +403,12 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     }
 
     @Override
+    public List<DesignedProductDto> get4BestSellerById(String productId) {
+        return designedProductRepository.get4BestSellerById(productId).stream().map(designedProduct -> designedProductConverter.entityToDesignedProductDto(designedProduct)).collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<DesignedProductDto> get4HighestRateDesignedProductByProductId(String productId) {
         return designedProductRepository.get4HighestRateDesignedProductByProductId(productId).stream().map(designedProduct -> designedProductConverter.entityToDesignedProductDto(designedProduct)).collect(Collectors.toList());
 

@@ -71,6 +71,27 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         query.orderBy(orderList);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
+
+    @Override
+    public List<DesignedProduct> get4BestSellerById(String productId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<DesignedProduct> query = criteriaBuilder.createQuery(DesignedProduct.class);
+        Root<DesignedProduct> root = query.from(DesignedProduct.class);
+        root.join(DesignedProduct_.DESIGN_COLORS, JoinType.LEFT);
+        root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
+        root.join(DesignedProduct_.ORDER_DETAILS, JoinType.INNER);
+        root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
+        Join<DesignedProduct, Product> productJoin = root.join(DesignedProduct_.PRODUCT, JoinType.LEFT);
+        Join<DesignedProduct, OrderDetail> orderDetailJoin = root.join(DesignedProduct_.ORDER_DETAILS, JoinType.LEFT);
+        query.groupBy(root.get(DesignedProduct_.ID));
+        query.select(root);
+        List<Order> orderList = new ArrayList();
+        Predicate productIdEqual = criteriaBuilder.equal(productJoin.get(Product_.ID), productId);
+        Predicate publishTrue = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
+        orderList.add(criteriaBuilder.desc(criteriaBuilder.count(orderDetailJoin.get(OrderDetail_.ID))));
+        query.orderBy(orderList).where(productIdEqual , publishTrue);
+        return entityManager.createQuery(query).setMaxResults(4).getResultList();
+    }
 }
 
 
