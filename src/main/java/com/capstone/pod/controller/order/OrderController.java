@@ -2,8 +2,10 @@ package com.capstone.pod.controller.order;
 
 import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
+import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
+import com.capstone.pod.dto.utils.Utils;
 import com.capstone.pod.momo.config.Environment;
 import com.capstone.pod.momo.enums.RequestType;
 import com.capstone.pod.momo.models.PaymentResponse;
@@ -13,11 +15,15 @@ import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.services.PayService;
 import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -88,14 +94,18 @@ public class OrderController {
         // &pmcid=38
         // &bankcode=&status=1
         ordersService.completeOrder(orderId);
-        return ResponseEntity.ok().body("captureWalletMoMoResponse");
+        return ResponseEntity.ok().body("PAID_SUCCESS");
     }
 
-
-    @GetMapping("/zalo/complte")
-    public String completeOrderZalo() throws IOException {
-        System.out.println("Complte zalo pay");
-        return "complete";
+    @GetMapping("/myorder")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity getAllMyOrder(HttpServletRequest request , @RequestParam int page , @RequestParam int size){
+        String jwt =request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
+        Pageable pageable = PageRequest.of(page , size);
+        PageDTO pageDTO = ordersService.getAllOrderIsNotPaid(email ,pageable );
+        return ResponseEntity.ok().body(pageDTO);
     }
+
 
 }
