@@ -8,14 +8,11 @@ import com.capstone.pod.constant.designedproduct.DesignedProductErrorMessage;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
-import com.capstone.pod.dto.color.ColorDto;
 import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
-import com.capstone.pod.dto.size.SizeDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
-import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
@@ -32,7 +29,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import javax.swing.text.View;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -256,9 +252,13 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     @Override
     public PageDTO viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(specification ,page);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String)authentication.getCredentials();
+        Optional<Credential> credential = credentialRepository.findById(currentCredentialId);
+
         List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().map(designedProduct -> ViewAllDesignDto.builder()
                 .id(designedProduct.getId())
-                .price(designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
+                .price((credential.isPresent() && credential.get().getUser().getId().equals(designedProduct.getUser().getId())) ? designedProduct.getPriceByFactory().getPrice() :designedProduct.getDesignedPrice()+designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
                 .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num+""))))
