@@ -9,6 +9,8 @@ import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
+import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.order.AllOrderDto;
 import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
@@ -23,6 +25,8 @@ import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -209,6 +213,30 @@ public class OrderServiceImplement implements OrdersService {
                 .phone(shippingInfo.getPhoneNumber())
                 .build()).collect(Collectors.toList());
         return shippingInfoDtos;
+    }
+
+    @Override
+    public PageDTO getAllOrderIsNotPaid(String email, Pageable pageable) {
+        Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
+            () -> new CredentialNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
+        );
+        User user = credential.getUser();
+        Page<Orders> ordersPage = ordersRepository.findAllByIsPaidIsFalseAndUser(pageable, user);
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setPage(pageDTO.getPage());
+        pageDTO.setElements(pageDTO.getElements());
+        List<AllOrderDto> orderDtos = ordersPage.stream().map(orders -> {
+            List<OrderDetail> orderDetails = orders.getOrderDetails();
+            return AllOrderDto.builder()
+                .orderId(orders.getId())
+                .countItem(orderDetails.size())
+                .isPaid(orders.isPaid())
+                .totalBill(orders.getPrice())
+                .createdDate(orders.getCreateDate())
+                .build();
+        }).collect(Collectors.toList());
+        pageDTO.setData(orderDtos);
+        return pageDTO;
     }
 
     private Cart getCartByEmail(String email) {

@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Builder
@@ -30,5 +31,5 @@ public class Orders extends Auditable {
     User user;
 
     @OneToMany(mappedBy = "orders",cascade = CascadeType.ALL)
-    Collection<OrderDetail> orderDetails;
+    List<OrderDetail> orderDetails;
 }
