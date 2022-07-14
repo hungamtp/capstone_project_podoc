@@ -60,7 +60,7 @@ public class EmailServiceImplement implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(credential.getEmail());
             mimeMessageHelper.setSubject("Thư xác thực email từ PODOC");
-            mimeMessageHelper.setText("Cám ơn bạn vì đã xác thực email, vui lòng nhấn đường link bên dưới để email được xác thực  \n"+"http://localhost:8080/auth/confirm/"
+            mimeMessageHelper.setText("Cám ơn bạn vì đã xác thực email, vui lòng nhấn đường link bên dưới để email được xác thực  \n"+"http://localhost:3000/confirm/"
                     +credential.getEmail()+"/"
                     +token
                     +"\nChúc bạn một ngày làm việc tốt lành, \n" +
@@ -86,7 +86,7 @@ public class EmailServiceImplement implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(credential.getEmail());
         mimeMessageHelper.setSubject("Thư lấy lại mật khẩu từ PODOC");
-        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://localhost:3030/auth/reset-password/"
+        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://localhost:3000/reset-password/"
                 +credential.getEmail()+"/"
                 +token
                 +"\nChúc bạn một ngày làm việc tốt lành, \n" +
