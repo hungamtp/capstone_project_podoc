@@ -48,6 +48,7 @@ public class FactoryServiceImplement implements FactoryService {
     private final SizeColorRepository sizeColorRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final OrderStatusRepository orderStatusRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -221,7 +222,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .size(orderDetail.getSize())
                        .price(orderDetail.getDesignedProduct().getPriceByFactory().getPrice()*orderDetail.getQuantity())
                        .quantity(orderDetail.getQuantity())
-                       .status(orderDetail.getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
+                       .status(orderStatusRepository.findAllByOrderDetailId(orderDetail.getId()).stream().sorted().map(orderStatus -> orderStatus.getName()).collect(Collectors.toList()).get(0))
                        .build());
                return orderDetailFactoryDtos;
             }

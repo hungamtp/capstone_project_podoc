@@ -4,9 +4,12 @@ import com.capstone.pod.entities.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface OrderStatusRepository extends JpaRepository<OrderStatus, String> {
     Optional<OrderStatus> findByName(String name);
+    List<OrderStatus> findAllByOrderDetailId(String id);
+
 }
