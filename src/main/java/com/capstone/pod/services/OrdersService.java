@@ -17,4 +17,6 @@ public interface OrdersService {
     List<ShippingInfoDto> getMyShippingInfo();
 
     PageDTO getAllOrderIsNotPaid(String email, Pageable pageable);
+
+    PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception;
 }
