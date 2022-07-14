@@ -161,7 +161,7 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PermitAll
-    @GetMapping("reset")
+    @PutMapping("reset")
     public ResponseEntity<ResponseDto> resetPassword(@Validated @RequestBody ResetPasswordDto resetPasswordDto){
         ResponseDto<Void> responseDTO = new ResponseDto();
         emailService.resetPassword(resetPasswordDto.getEmail(), resetPasswordDto.getToken(), resetPasswordDto.getNewPassword());
