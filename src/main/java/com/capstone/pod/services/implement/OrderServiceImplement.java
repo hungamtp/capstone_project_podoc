@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -237,6 +238,49 @@ public class OrderServiceImplement implements OrdersService {
         }).collect(Collectors.toList());
         pageDTO.setData(orderDtos);
         return pageDTO;
+    }
+
+    @Override
+    public PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception {
+        Orders orders = ordersRepository.findById(orderId).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
+        );
+        if(orders.isPaid()){
+            throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
+        }
+        PaymentResponse paymentResponse = null;
+        String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s", orders.getId(), orders.getPrice(), orders.getPhone());
+        String requestId = String.valueOf(System.currentTimeMillis());
+        String paymentId = String.valueOf(System.currentTimeMillis());
+        Double amount = orders.getPrice();
+        Environment environment = Environment.selectEnv("dev");
+        String returnURL = environment.getMomoEndpoint().getRedirectUrl();
+        String notifyURL = environment.getMomoEndpoint().getNotiUrl();
+        Random rand = new Random();
+        String transactionId = getCurrentTimeString("yyMMdd") +"_" +rand.nextInt(1000000);
+        if(PaymentMethod.MOMO.ordinal() == paymentMethod){
+            paymentResponse = CreateOrderMoMo.process(environment, paymentId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
+        }
+        else if(PaymentMethod.ZALO_PAY.ordinal() == paymentMethod){
+            paymentResponse = zaloService.createZaloPayOrder(amount.longValue() , orderInfo , transactionId);
+        }
+
+        if (paymentResponse == null) {
+            if (paymentMethod == PaymentMethod.MOMO.ordinal()) {
+                throw new IllegalStateException(PaymentMethod.MOMO + "_API_ERROR");
+            }
+            if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
+                throw new IllegalStateException(PaymentMethod.ZALO_PAY + "_API_ERROR");
+            }
+        }else{
+            if( paymentMethod == PaymentMethod.MOMO.ordinal()){
+                setPaymentIdForOrder(orderId , paymentResponse.getOrderId());
+            }
+            if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
+                setPaymentIdForOrder(orderId, transactionId);
+            }
+        }
+        return paymentResponse;
     }
 
     private Cart getCartByEmail(String email) {
