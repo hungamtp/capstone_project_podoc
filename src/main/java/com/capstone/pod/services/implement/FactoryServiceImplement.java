@@ -184,7 +184,6 @@ public class FactoryServiceImplement implements FactoryService {
         }
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
-
     @Override
     public void addPriceByFactoryToProduct(String factoryId, String productId, double price) {
        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
@@ -196,7 +195,6 @@ public class FactoryServiceImplement implements FactoryService {
        PriceByFactory priceByFactory = PriceByFactory.builder().factory(factory).product(product).price(price).build();
        priceByFactoryRepository.save(priceByFactory);
     }
-
     @Override
     public void updatePriceByFactoryToProduct(String factoryId, String productId, double price) {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
@@ -205,7 +203,6 @@ public class FactoryServiceImplement implements FactoryService {
         priceByFactoryInRepo.setPrice(price);
         priceByFactoryRepository.save(priceByFactoryInRepo);
     }
-
     @Override
     public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId) {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
@@ -220,7 +217,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .designedImage(orderDetail.getDesignedProduct().getImagePreviews().stream().collect(Collectors.toList()).get(0).getImage())
                        .color(orderDetail.getColor())
                        .size(orderDetail.getSize())
-                       .price(orderDetail.getDesignedProduct().getPriceByFactory().getPrice()*orderDetail.getQuantity())
+                       .price((orderDetail.getDesignedProduct().getPriceByFactory().getPrice() + orderDetail.getDesignedProduct().getDesignedPrice() ) * orderDetail.getQuantity())
                        .quantity(orderDetail.getQuantity())
                        .status(orderStatusRepository.findAllByOrderDetailId(orderDetail.getId()).stream().sorted().map(orderStatus -> orderStatus.getName()).collect(Collectors.toList()).get(0))
                        .build());
