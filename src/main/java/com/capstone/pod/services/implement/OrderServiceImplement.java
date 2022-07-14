@@ -11,6 +11,8 @@ import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.order.AllOrderDto;
+import com.capstone.pod.converter.OrderDetailConverter;
+import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
@@ -53,79 +55,83 @@ public class OrderServiceImplement implements OrdersService {
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
     private final CredentialRepository credentialRepository;
+    private final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
     private final ZaloService zaloService;
+    private final OrderDetailConverter orderDetailConverter;
 
-    private Credential getCredential(){
+    private Credential getCredential() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentCredentialId = (String)authentication.getCredentials();
+        String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         return credential;
     }
+
     @Override
     @Transactional
-    public PaymentResponse addOrder(ShippingInfoDto shippingInfoDto ,int paymentMethod) throws Exception {
+    public PaymentResponse addOrder(ShippingInfoDto shippingInfoDto, int paymentMethod) throws Exception {
         Cart cart = cartRepository.findCartByUser(getCredential().getUser());
-        if(cart == null) throw new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR);
-        if(cart.getUser().getId() != getCredential().getUser().getId()){
+        if (cart == null) throw new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR);
+        if (cart.getUser().getId() != getCredential().getUser().getId()) {
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         }
         ShippingInfo shippingInfo = ShippingInfo.builder()
-                .phoneNumber(shippingInfoDto.getPhone())
-                .name(shippingInfoDto.getName())
-                .shippingAddress(shippingInfoDto.getAddress())
-                .emailAddress(shippingInfoDto.getEmail())
-                .user(getCredential().getUser())
-                .build();
-        if(shippingInfoDto.isShouldSave()) {
+            .phoneNumber(shippingInfoDto.getPhone())
+            .name(shippingInfoDto.getName())
+            .shippingAddress(shippingInfoDto.getAddress())
+            .emailAddress(shippingInfoDto.getEmail())
+            .user(getCredential().getUser())
+            .build();
+        if (shippingInfoDto.isShouldSave()) {
             shippingInfoRepository.save(shippingInfo);
         }
         List<CartDetail> cartDetailList = cart.getCartDetails();
-        if(cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
+        if (cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
         Credential currentCredential = getCredential();
         double totalPrice = 0;
-        String address  = currentCredential.getAddress();
+        String address = currentCredential.getAddress();
         String phone = currentCredential.getPhone();
-        String customerName = currentCredential.getUser().getLastName() + " " +currentCredential.getUser().getFirstName();
+        String customerName = currentCredential.getUser().getLastName() + " " + currentCredential.getUser().getFirstName();
         Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
         OrderStatus orderStatus = OrderStatus.builder().name(OrderState.PENDING).build();
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
-            if( cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted()) {
+            if (cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted()) {
                 throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
             }
-            if(!cartDetailList.get(i).getDesignedProduct().isPublish()){
-                if(!cartDetailList.get(i).getDesignedProduct().getUser().getId().equals(currentCredential.getUser().getId())){
+            if (!cartDetailList.get(i).getDesignedProduct().isPublish()) {
+                if (!cartDetailList.get(i).getDesignedProduct().getUser().getId().equals(currentCredential.getUser().getId())) {
                     throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
                 }
             }
-           OrderDetail orderDetail = OrderDetail.builder()
-                   .orders(order)
-                   .orderStatuses(Arrays.asList(orderStatus))
-                   .quantity(cartDetailList.get(i).getQuantity())
-                   .orderStatuses(Arrays.asList(orderStatus))
-                   .color(cartDetailList.get(i).getColor())
-                   .size(cartDetailList.get(i).getSize())
-                   .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
-                   .designedProduct(cartDetailList.get(i).getDesignedProduct()).build();
+            OrderDetail orderDetail = OrderDetail.builder()
+                .orders(order)
+                .orderStatuses(Arrays.asList(orderStatus))
+                .quantity(cartDetailList.get(i).getQuantity())
+                .orderStatuses(Arrays.asList(orderStatus))
+                .color(cartDetailList.get(i).getColor())
+                .size(cartDetailList.get(i).getSize())
+                .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
+                .designedProduct(cartDetailList.get(i).getDesignedProduct()).build();
             orderStatus.setOrderDetail(orderDetail);
             int finalI = i;
             SizeColor sizeColor = sizeColorRepository
-                   .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(),orderDetail.getSize(),orderDetail.getDesignedProduct().getProduct().getId())
-                   .orElseThrow(() -> new SizeNotFoundException(String.format(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION,cartDetailList.get(finalI).getColor(),cartDetailList.get(finalI).getSize(),cartDetailList.get(finalI).getDesignedProduct().getProduct().getName())));
+                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId())
+                .orElseThrow(() -> new SizeNotFoundException(String.format(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION, cartDetailList.get(finalI).getColor(), cartDetailList.get(finalI).getSize(), cartDetailList.get(finalI).getDesignedProduct().getProduct().getName())));
 
-            SizeColorByFactory sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(),sizeColor)
-                   .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXISTED_IN_FACTORY_EXCEPTION));
-           if(sizeColorByFactory.getQuantity() < cartDetailList.get(i).getQuantity()){
-               throw new QuantityNotEnoughException(ProductErrorMessage.QUANTITY_BY_FACTORY_NOT_ENOUGH);
-           }
-           sizeColorByFactory.setQuantity(sizeColorByFactory.getQuantity()-cartDetailList.get(i).getQuantity());
-           sizeColorByFactories.add(sizeColorByFactory);
-           orderDetails.add(orderDetail);
-           totalPrice += cartDetailList.get(i).getQuantity()* ( cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
+            SizeColorByFactory sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor)
+                .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXISTED_IN_FACTORY_EXCEPTION));
+            if (sizeColorByFactory.getQuantity() < cartDetailList.get(i).getQuantity()) {
+                throw new QuantityNotEnoughException(ProductErrorMessage.QUANTITY_BY_FACTORY_NOT_ENOUGH);
+            }
+            sizeColorByFactory.setQuantity(sizeColorByFactory.getQuantity() - cartDetailList.get(i).getQuantity());
+            sizeColorByFactories.add(sizeColorByFactory);
+            orderDetails.add(orderDetail);
+            totalPrice += cartDetailList.get(i).getQuantity() * (cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
         }
-        if(totalPrice < 1000 || totalPrice > 50000000) throw new PermissionException(ValidationMessage.PRICE_TOTAL_SHOULD_VALID);
+        if (totalPrice < 1000 || totalPrice > 50000000)
+            throw new PermissionException(ValidationMessage.PRICE_TOTAL_SHOULD_VALID);
 
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
         order.setOrderDetails(orderDetails);
@@ -140,7 +146,7 @@ public class OrderServiceImplement implements OrdersService {
 
         // create payment info
         PaymentResponse paymentResponse = null;
-        String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s", order.getId(), order.getPrice(), order.getPhone());
+        String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
         Double amount = order.getPrice();
@@ -148,12 +154,11 @@ public class OrderServiceImplement implements OrdersService {
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
         Random rand = new Random();
-        String transactionId = getCurrentTimeString("yyMMdd") +"_" +rand.nextInt(1000000);
-        if(PaymentMethod.MOMO.ordinal() == paymentMethod){
+        String transactionId = getCurrentTimeString("yyMMdd") + "_" + rand.nextInt(1000000);
+        if (PaymentMethod.MOMO.ordinal() == paymentMethod) {
             paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
-        }
-        else if(PaymentMethod.ZALO_PAY.ordinal() == paymentMethod){
-            paymentResponse = zaloService.createZaloPayOrder(amount.longValue() , orderInfo , transactionId);
+        } else if (PaymentMethod.ZALO_PAY.ordinal() == paymentMethod) {
+            paymentResponse = zaloService.createZaloPayOrder(amount.longValue(), orderInfo, transactionId);
         }
 
         if (paymentResponse == null) {
@@ -163,12 +168,12 @@ public class OrderServiceImplement implements OrdersService {
             if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
                 throw new IllegalStateException(PaymentMethod.ZALO_PAY + "_API_ERROR");
             }
-        }else{
-            if( paymentMethod == PaymentMethod.MOMO.ordinal()){
-                setPaymentIdForOrder(order.getId() , paymentResponse.getOrderId());
+        } else {
+            if (paymentMethod == PaymentMethod.MOMO.ordinal()) {
+                setPaymentIdForOrder(order.getId(), paymentResponse.getOrderId());
             }
             if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
-                setPaymentIdForOrder(order.getId() , transactionId);
+                setPaymentIdForOrder(order.getId(), transactionId);
             }
 
         }
@@ -182,12 +187,12 @@ public class OrderServiceImplement implements OrdersService {
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
 
-        if(orders.isPaid()){
+        if (orders.isPaid()) {
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
 
         orders.setTransactionId(paymentId);
-        ordersRepository.updatePaymentId(orderId , paymentId);
+        ordersRepository.updatePaymentId(orderId, paymentId);
     }
 
     @Override
@@ -195,8 +200,8 @@ public class OrderServiceImplement implements OrdersService {
         Orders orders = ordersRepository.findByTransactionId(paymentId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
-        if(orders.isPaid()){
-            throw  new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
+        if (orders.isPaid()) {
+            throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
 
         orders.setPaid(true);
@@ -207,12 +212,12 @@ public class OrderServiceImplement implements OrdersService {
     public List<ShippingInfoDto> getMyShippingInfo() {
         List<ShippingInfo> shippingInfoList = shippingInfoRepository.findAllByUserId(getCredential().getUser().getId());
         List<ShippingInfoDto> shippingInfoDtos = shippingInfoList.stream().map(shippingInfo -> ShippingInfoDto.builder()
-                .id(shippingInfo.getId())
-                .address(shippingInfo.getShippingAddress())
-                .name(shippingInfo.getName())
-                .email(shippingInfo.getEmailAddress())
-                .phone(shippingInfo.getPhoneNumber())
-                .build()).collect(Collectors.toList());
+            .id(shippingInfo.getId())
+            .address(shippingInfo.getShippingAddress())
+            .name(shippingInfo.getName())
+            .email(shippingInfo.getEmailAddress())
+            .phone(shippingInfo.getPhoneNumber())
+            .build()).collect(Collectors.toList());
         return shippingInfoDtos;
     }
 
@@ -282,6 +287,17 @@ public class OrderServiceImplement implements OrdersService {
         }
         return paymentResponse;
     }
+
+
+    public List<MyOrderDetailDto> getAllMyOrderDetail(int page, int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String) authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId)
+            .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+
+        return orderDetailRepository.findAllOrderDetail(page, size, credential.getUser().getId()).stream().map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail)).collect(Collectors.toList());
+    }
+
 
     private Cart getCartByEmail(String email) {
         Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
