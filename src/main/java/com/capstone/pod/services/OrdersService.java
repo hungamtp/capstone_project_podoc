@@ -2,6 +2,7 @@ package com.capstone.pod.services;
 
 
 import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.momo.models.PaymentResponse;
@@ -19,4 +20,7 @@ public interface OrdersService {
     PageDTO getAllOrderIsNotPaid(String email, Pageable pageable);
 
     PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception;
+
+    List<MyOrderDetailDto> getAllMyOrderDetail(int page, int size);
+
 }

@@ -36,6 +36,7 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
      **/
 
     public static PaymentResponse process(Environment env, String orderId, String requestId, String amount, String orderInfo, String returnURL, String notifyURL, String extraData, RequestType requestType, Boolean autoCapture) throws Exception {
+        LogUtils.init();
         try {
             CreateOrderMoMo m2Processor = new CreateOrderMoMo(env);
 
@@ -52,6 +53,7 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
     @Override
     public PaymentResponse execute(PaymentRequest request) throws MoMoException {
         try {
+            LogUtils.init();
 
             String payload = getGson().toJson(request, PaymentRequest.class);
 
@@ -60,16 +62,7 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
             if (response.getStatus() != 200) {
                 throw new MoMoException("[PaymentResponse] [" + request.getOrderId() + "] -> Error API");
             }
-
-            System.out.println("uweryei7rye8wyreow8: "+ response.getData());
-
             PaymentResponse captureMoMoResponse = getGson().fromJson(response.getData(), PaymentResponse.class);
-            String responserawData = Parameter.REQUEST_ID + "=" + captureMoMoResponse.getRequestId() +
-                    "&" + Parameter.ORDER_ID + "=" + captureMoMoResponse.getOrderId() +
-                    "&" + Parameter.MESSAGE + "=" + captureMoMoResponse.getMessage() +
-                    "&" + Parameter.PAY_URL + "=" + captureMoMoResponse.getPayUrl() +
-                    "&" + Parameter.RESULT_CODE + "=" + captureMoMoResponse.getResultCode();
-
             return captureMoMoResponse;
 
         } catch (Exception exception) {
@@ -92,6 +85,7 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
                                                            String returnUrl, String notifyUrl, String extraData,  RequestType requestType, Boolean autoCapture) {
 
         try {
+            LogUtils.init();
             String requestRawData = new StringBuilder()
                     .append(Parameter.ACCESS_KEY).append("=").append(partnerInfo.getAccessKey()).append("&")
                     .append(Parameter.AMOUNT).append("=").append(amount).append("&")
@@ -107,8 +101,8 @@ public class CreateOrderMoMo extends AbstractProcess<PaymentRequest, PaymentResp
 
             String signRequest = Encoder.signHmacSHA256(requestRawData, partnerInfo.getSecretKey());
 
-            return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo,  Long.valueOf(amount), "test MoMo", null, requestType,
-                    returnUrl, notifyUrl, "test store ID", extraData, null, autoCapture, null, signRequest);
+            return new PaymentRequest(partnerInfo.getPartnerCode(), orderId, requestId, Language.EN, orderInfo,  Long.valueOf(amount), "PODOC", null, requestType,
+                    returnUrl, notifyUrl, "PODOC_SHOP", extraData, null, autoCapture, null, signRequest);
         } catch (Exception e) {
             System.out.println("[PaymentRequest] "+ e);
         }

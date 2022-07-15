@@ -54,20 +54,6 @@ public class OrderController {
         return ResponseEntity.ok().body(responseDto);
     }
 
-    @GetMapping
-    public ResponseEntity<PaymentResponse> createOrder() throws Exception {
-        LogUtils.init();
-        String requestId = String.valueOf(System.currentTimeMillis());
-        String orderId = String.valueOf(System.currentTimeMillis());
-        long amount = 50000;
-        Environment environment = Environment.selectEnv("dev");
-        String orderInfo = "Pay With MoMo";
-        String returnURL = environment.getMomoEndpoint().getRedirectUrl();
-        String notifyURL = environment.getMomoEndpoint().getNotiUrl();
-
-        PaymentResponse captureWalletMoMoResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.toString(amount), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
-        return ResponseEntity.ok().body(captureWalletMoMoResponse);
-    }
 
     @GetMapping("/complete")
     public ResponseEntity completeOrder(@RequestParam String orderId) throws Exception {
@@ -99,12 +85,30 @@ public class OrderController {
 
     @GetMapping("/myorder")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity getAllMyOrder(HttpServletRequest request , @RequestParam int page , @RequestParam int size){
-        String jwt =request.getHeader("Authorization");
-        String email = Utils.getEmailFromJwt(jwt.replace("Bearer " , ""));
-        Pageable pageable = PageRequest.of(page , size);
-        PageDTO pageDTO = ordersService.getAllOrderIsNotPaid(email ,pageable );
+    public ResponseEntity getAllMyOrder(HttpServletRequest request , @RequestParam int page , @RequestParam int size) {
+        String jwt = request.getHeader("Authorization");
+        String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
+        Pageable pageable = PageRequest.of(page, size);
+        PageDTO pageDTO = ordersService.getAllOrderIsNotPaid(email, pageable);
         return ResponseEntity.ok().body(pageDTO);
+    }
+
+    @GetMapping("/orderdetail")
+    public ResponseEntity getAllOrderDetail(@RequestParam int page , @RequestParam int size){
+        if(page <1){
+            throw new IllegalStateException("PAGE > 0");
+        }
+        var result = ordersService.getAllMyOrderDetail(page , size);
+        PageDTO pageDTO = new PageDTO();
+        pageDTO.setElements(result.size());
+        pageDTO.setData(result);
+        pageDTO.setPage(page);
+        return ResponseEntity.ok().body(pageDTO);
+    }
+
+    @PutMapping
+    public ResponseEntity payUnpaidOrder(@RequestParam int paymentMethod , @RequestParam String orderId) throws Exception {
+        return ResponseEntity.ok().body(ordersService.payOrder(paymentMethod , orderId));
     }
 
 
