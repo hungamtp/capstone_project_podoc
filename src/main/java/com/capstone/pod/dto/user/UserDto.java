@@ -20,4 +20,5 @@ public class UserDto {
     private String address;
     private String image;
     private String userStatus;
+    private boolean isMailVerified;
 }
