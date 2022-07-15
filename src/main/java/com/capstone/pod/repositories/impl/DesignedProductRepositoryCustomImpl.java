@@ -67,7 +67,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         query.groupBy(root.get(DesignedProduct_.ID));
         query.select(root);
         List<Order> orderList = new ArrayList();
-        orderList.add(criteriaBuilder.desc(criteriaBuilder.count(orderDetailJoin.get(OrderDetail_.ID))));
+        orderList.add(criteriaBuilder.asc(criteriaBuilder.sum(orderDetailJoin.get(OrderDetail_.QUANTITY))));
         query.orderBy(orderList);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
@@ -88,7 +88,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         List<Order> orderList = new ArrayList();
         Predicate productIdEqual = criteriaBuilder.equal(productJoin.get(Product_.ID), productId);
         Predicate publishTrue = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
-        orderList.add(criteriaBuilder.desc(criteriaBuilder.count(orderDetailJoin.get(OrderDetail_.ID))));
+        orderList.add(criteriaBuilder.asc(criteriaBuilder.sum(orderDetailJoin.get(OrderDetail_.QUANTITY))));
         query.orderBy(orderList).where(productIdEqual , publishTrue);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
