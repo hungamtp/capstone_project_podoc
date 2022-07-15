@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrdersRepository extends JpaRepository<Orders,String> {
+public interface OrdersRepository extends JpaRepository<Orders,String> , OrderRepositoryCustom {
     Optional<Orders> findByTransactionId(String transactionId);
 
     @Modifying
