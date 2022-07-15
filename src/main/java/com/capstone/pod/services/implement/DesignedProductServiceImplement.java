@@ -265,7 +265,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
                 .publish(designedProduct.isPublish())
                 .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
-                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).size())
+                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
                 .build();
         }).collect(Collectors.toList());
         PageDTO dtoPage = PageDTO.builder().page(page.getPageNumber()).data(viewAllDesignDtos).elements((int) designedProductPage.getTotalElements()).build();
@@ -283,7 +283,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
             .publish(designedProduct.isPublish())
             .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
-            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).size())
+            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos, page, viewOtherDesignDtos.size());
@@ -336,7 +336,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
             .publish(designedProduct.isPublish())
             .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
-            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).size())
+            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build();
         return dto;
