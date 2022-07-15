@@ -246,28 +246,29 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception {
-        Orders orders = ordersRepository.findById(orderId).orElseThrow(
+    public PaymentResponse payOrder(int paymentMethod ,String orderID) throws Exception {
+        Orders orders = ordersRepository.findById(orderID).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
         if(orders.isPaid()){
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
         PaymentResponse paymentResponse = null;
-        String orderInfo = String.format("OrderId : %s , Total : %f  , Phone : %s", orders.getId(), orders.getPrice(), orders.getPhone());
+        String orderInfo = String.format("Total : %f  , Phone : %s", orders.getPrice(), orders.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
-        String paymentId = String.valueOf(System.currentTimeMillis());
+        String orderId = String.valueOf(System.currentTimeMillis());
         Double amount = orders.getPrice();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
-        Random rand = new Random();
-        String transactionId = getCurrentTimeString("yyMMdd") +"_" +rand.nextInt(1000000);
-        if(PaymentMethod.MOMO.ordinal() == paymentMethod){
-            paymentResponse = CreateOrderMoMo.process(environment, paymentId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
-        }
-        else if(PaymentMethod.ZALO_PAY.ordinal() == paymentMethod){
-            paymentResponse = zaloService.createZaloPayOrder(amount.longValue() , orderInfo , transactionId);
+
+        String transactionId = null;
+        if (PaymentMethod.MOMO.ordinal() == paymentMethod) {
+            paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
+        } else if (PaymentMethod.ZALO_PAY.ordinal() == paymentMethod) {
+            Random rand = new Random();
+            transactionId = getCurrentTimeString("yyMMdd") + "_" + rand.nextInt(1000000);
+            paymentResponse = zaloService.createZaloPayOrder(amount.longValue(), orderInfo, transactionId);
         }
 
         if (paymentResponse == null) {
@@ -277,14 +278,16 @@ public class OrderServiceImplement implements OrdersService {
             if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
                 throw new IllegalStateException(PaymentMethod.ZALO_PAY + "_API_ERROR");
             }
-        }else{
-            if( paymentMethod == PaymentMethod.MOMO.ordinal()){
-                setPaymentIdForOrder(orderId , paymentResponse.getOrderId());
+        } else {
+            if (paymentMethod == PaymentMethod.MOMO.ordinal()) {
+                setPaymentIdForOrder(orders.getId(), paymentResponse.getOrderId());
             }
             if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
-                setPaymentIdForOrder(orderId, transactionId);
+                setPaymentIdForOrder(orders.getId(), transactionId);
             }
+
         }
+
         return paymentResponse;
     }
 
