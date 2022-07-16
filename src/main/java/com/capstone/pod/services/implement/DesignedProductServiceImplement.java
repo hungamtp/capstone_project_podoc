@@ -151,7 +151,9 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         designedProductInRepo.setImagePreviews(imagePreviews);
         List<DesignInfo> designInfos = new ArrayList<>();
         for (int i = 0; i < designedProductInRepo.getBluePrints().size(); i++) {
-            designInfos.add((DesignInfo) designedProductInRepo.getBluePrints().get(i).getDesignInfos());
+            for (int j = 0; j < designedProductInRepo.getBluePrints().get(i).getDesignInfos().size(); j++) {
+                designInfos.add(designedProductInRepo.getBluePrints().get(i).getDesignInfos().get(j));
+            }
         }
         designInfoRepository.deleteAllInBatch(designInfos);
         List<Placeholder> placeholders = new ArrayList<>();
