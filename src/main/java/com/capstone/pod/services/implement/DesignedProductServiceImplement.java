@@ -198,6 +198,8 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         designedProductReturnDto.setColorsObj(colors);
 
         designedProductReturnDto.setFactoryName(designedProduct.getPriceByFactory().getFactory().getName());
+        designedProductReturnDto.setFactoryId(designedProduct.getPriceByFactory().getFactory().getId());
+        designedProductReturnDto.setProductId(designedProduct.getProduct().getId());
         designedProductReturnDto.setProductName(designedProduct.getProduct().getName());
         designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
         return designedProductReturnDto;
