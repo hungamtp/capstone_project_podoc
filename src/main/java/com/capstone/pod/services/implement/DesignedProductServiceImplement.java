@@ -49,6 +49,9 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private final DesignedProductConverter designedProductConverter;
     private final ImagePreviewRepository imagePreviewRepository;
     private final BluePrintRepository bluePrintRepository;
+    private final DesignInfoRepository designInfoRepository;
+    private final PlaceHolderRepository placeHolderRepository;
+
 
 
     private User getCurrentUser() {
@@ -146,7 +149,18 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         }
         designedProductInRepo.setDesignColors(designColors);
         designedProductInRepo.setImagePreviews(imagePreviews);
+        List<DesignInfo> designInfos = new ArrayList<>();
+        for (int i = 0; i < designedProductInRepo.getBluePrints().size(); i++) {
+            designInfos.add((DesignInfo) designedProductInRepo.getBluePrints().get(i).getDesignInfos());
+        }
+        designInfoRepository.deleteAllInBatch(designInfos);
+        List<Placeholder> placeholders = new ArrayList<>();
+        for (int i = 0; i < designedProductInRepo.getBluePrints().size(); i++) {
+            placeholders.add(designedProductInRepo.getBluePrints().get(i).getPlaceholder());
+        }
+        placeHolderRepository.deleteAllInBatch(placeholders);
         bluePrintRepository.deleteAllInBatch(designedProductInRepo.getBluePrints());
+
         designedProductInRepo.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()

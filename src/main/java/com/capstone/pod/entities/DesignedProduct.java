@@ -31,7 +31,7 @@ public class DesignedProduct  extends Auditable {
 
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    Collection<BluePrint> bluePrints;
+    List<BluePrint> bluePrints;
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
