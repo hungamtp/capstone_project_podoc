@@ -39,7 +39,7 @@ public class DesignedProduct  extends Auditable {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    Collection<ImagePreview> imagePreviews;
+    List<ImagePreview> imagePreviews;
 
     @ManyToOne
     PriceByFactory priceByFactory;

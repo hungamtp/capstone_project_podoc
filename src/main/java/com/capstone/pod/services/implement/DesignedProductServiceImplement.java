@@ -47,6 +47,9 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private final DesignedProductTagRepository designedProductTagRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final DesignedProductConverter designedProductConverter;
+    private final ImagePreviewRepository imagePreviewRepository;
+    private final BluePrintRepository bluePrintRepository;
+
 
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -127,6 +130,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         if (!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProductInRepo = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         designedProductInRepo.setDesignedPrice(dto.getDesignedPrice());
+        imagePreviewRepository.deleteAllInBatch(designedProductInRepo.getImagePreviews());
         List<ImagePreview> imagePreviews = new ArrayList<>();
         for (int i = 0; i < dto.getImagePreviews().size(); i++) {
             imagePreviews.add(ImagePreview.builder().designedProduct(designedProductInRepo).color(dto.getImagePreviews().get(i).getColor()).image(dto.getImagePreviews().get(i).getImage()).position(dto.getImagePreviews().get(i).getPosition()).build());
@@ -142,6 +146,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         }
         designedProductInRepo.setDesignColors(designColors);
         designedProductInRepo.setImagePreviews(imagePreviews);
+        bluePrintRepository.deleteAllInBatch(designedProductInRepo.getBluePrints());
         designedProductInRepo.setBluePrints(new ArrayList<>());
         for (int i = 0; i < dto.getBluePrintDtos().size(); i++) {
             Placeholder placeholder = Placeholder.builder()
