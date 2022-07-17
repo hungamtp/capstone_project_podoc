@@ -319,7 +319,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
 
         List<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
-                .id(designColor.getId())
+                .id(designColor.getColor().getId())
                 .image(designColor.getColor().getImageColor())
                 .name(designColor.getColor().getName()).build()).distinct()
             .collect(Collectors.toList());
@@ -336,7 +336,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         List<SizeColor> sizeColorInDesign = new ArrayList<>();
         for (int i = 0; i < colors.size(); i++) {
             for (int j = 0; j < sizeColorFactoryHave.size(); j++) {
-                if (colors.get(i).equals(sizeColorFactoryHave.get(j).getColor())) {
+                if (colors.get(i).getId().equals(sizeColorFactoryHave.get(j).getColor().getId())) {
                     sizeColorInDesign.add(sizeColorFactoryHave.get(j));
                 }
             }
