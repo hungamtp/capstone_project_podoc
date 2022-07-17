@@ -20,6 +20,7 @@ import java.util.Collection;
         @Index(columnList = "name")
     }
 )
+@EqualsAndHashCode
 public class Color {
     @Id
     @GeneratedValue(generator = "uuid2")

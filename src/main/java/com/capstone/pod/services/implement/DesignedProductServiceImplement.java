@@ -341,10 +341,11 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 }
             }
         }
-        List<SizeColorDesignedAndFactorySellDto> sizeColorDto = sizeColorFactoryHave.stream()
+        List<SizeColorDesignedAndFactorySellDto> sizeColorDto = sizeColorInDesign.stream()
             .map(sizeColor -> SizeColorDesignedAndFactorySellDto.builder()
                 .color(sizeColor.getColor().getName() + "-" + sizeColor.getColor().getImageColor())
                 .size(sizeColor.getSize().getName()).build()).collect(Collectors.toList());
+
         Map<String, List<SizeColorDesignedAndFactorySellDto>> colorAndSizes = sizeColorDto.stream().collect(Collectors.groupingBy(sizeColor -> sizeColor.getColor()));
 
         double price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
