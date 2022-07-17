@@ -42,7 +42,7 @@ public class FactoryController {
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_FACTORY_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_FACTORY)
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto> getFactoryByCredentialId(@PathVariable(name = "id") String id) {
         ResponseDto<FactoryByIdDto> responseDTO = new ResponseDto();
