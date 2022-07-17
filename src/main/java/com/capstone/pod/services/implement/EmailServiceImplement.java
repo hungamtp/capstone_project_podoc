@@ -60,7 +60,7 @@ public class EmailServiceImplement implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(credential.getEmail());
             mimeMessageHelper.setSubject("Thư xác thực email từ PODOC");
-            mimeMessageHelper.setText("Cám ơn bạn vì đã xác thực email, vui lòng nhấn đường link bên dưới để email được xác thực  \n"+"http://localhost:3000/confirm/"
+            mimeMessageHelper.setText("Cám ơn bạn vì đã xác thực email, vui lòng nhấn đường link bên dưới để email được xác thực  \n"+"http://localhost:3000/email/confirm/"
                     +credential.getEmail()+"/"
                     +token
                     +"\nChúc bạn một ngày làm việc tốt lành, \n" +
