@@ -110,11 +110,11 @@ public class OrderServiceImplement implements OrdersService {
                 .orders(order)
                 .orderStatuses(Arrays.asList(orderStatus))
                 .quantity(cartDetailList.get(i).getQuantity())
-                .orderStatuses(Arrays.asList(orderStatus))
                 .color(cartDetailList.get(i).getColor())
                 .size(cartDetailList.get(i).getSize())
                 .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
-                .designedProduct(cartDetailList.get(i).getDesignedProduct()).build();
+                .designedProduct(cartDetailList.get(i).getDesignedProduct())
+                    .build();
             orderStatus.setOrderDetail(orderDetail);
             int finalI = i;
             SizeColor sizeColor = sizeColorRepository
