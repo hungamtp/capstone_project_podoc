@@ -94,7 +94,6 @@ public class OrderServiceImplement implements OrdersService {
         String phone = currentCredential.getPhone();
         String customerName = currentCredential.getUser().getLastName() + " " + currentCredential.getUser().getFirstName();
         Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
-        OrderStatus orderStatus = OrderStatus.builder().name(OrderState.PENDING).build();
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
@@ -106,6 +105,7 @@ public class OrderServiceImplement implements OrdersService {
                     throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
                 }
             }
+            OrderStatus orderStatus = OrderStatus.builder().name(OrderState.PENDING).build();
             OrderDetail orderDetail = OrderDetail.builder()
                 .orders(order)
                 .orderStatuses(Arrays.asList(orderStatus))
