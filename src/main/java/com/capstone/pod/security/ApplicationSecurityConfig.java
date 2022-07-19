@@ -43,6 +43,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/design/**",
                         "/user/**",
                         "/category/**",
+                        "/rating/**",
                         "/order/**")
                 .permitAll().anyRequest().authenticated();
     }
