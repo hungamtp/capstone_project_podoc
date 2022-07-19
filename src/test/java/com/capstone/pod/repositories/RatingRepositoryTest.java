@@ -16,10 +16,10 @@ class RatingRepositoryTest {
     @Autowired
     private DesignedProductRepository designedProductRepository;
 
-    @Test
-    public void test(){
-       Page<Rating> page= ratingRepository.findAllByDesignedProduct(designedProductRepository.findById("288a6a96-035c-4a2e-95a6-bc217810f67c").get() , PageRequest.of(1 , 1));
-
-    }
+//    @Test
+//    public void test(){
+//       Page<Rating> page= ratingRepository.findAllByDesignedProduct(designedProductRepository.findById("288a6a96-035c-4a2e-95a6-bc217810f67c").get() , PageRequest.of(1 , 1));
+//
+//    }
 
 }
