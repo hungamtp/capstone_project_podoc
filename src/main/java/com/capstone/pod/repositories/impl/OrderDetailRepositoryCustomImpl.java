@@ -16,7 +16,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public List<OrderDetail> findAllOrderDetail(int page, int size, String userId) {
+    public List<OrderDetail> findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<OrderDetail> query = criteriaBuilder.createQuery(OrderDetail.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -24,7 +24,8 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
         Join<Orders, User> userJoin = ordersJoin.join(Orders_.USER);
         query.select(root);
         Predicate userIdEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
-        query.where(userIdEqual);
+        Predicate orderIsPaidTrue = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+        query.where(userIdEqual , orderIsPaidTrue);
         return entityManager.createQuery(query).setMaxResults(size).setFirstResult((page - 1) * size).getResultList();
     }
 }

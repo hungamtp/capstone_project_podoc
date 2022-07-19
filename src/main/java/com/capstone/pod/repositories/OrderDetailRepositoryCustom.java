@@ -5,5 +5,5 @@ import com.capstone.pod.entities.OrderDetail;
 import java.util.List;
 
 public interface OrderDetailRepositoryCustom {
-    List<OrderDetail> findAllOrderDetail(int page, int size, String userId);
+    List<OrderDetail> findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId);
 }
