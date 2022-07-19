@@ -9,12 +9,11 @@ import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
+import com.capstone.pod.dto.cartdetail.AddToCartDto;
+import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.dto.common.PageDTO;
-import com.capstone.pod.dto.order.AllOrderDto;
+import com.capstone.pod.dto.order.*;
 import com.capstone.pod.converter.OrderDetailConverter;
-import com.capstone.pod.dto.order.MyOrderDetailDto;
-import com.capstone.pod.dto.order.ReturnOrderDto;
-import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.enums.PaymentMethod;
 import com.capstone.pod.exceptions.*;
@@ -38,10 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.capstone.pod.zalo.ZaloService.getCurrentTimeString;
@@ -60,6 +56,7 @@ public class OrderServiceImplement implements OrdersService {
     private final ModelMapper modelMapper;
     private final ZaloService zaloService;
     private final OrderDetailConverter orderDetailConverter;
+    private final DesignedProductRepository designedProductRepository;
 
     private Credential getCredential() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,7 +111,7 @@ public class OrderServiceImplement implements OrdersService {
                 .size(cartDetailList.get(i).getSize())
                 .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
                 .designedProduct(cartDetailList.get(i).getDesignedProduct())
-                    .build();
+                .build();
             orderStatus.setOrderDetail(orderDetail);
             int finalI = i;
             SizeColor sizeColor = sizeColorRepository
@@ -247,11 +244,11 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public PaymentResponse payOrder(int paymentMethod ,String orderID) throws Exception {
+    public PaymentResponse payOrder(int paymentMethod, String orderID) throws Exception {
         Orders orders = ordersRepository.findById(orderID).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
-        if(orders.isPaid()){
+        if (orders.isPaid()) {
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
         PaymentResponse paymentResponse = null;
@@ -302,22 +299,129 @@ public class OrderServiceImplement implements OrdersService {
         return orderDetailRepository.findAllOrderDetail(page, size, credential.getUser().getId()).stream().map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail)).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public PaymentResponse orderOwnDesign(OrderOwnDesignDto orderOwnDesignDto, int paymentMethod) throws Exception {
+        Cart cart = cartRepository.findCartByUser(getCredential().getUser());
+        if (cart == null) throw new CartNotFoundException(CartErrorMessage.CART_NOT_FOUND_ERROR);
+        if (cart.getUser().getId() != getCredential().getUser().getId()) {
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
+        DesignedProduct designedProduct = designedProductRepository.findById(orderOwnDesignDto.getDesignId())
+            .orElseThrow(() -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
+            );
 
-    private Cart getCartByEmail(String email) {
-        Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
-            () -> new CredentialNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
-        );
+        CartDetail savedCartDetail = cartDetailRepository.save(
+            CartDetail.builder()
+                .cart(cart)
+                .size(orderOwnDesignDto.getSize())
+                .color(orderOwnDesignDto.getColor())
+                .quantity(orderOwnDesignDto.getQuantity())
+                .designedProduct(designedProduct)
+                .build());
 
-        User user = credential.getUser();
+        ShippingInfo shippingInfo = ShippingInfo.builder()
+            .phoneNumber(orderOwnDesignDto.getPhone())
+            .name(orderOwnDesignDto.getName())
+            .shippingAddress(orderOwnDesignDto.getAddress())
+            .emailAddress(orderOwnDesignDto.getEmail())
+            .user(getCredential().getUser())
+            .build();
+        if (orderOwnDesignDto.isShouldSave()) {
+            shippingInfoRepository.save(shippingInfo);
+        }
+        List<CartDetail> cartDetailList = Arrays.asList(savedCartDetail);
+        if (cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
+        Credential currentCredential = getCredential();
+        double totalPrice = 0;
+        String address = currentCredential.getAddress();
+        String phone = currentCredential.getPhone();
+        String customerName = currentCredential.getUser().getLastName() + " " + currentCredential.getUser().getFirstName();
+        Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
+        List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (int i = 0; i < cartDetailList.size(); i++) {
+            if (cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted()) {
+                throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
+            }
+            if (!cartDetailList.get(i).getDesignedProduct().isPublish()) {
+                if (!cartDetailList.get(i).getDesignedProduct().getUser().getId().equals(currentCredential.getUser().getId())) {
+                    throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
+                }
+            }
+            OrderStatus orderStatus = OrderStatus.builder().name(OrderState.PENDING).build();
+            OrderDetail orderDetail = OrderDetail.builder()
+                .orders(order)
+                .orderStatuses(Arrays.asList(orderStatus))
+                .quantity(cartDetailList.get(i).getQuantity())
+                .color(cartDetailList.get(i).getColor())
+                .size(cartDetailList.get(i).getSize())
+                .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
+                .designedProduct(cartDetailList.get(i).getDesignedProduct())
+                .build();
+            orderStatus.setOrderDetail(orderDetail);
+            int finalI = i;
+            SizeColor sizeColor = sizeColorRepository
+                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId())
+                .orElseThrow(() -> new SizeNotFoundException(String.format(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXIST_EXCEPTION, cartDetailList.get(finalI).getColor(), cartDetailList.get(finalI).getSize(), cartDetailList.get(finalI).getDesignedProduct().getProduct().getName())));
 
-        Cart cart = cartRepository.findCartByUser(credential.getUser());
+            SizeColorByFactory sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor)
+                .orElseThrow(() -> new SizeNotFoundException(SizeColorErrorMessage.SIZE_AND_COLOR_NOT_EXISTED_IN_FACTORY_EXCEPTION));
+            if (sizeColorByFactory.getQuantity() < cartDetailList.get(i).getQuantity()) {
+                throw new QuantityNotEnoughException(ProductErrorMessage.QUANTITY_BY_FACTORY_NOT_ENOUGH);
+            }
+            sizeColorByFactory.setQuantity(sizeColorByFactory.getQuantity() - cartDetailList.get(i).getQuantity());
+            sizeColorByFactories.add(sizeColorByFactory);
+            orderDetails.add(orderDetail);
+            totalPrice += cartDetailList.get(i).getQuantity() * (cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
+        }
+        if (totalPrice < 1000 || totalPrice > 50000000)
+            throw new PermissionException(ValidationMessage.PRICE_TOTAL_SHOULD_VALID);
 
-        if (cart == null) {
-            cart = new Cart();
-            cart.setUser(user);
-            return cartRepository.save(cart);
+        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
+        order.setOrderDetails(orderDetails);
+        order.setPrice(totalPrice);
+        order.setAddress(shippingInfo.getEmailAddress());
+        order.setPhone(shippingInfo.getPhoneNumber());
+        order.setCustomerName(shippingInfo.getName());
+        order.setPaid(false);
+        order.setTransactionId("");
+        ordersRepository.save(order);
+        cartDetailRepository.deleteById(savedCartDetail.getId());
+        // create payment info
+        PaymentResponse paymentResponse = null;
+        String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
+        String requestId = String.valueOf(System.currentTimeMillis());
+        String orderId = String.valueOf(System.currentTimeMillis());
+        Double amount = order.getPrice();
+        Environment environment = Environment.selectEnv("dev");
+        String returnURL = environment.getMomoEndpoint().getRedirectUrl();
+        String notifyURL = environment.getMomoEndpoint().getNotiUrl();
+        Random rand = new Random();
+        String transactionId = getCurrentTimeString("yyMMdd") + "_" + rand.nextInt(1000000);
+        if (PaymentMethod.MOMO.ordinal() == paymentMethod) {
+            paymentResponse = CreateOrderMoMo.process(environment, orderId, requestId, Long.valueOf(amount.longValue()).toString(), orderInfo, returnURL, notifyURL, "", RequestType.CAPTURE_WALLET, Boolean.TRUE);
+        } else if (PaymentMethod.ZALO_PAY.ordinal() == paymentMethod) {
+            paymentResponse = zaloService.createZaloPayOrder(amount.longValue(), orderInfo, transactionId);
         }
 
-        return cart;
+        if (paymentResponse == null) {
+            if (paymentMethod == PaymentMethod.MOMO.ordinal()) {
+                throw new IllegalStateException(PaymentMethod.MOMO + "_API_ERROR");
+            }
+            if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
+                throw new IllegalStateException(PaymentMethod.ZALO_PAY + "_API_ERROR");
+            }
+        } else {
+            if (paymentMethod == PaymentMethod.MOMO.ordinal()) {
+                setPaymentIdForOrder(order.getId(), paymentResponse.getOrderId());
+            }
+            if (paymentMethod == PaymentMethod.ZALO_PAY.ordinal()) {
+                setPaymentIdForOrder(order.getId(), transactionId);
+            }
+
+        }
+
+        return paymentResponse;
     }
 }
