@@ -4,6 +4,7 @@ import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.common.ResponseDto;
+import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.dto.utils.Utils;
 import com.capstone.pod.momo.config.Environment;
@@ -109,6 +110,11 @@ public class OrderController {
     @PutMapping
     public ResponseEntity payUnpaidOrder(@RequestParam int paymentMethod , @RequestParam String orderId) throws Exception {
         return ResponseEntity.ok().body(ordersService.payOrder(paymentMethod , orderId));
+    }
+
+    @PostMapping("/orderOwnDesign/{paymentMethod}")
+    public ResponseEntity orderOwnDesign(@PathVariable int paymentMethod , @RequestBody OrderOwnDesignDto orderOwnDesignDto) throws Exception {
+        return ResponseEntity.ok().body(ordersService.orderOwnDesign(orderOwnDesignDto , paymentMethod));
     }
 
 
