@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  mysqldb:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456789
+      - MYSQL_PASSWORD=123456789
+      - MYSQL_DATABASE=capstone_pod
+  app:
+    depends_on:
+      - mysqldb
+    build:
+      context: "./"
+      dockerfile: "Dockerfile"
+    ports:
+      - 8080:8080
+volumes:
+  db:

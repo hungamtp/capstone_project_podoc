@@ -13,6 +13,7 @@ import com.capstone.pod.dto.factory.AddFactoryResponse;
 import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
+import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
 import com.capstone.pod.dto.product.ProductDto;
 import com.capstone.pod.dto.product.ProductImagesDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
@@ -226,4 +227,11 @@ public class FactoryServiceImplement implements FactoryService {
         }
         return null;
     }
+
+    @Override
+    public List<OrderDetailForPrintingDto> getAllOrderDetailsForPrintingByOrderDetailsId(Pageable page, String orderId, String designId) {
+        return null;
+    }
+
+
 }

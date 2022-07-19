@@ -5,6 +5,7 @@ import com.capstone.pod.dto.factory.AddFactoryResponse;
 import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
+import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
 import com.capstone.pod.dto.user.UpdatePasswordDto;
@@ -26,4 +27,5 @@ public interface FactoryService {
     public void updatePriceByFactoryToProduct(String factoryId, String productId, double price);
 
     public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId);
+    public List<OrderDetailForPrintingDto> getAllOrderDetailsForPrintingByOrderDetailsId(Pageable page, String orderId,String designId);
 }
