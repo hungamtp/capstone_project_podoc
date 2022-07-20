@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -25,6 +26,8 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
         query.select(root);
         Predicate userIdEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
         Predicate orderIsPaidTrue = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+        List<Order> orders = new ArrayList<>();
+        orders.add(criteriaBuilder.asc(ordersJoin.get(Orders_.CREATE_DATE)));
         query.where(userIdEqual , orderIsPaidTrue);
         return entityManager.createQuery(query).setMaxResults(size).setFirstResult((page - 1) * size).getResultList();
     }
