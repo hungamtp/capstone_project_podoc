@@ -25,6 +25,7 @@ public class OrderDetailConverter {
             .color(orderDetail.getColor())
             .size(orderDetail.getSize())
             .quantity(orderDetail.getQuantity())
+            .provider(orderDetail.getFactory().getName())
             .date(orderDetail.getOrders().getCreateDate())
             .build();
     }
