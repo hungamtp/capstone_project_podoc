@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +32,12 @@ public class SizeProductServiceImpl implements SizeProductService {
     public AddSizeProductDto addSizeProduct(AddSizeProductDto addSizeProductDto) {
         Product product = productRepository.findById(addSizeProductDto.getProductId()).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+
+        Optional<SizeProduct> sizeProduct = sizeProductRepository.findBySize(addSizeProductDto.getSize());
+
+        if(sizeProduct.isPresent()){
+            throw new IllegalStateException(EntityName.SIZE_PRODUCT+"_"+ErrorMessage.EXIST);
+        }
 
         sizeProductRepository.save(
             SizeProduct.builder()
