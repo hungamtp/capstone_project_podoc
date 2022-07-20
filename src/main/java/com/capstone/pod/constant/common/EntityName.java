@@ -11,4 +11,5 @@ public final class EntityName {
     public static final String CREDENTIAL="CREDENTIAL_";
     public static final String DESIGNED_PRODUCT="DESIGNED_PRODUCT_";
     public static final String ORDERS="ORDERS";
+    public static final String SIZE_PRODUCT="SIZE_PRODUCT";
 }
