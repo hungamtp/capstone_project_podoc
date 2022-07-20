@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 public class OrderDetailFactoryDto {
     private String id;
+    private String orderId;
     private String productName;
     private String designName;
     private String designId;

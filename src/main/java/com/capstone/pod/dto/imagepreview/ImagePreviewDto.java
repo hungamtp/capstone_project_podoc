@@ -1,10 +1,7 @@
 package com.capstone.pod.dto.imagepreview;
 
 import com.capstone.pod.constant.validation_message.ValidationMessage;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@Builder
 public class ImagePreviewDto {
     @NotBlank(message = ValidationMessage.IMAGE_VALID_MESSAGE)
     private String image;

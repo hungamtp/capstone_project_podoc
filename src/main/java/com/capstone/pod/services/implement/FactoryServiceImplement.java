@@ -13,6 +13,7 @@ import com.capstone.pod.dto.factory.AddFactoryDto;
 import com.capstone.pod.dto.factory.AddFactoryResponse;
 import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
+import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
 import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
 import com.capstone.pod.dto.order.OrderDetailsSupportDto;
@@ -215,6 +216,7 @@ public class FactoryServiceImplement implements FactoryService {
                Page<OrderDetail> orderDetailPage= orderDetailRepository.findAllByFactoryId(page, credential.get().getFactory().getId());
                Page<OrderDetailFactoryDto> orderDetailFactoryDtos = orderDetailPage.map(orderDetail -> OrderDetailFactoryDto.builder()
                        .id(orderDetail.getId())
+                       .orderId(orderDetail.getOrders().getId())
                        .designId(orderDetail.getDesignedProduct().getId())
                        .productName(orderDetail.getDesignedProduct().getProduct().getName())
                        .designName(orderDetail.getDesignedProduct().getName())
@@ -236,7 +238,7 @@ public class FactoryServiceImplement implements FactoryService {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
         getPermittedCredential(credentialId);
         if(credential.isPresent()){
-          List<OrderDetail> orderDetails =  orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndOrdersUserCredentialId(orderId, designId, credentialId);
+          List<OrderDetail> orderDetails =  orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndFactoryId(orderId, designId, credential.get().getFactory().getId());
           OrderDetailForPrintingDto orderDetailForPrintingDto = OrderDetailForPrintingDto.builder()
                   .orderId(orderDetails.get(0).getOrders().getId())
                   .createDate(orderDetails.get(0).getOrders().getCreateDate().toString())
@@ -246,14 +248,22 @@ public class FactoryServiceImplement implements FactoryService {
                   .status(orderDetails.get(0).getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
                   .build();
           List<OrderDetailsSupportDto>  orderDetailsSupportDtos = new ArrayList<>();
+          List<ImagePreviewDto>  imagePreviewDtos = new ArrayList<>();
+
             for (int i = 0; i < orderDetails.size(); i++) {
                 orderDetailsSupportDtos.add(OrderDetailsSupportDto.builder().orderDetailsId(orderDetails.get(i).getId())
                                 .color(orderDetails.get(i).getColor())
                                 .size(orderDetails.get(i).getSize())
                                 .quantity(orderDetails.get(i).getQuantity())
                                 .build());
+                imagePreviewDtos.add(ImagePreviewDto.builder()
+                        .image(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getImage())
+                        .color(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getColor())
+                        .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getPosition())
+                        .build());
             }
             orderDetailForPrintingDto.setOrderDetailsSupportDtos(orderDetailsSupportDtos);
+            orderDetailForPrintingDto.setPreviewImages(imagePreviewDtos);
             return orderDetailForPrintingDto;
         }
         return null;
