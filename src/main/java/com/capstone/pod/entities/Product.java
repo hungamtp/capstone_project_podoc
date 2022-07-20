@@ -55,4 +55,7 @@ public class Product extends Auditable {
     @ManyToOne(cascade = CascadeType.ALL)
     private Category category;
 
+    @OneToMany(mappedBy = "product")
+    private List<SizeProduct> sizeProduct;
+
 }
