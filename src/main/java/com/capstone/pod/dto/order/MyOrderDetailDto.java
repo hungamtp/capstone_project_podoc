@@ -16,6 +16,7 @@ public class MyOrderDetailDto {
     private String designName;
     private String designImage;
     private String designerName;
+    private String provider;
     private String designerId;
     private String color;
     private String size;
