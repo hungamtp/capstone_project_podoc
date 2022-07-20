@@ -116,6 +116,4 @@ public class OrderController {
     public ResponseEntity orderOwnDesign(@PathVariable int paymentMethod , @RequestBody OrderOwnDesignDto orderOwnDesignDto) throws Exception {
         return ResponseEntity.ok().body(ordersService.orderOwnDesign(orderOwnDesignDto , paymentMethod));
     }
-
-
 }

@@ -9,6 +9,7 @@ import com.capstone.pod.dto.factory.FactoryByIdDto;
 import com.capstone.pod.dto.factory.FactoryPageResponseDto;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
+import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
 import com.capstone.pod.dto.user.UpdateAvatarDto;
 import com.capstone.pod.dto.user.UpdatePasswordDto;
@@ -119,6 +120,15 @@ public class FactoryController {
         Page<OrderDetailFactoryDto> page  = factoryService.getAllOrderDetailsForFactoryByCredentialId(pageable, credentialId);
         responseDTO.setData(page);
         responseDTO.setSuccessMessage(FactorySuccessMessage.GET_ALL_ORDER_DETAIL_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
+    @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
+    @GetMapping("order-details-printing")
+    public ResponseEntity<ResponseDto> getOrderDetailsForFactoryPrinting(@RequestParam String orderId, @RequestParam String designId, @RequestParam String credentialId) {
+        ResponseDto<OrderDetailForPrintingDto> responseDTO = new ResponseDto();
+        OrderDetailForPrintingDto orderDetailForPrintingDto  = factoryService.getAllOrderDetailsForPrintingByOrderDetailsId(orderId, designId, credentialId);
+        responseDTO.setData(orderDetailForPrintingDto);
+        responseDTO.setSuccessMessage(FactorySuccessMessage.GET_ORDER_DETAIL_FOR_PRINTING_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
 

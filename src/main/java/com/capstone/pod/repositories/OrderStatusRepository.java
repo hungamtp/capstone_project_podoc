@@ -12,4 +12,5 @@ public interface OrderStatusRepository extends JpaRepository<OrderStatus, String
     Optional<OrderStatus> findByName(String name);
     List<OrderStatus> findAllByOrderDetailId(String id);
 
+
 }

@@ -11,15 +11,11 @@ import java.util.List;
 @Setter
 @Builder
 public class OrderDetailForPrintingDto {
-    private String id;
     private String orderId;
     private List<String> previewImages;
     private String createDate;
     private List<BluePrintDto> bluePrintDtos;
+    private List<OrderDetailsSupportDto> orderDetailsSupportDtos;
     private String productId;
-    private String color;
-    private String size;
-    private double price;
-    private int quantity;
     private String status;
 }
