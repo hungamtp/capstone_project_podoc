@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface SizeProductRepository extends JpaRepository<SizeProduct, String> {
     List<SizeProduct> findALlByProduct(Product product);
-    Optional<SizeProduct> findBySize(String size);
+    Optional<SizeProduct> findByProductAndSize(Product product ,String size );
 }

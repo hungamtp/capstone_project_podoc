@@ -33,10 +33,10 @@ public class SizeProductServiceImpl implements SizeProductService {
         Product product = productRepository.findById(addSizeProductDto.getProductId()).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
 
-        Optional<SizeProduct> sizeProduct = sizeProductRepository.findBySize(addSizeProductDto.getSize());
+        Optional<SizeProduct> sizeProduct = sizeProductRepository.findByProductAndSize(product,addSizeProductDto.getSize());
 
-        if(sizeProduct.isPresent()){
-            throw new IllegalStateException(EntityName.SIZE_PRODUCT+"_"+ErrorMessage.EXIST);
+        if (sizeProduct.isPresent()) {
+            throw new IllegalStateException(EntityName.SIZE_PRODUCT + "_" + ErrorMessage.EXIST);
         }
 
         sizeProductRepository.save(
