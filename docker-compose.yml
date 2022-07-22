@@ -9,6 +9,8 @@ services:
     restart: unless-stopped
     networks:
       - app_network
+    volumes:
+      - db_data:/var/lib/mysql
   spring-app:
     depends_on:
       - mysqldb
@@ -36,3 +38,5 @@ services:
 networks:
   app_network:
     driver: bridge
+volumes:
+  db_data:
