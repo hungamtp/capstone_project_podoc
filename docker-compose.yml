@@ -1,4 +1,4 @@
-version: "3.8"
+version: "3.4"
 services:
   mysqldb:
     image: mysql:8.0.29
@@ -6,12 +6,9 @@ services:
     environment:
         MYSQL_DATABASE: capstone_pod
         MYSQL_ROOT_PASSWORD: 123456789
-    ports:
-      - 3307:3306
     restart: unless-stopped
     networks:
       - app_network
-
   spring-app:
     depends_on:
       - mysqldb
@@ -22,7 +19,18 @@ services:
     build:
       context: ./
     ports:
-      - 8080:8080
+      - '8080:8080'
+    networks:
+      - app_network
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 9000:80
+    environment:
+      - PMA_HOST=mysqldb
+      - PMA_USER=root
+      - PMA_PASSWORD=123456789
     networks:
       - app_network
 networks:
