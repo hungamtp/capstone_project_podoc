@@ -1,19 +1,26 @@
 version: "3.8"
 services:
   mysqldb:
-    image: mysql:latest
+    image: mysql:8.0.29
+    container_name: mysqldb
     environment:
-      - MYSQL_ROOT_PASSWORD=123456789
-      - MYSQL_DATABASE=capstone_pod
+        MYSQL_DATABASE: capstone_pod
+        MYSQL_ROOT_PASSWORD: 123456789
     ports:
       - 3307:3306
+    restart: unless-stopped
     networks:
       - app_network
-  app:
+
+  spring-app:
     depends_on:
       - mysqldb
+    environment:
+          SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/capstone_pod?allowPublicKeyRetrieval=true&useSSL=false
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: 123456789
     build:
-      context: "./"
+      context: ./
     ports:
       - 8080:8080
     networks:
