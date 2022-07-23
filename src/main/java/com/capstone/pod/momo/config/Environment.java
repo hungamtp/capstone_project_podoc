@@ -49,40 +49,27 @@ public class Environment {
         try (InputStream input = Environment.class.getClassLoader().getResourceAsStream("application.properties")) {
             Properties prop = new Properties();
             prop.load(input);
-
-            switch (target) {
-                case DEV:
-                    MoMoEndpoint devEndpoint = new MoMoEndpoint(prop.getProperty("DEV_MOMO_ENDPOINT"),
-                            prop.getProperty("CREATE_URL"),
-                            prop.getProperty("REFUND_URL"),
-                            prop.getProperty("QUERY_URL"),
-                            prop.getProperty("CONFIRM_URL"),
-                            prop.getProperty("TOKEN_PAY_URL"),
-                            prop.getProperty("TOKEN_BIND_URL"),
-                            prop.getProperty("TOKEN_INQUIRY_URL"),
-                            prop.getProperty("TOKEN_DELETE_URL"),
-                            prop.getProperty("REDIRECT_URL"),
-                            prop.getProperty("NOTI_URL"));
-                    PartnerInfo devInfo = new PartnerInfo(prop.getProperty("DEV_PARTNER_CODE"), prop.getProperty("DEV_ACCESS_KEY"), prop.getProperty("DEV_SECRET_KEY"));
+            if(prop.getProperty("spring.profiles.active").toString().equals("dev")){
+                try (InputStream input_dev = Environment.class.getClassLoader().getResourceAsStream("application-dev.properties")) {
+                    Properties prop_dev = new Properties();
+                    prop_dev.load(input_dev);
+                    MoMoEndpoint devEndpoint = new MoMoEndpoint(prop_dev.getProperty("DEV_MOMO_ENDPOINT"),
+                        prop_dev.getProperty("CREATE_URL"),
+                        prop_dev.getProperty("REFUND_URL"),
+                        prop_dev.getProperty("QUERY_URL"),
+                        prop_dev.getProperty("CONFIRM_URL"),
+                        prop_dev.getProperty("TOKEN_PAY_URL"),
+                        prop_dev.getProperty("TOKEN_BIND_URL"),
+                        prop_dev.getProperty("TOKEN_INQUIRY_URL"),
+                        prop_dev.getProperty("TOKEN_DELETE_URL"),
+                        prop_dev.getProperty("REDIRECT_URL"),
+                        prop_dev.getProperty("NOTI_URL"));
+                    PartnerInfo devInfo = new PartnerInfo(prop_dev.getProperty("DEV_PARTNER_CODE"), prop_dev.getProperty("DEV_ACCESS_KEY"), prop_dev.getProperty("DEV_SECRET_KEY"));
                     Environment dev = new Environment(devEndpoint, devInfo, target);
                     return dev;
-                case PROD:
-                    MoMoEndpoint prodEndpoint = new MoMoEndpoint(prop.getProperty("PROD_MOMO_ENDPOINT"),
-                            prop.getProperty("CREATE_URL"),
-                            prop.getProperty("REFUND_URL"),
-                            prop.getProperty("QUERY_URL"),
-                            prop.getProperty("CONFIRM_URL"),
-                            prop.getProperty("TOKEN_PAY_URL"),
-                            prop.getProperty("TOKEN_BIND_URL"),
-                            prop.getProperty("TOKEN_INQUIRY_URL"),
-                        prop.getProperty("TOKEN_DELETE_URL"),
-                        prop.getProperty("REDIRECT_URL"),
-                        prop.getProperty("NOTI_URL"));
-                    PartnerInfo prodInfo = new PartnerInfo(prop.getProperty("PROD_PARTNER_CODE"), prop.getProperty("PROD_ACCESS_KEY"), prop.getProperty("PROD_SECRET_KEY"));
-                    Environment prod = new Environment(prodEndpoint, prodInfo, target);
-                    return prod;
-                default:
-                    throw new IllegalArgumentException("MoMo doesnt provide other environment: dev and prod");
+                }
+            }else{
+
             }
 
         } catch (FileNotFoundException e) {
