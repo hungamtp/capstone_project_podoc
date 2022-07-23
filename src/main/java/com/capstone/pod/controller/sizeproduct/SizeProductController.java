@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("size-product")
-@PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+@PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_FACTORY)
 public class SizeProductController {
     private SizeProductService sizeProductService;
 
