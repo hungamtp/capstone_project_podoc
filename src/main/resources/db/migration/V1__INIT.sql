@@ -690,9 +690,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_color_by_factory` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`size_product` (
     `id` VARCHAR(36) NOT NULL,
-    `height` INT NOT NULL,
+    `height` DOUBLE NOT NULL,
     `size` VARCHAR(255) NULL DEFAULT NULL,
-    `width` INT NOT NULL,
+    `width` DOUBLE NOT NULL,
     `product_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     INDEX `FKmnesxf69qwvk7og5n8klp4q9m` (`product_id` ASC) VISIBLE,

@@ -10,6 +10,6 @@ import lombok.*;
 public class SizeProductDto {
     private String id;
     private String size;
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 }

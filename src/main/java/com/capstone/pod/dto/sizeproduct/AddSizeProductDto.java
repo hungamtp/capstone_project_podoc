@@ -9,7 +9,7 @@ import lombok.*;
 @AllArgsConstructor
 public class AddSizeProductDto {
     private String size;
-    private int width;
-    private int height;
+    private double width;
+    private double height;
     private String productId;
 }
