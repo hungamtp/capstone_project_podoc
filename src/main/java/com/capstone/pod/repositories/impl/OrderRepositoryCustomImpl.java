@@ -29,4 +29,19 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         query.where(orderEqual , designerEqual , dateBetween);
         return entityManager.createQuery(query).getSingleResult();
     }
+
+    public Long countSoldByUserId(String userId , LocalDate startDate, LocalDate endDate) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<OrderDetail> root = query.from(OrderDetail.class);
+        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+        Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
+        Join<DesignedProduct, User> userJoin = detailDesignedProductJoin.join(DesignedProduct_.USER);
+        query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
+        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID) , userId);
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
+        query.where(orderEqual , designerEqual , dateBetween);
+        return entityManager.createQuery(query).getSingleResult();
+    }
 }

@@ -12,6 +12,7 @@ import com.capstone.pod.constant.validation_message.ValidationMessage;
 import com.capstone.pod.dto.cartdetail.AddToCartDto;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.designinfo.DesignerDashboard;
 import com.capstone.pod.dto.order.*;
 import com.capstone.pod.converter.OrderDetailConverter;
 import com.capstone.pod.entities.*;
@@ -423,5 +424,21 @@ public class OrderServiceImplement implements OrdersService {
         }
 
         return paymentResponse;
+    }
+
+    @Override
+    public DesignerDashboard getDesignerDashboard(LocalDate startDate, LocalDate endDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String) authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        User user = credential.getUser();
+        Double income = ordersRepository.getInComeByUserId(user.getId(), startDate, endDate);
+        long designCount = designedProductRepository.countAllByUser(user);
+        long designSoldCount = ordersRepository.countSoldByUserId(user.getId(), startDate, endDate);
+        return DesignerDashboard.builder()
+            .income(income)
+            .designSoldCount(designSoldCount)
+            .designCount(designCount)
+            .build();
     }
 }
