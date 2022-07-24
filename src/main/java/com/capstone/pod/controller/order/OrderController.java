@@ -7,16 +7,13 @@ import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.dto.utils.Utils;
-import com.capstone.pod.momo.config.Environment;
-import com.capstone.pod.momo.enums.RequestType;
 import com.capstone.pod.momo.models.PaymentResponse;
-import com.capstone.pod.momo.processor.CreateOrderMoMo;
 import com.capstone.pod.momo.shared.utils.LogUtils;
 import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.services.PayService;
 import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +21,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import javax.xml.bind.DatatypeConverter;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("order")
@@ -38,17 +41,18 @@ public class OrderController {
 
     @PostMapping("/{paymentMethod}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<ResponseDto> addOrder(@Validated @RequestBody ShippingInfoDto shippingInfoDto , @PathVariable int paymentMethod) throws Exception {
+    public ResponseEntity<ResponseDto> addOrder(@Validated @RequestBody ShippingInfoDto shippingInfoDto, @PathVariable int paymentMethod) throws Exception {
         LogUtils.init();
         ResponseDto responseDTO = new ResponseDto();
-        PaymentResponse paymentResponse = ordersService.addOrder(shippingInfoDto , paymentMethod);
+        PaymentResponse paymentResponse = ordersService.addOrder(shippingInfoDto, paymentMethod);
         responseDTO.setData(paymentResponse);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("/shippinginfos")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> getShippingInfos(){
-        com.capstone.pod.dto.http.ResponseDto responseDto= new com.capstone.pod.dto.http.ResponseDto();
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> getShippingInfos() {
+        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
         List<ShippingInfoDto> shippingInfoDtos = ordersService.getMyShippingInfo();
         responseDto.setData(shippingInfoDtos);
         responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
@@ -86,7 +90,7 @@ public class OrderController {
 
     @GetMapping("/myorder")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity getAllMyOrder(HttpServletRequest request , @RequestParam int page , @RequestParam int size) {
+    public ResponseEntity getAllMyOrder(HttpServletRequest request, @RequestParam int page, @RequestParam int size) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
         Pageable pageable = PageRequest.of(page, size);
@@ -95,11 +99,11 @@ public class OrderController {
     }
 
     @GetMapping("/orderdetail")
-    public ResponseEntity getAllOrderDetail(@RequestParam int page , @RequestParam int size){
-        if(page <1){
+    public ResponseEntity getAllOrderDetail(@RequestParam int page, @RequestParam int size) {
+        if (page < 1) {
             throw new IllegalStateException("PAGE > 0");
         }
-        var result = ordersService.getAllMyOrderDetail(page , size);
+        var result = ordersService.getAllMyOrderDetail(page, size);
         PageDTO pageDTO = new PageDTO();
         pageDTO.setElements(result.size());
         pageDTO.setData(result);
@@ -108,12 +112,62 @@ public class OrderController {
     }
 
     @PutMapping
-    public ResponseEntity payUnpaidOrder(@RequestParam int paymentMethod , @RequestParam String orderId) throws Exception {
-        return ResponseEntity.ok().body(ordersService.payOrder(paymentMethod , orderId));
+    public ResponseEntity payUnpaidOrder(@RequestParam int paymentMethod, @RequestParam String orderId) throws Exception {
+        return ResponseEntity.ok().body(ordersService.payOrder(paymentMethod, orderId));
     }
 
     @PostMapping("/orderOwnDesign/{paymentMethod}")
-    public ResponseEntity orderOwnDesign(@PathVariable int paymentMethod , @RequestBody OrderOwnDesignDto orderOwnDesignDto) throws Exception {
-        return ResponseEntity.ok().body(ordersService.orderOwnDesign(orderOwnDesignDto , paymentMethod));
+    public ResponseEntity orderOwnDesign(@PathVariable int paymentMethod, @RequestBody OrderOwnDesignDto orderOwnDesignDto) throws Exception {
+        return ResponseEntity.ok().body(ordersService.orderOwnDesign(orderOwnDesignDto, paymentMethod));
     }
+
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private String key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
+    private Mac HmacSHA256;
+
+
+    @PostMapping("/callback")
+    public String callback(@RequestBody String jsonStr) throws InvalidKeyException, NoSuchAlgorithmException {
+        HmacSHA256 = Mac.getInstance("HmacSHA256");
+        HmacSHA256.init(new SecretKeySpec(key2.getBytes(), "HmacSHA256"));
+        System.out.println("hung");
+        JSONObject result = new JSONObject();
+
+        try {
+            JSONObject cbdata = new JSONObject(jsonStr);
+            String dataStr = cbdata.getString("data");
+            String reqMac = cbdata.getString("mac");
+
+            byte[] hashBytes = HmacSHA256.doFinal(dataStr.getBytes());
+            String mac = DatatypeConverter.printHexBinary(hashBytes).toLowerCase();
+
+            // kiểm tra callback hợp lệ (đến từ ZaloPay server)
+            if (!reqMac.equals(mac)) {
+                // callback không hợp lệ
+                result.put("return_code", -1);
+                result.put("return_message", "mac not equal");
+            } else {
+                // thanh toán thành công
+                // merchant cập nhật trạng thái cho đơn hàng
+                JSONObject data = new JSONObject(dataStr);
+                logger.info("update order's status = success where app_trans_id = " + data.getString("app_trans_id"));
+
+                result.put("return_code", 1);
+                result.put("return_message", "success");
+            }
+        } catch (Exception ex) {
+            result.put("return_code", 0); // ZaloPay server sẽ callback lại (tối đa 3 lần)
+            result.put("return_message", ex.getMessage());
+        }
+
+        // thông báo kết quả cho ZaloPay server
+        return result.toString();
+    }
+
+    @GetMapping("/dashboard")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity getDashBoard() {
+        return ResponseEntity.ok().body(ordersService.getDesignerDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
+    }
+
 }

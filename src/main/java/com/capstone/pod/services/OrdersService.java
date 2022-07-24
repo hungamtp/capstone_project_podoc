@@ -2,6 +2,7 @@ package com.capstone.pod.services;
 
 
 import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.designinfo.DesignerDashboard;
 import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ReturnOrderDto;
@@ -27,4 +28,5 @@ public interface OrdersService {
 
     PaymentResponse orderOwnDesign(OrderOwnDesignDto orderOwnDesignDto, int paymentMethod) throws Exception;
 
+    DesignerDashboard getDesignerDashboard(LocalDate startDate , LocalDate endDate);
 }
