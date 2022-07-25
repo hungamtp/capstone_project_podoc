@@ -2,9 +2,10 @@ package com.capstone.pod.services;
 
 
 import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.dashboard.AdminDashboard;
+import com.capstone.pod.dto.dashboard.DesignerDashboard;
 import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
-import com.capstone.pod.dto.order.ReturnOrderDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.momo.models.PaymentResponse;
 import org.springframework.data.domain.Pageable;
@@ -27,4 +28,7 @@ public interface OrdersService {
 
     PaymentResponse orderOwnDesign(OrderOwnDesignDto orderOwnDesignDto, int paymentMethod) throws Exception;
 
+    DesignerDashboard getDesignerDashboard(LocalDate startDate , LocalDate endDate);
+
+    AdminDashboard getAdminDashboard(LocalDate startDate, LocalDate endDate);
 }

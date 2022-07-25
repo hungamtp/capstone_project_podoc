@@ -9,9 +9,10 @@ import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
-import com.capstone.pod.dto.cartdetail.AddToCartDto;
-import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.dto.common.PageDTO;
+import com.capstone.pod.dto.dashboard.AdminDashboard;
+import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
+import com.capstone.pod.dto.dashboard.DesignerDashboard;
 import com.capstone.pod.dto.order.*;
 import com.capstone.pod.converter.OrderDetailConverter;
 import com.capstone.pod.entities.*;
@@ -35,7 +36,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -423,5 +423,46 @@ public class OrderServiceImplement implements OrdersService {
         }
 
         return paymentResponse;
+    }
+
+    @Override
+    public DesignerDashboard getDesignerDashboard(LocalDate startDate, LocalDate endDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String) authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        User user = credential.getUser();
+        Double income = ordersRepository.getInComeByUserId(user.getId(), startDate, endDate);
+        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDate.now().withDayOfMonth(1), endDate);
+        long designCount = designedProductRepository.countAllByUser(user);
+        long designSoldCount = ordersRepository.countSoldByUserId(user.getId(), startDate, endDate);
+        long designSoldCountCurrentMonth = ordersRepository.countSoldByUserId(user.getId(), LocalDate.now().withDayOfMonth(1), endDate);
+        return DesignerDashboard.builder()
+            .income(income)
+            .designSoldCount(designSoldCount)
+            .designCount(designCount)
+            .incomeCurrentMonth(incomeCurrentMonth)
+            .designSoldCountCurrentMonth(designSoldCountCurrentMonth)
+            .build();
+    }
+
+    @Override
+    public AdminDashboard getAdminDashboard(LocalDate startDate, LocalDate endDate) {
+        List<CategorySoldCountProjection> categorySoldCountProjections = orderDetailRepository.countOrderByCategory();
+        Double income = ordersRepository.getInComeByAdmin(startDate, endDate);
+        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDate.now().withDayOfMonth(1), endDate);
+
+        Long countZaloOrder = ordersRepository.countZaloPay();
+        Long orderCount = ordersRepository.countByIsPaid(true);
+        return AdminDashboard.builder()
+            .orderCount(orderCount)
+            .orderCountCurrentMonth(ordersRepository.countSoldAll(LocalDate.now().withDayOfMonth(1), endDate))
+            .income(income)
+            .incomeCurrentMonth(incomeCurrentMonth)
+            .designCount(designedProductRepository.count())
+            .designSoldCount(ordersRepository.countSoldAll(LocalDate.now().withDayOfMonth(1), endDate))
+            .countMomoOrder(orderCount - countZaloOrder)
+            .countZaloPayOrder(countZaloOrder)
+            .categorySoldCountProjections(categorySoldCountProjections)
+            .build();
     }
 }

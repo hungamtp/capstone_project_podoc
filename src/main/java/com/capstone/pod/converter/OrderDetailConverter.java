@@ -27,6 +27,7 @@ public class OrderDetailConverter {
             .quantity(orderDetail.getQuantity())
             .provider(orderDetail.getFactory().getName())
             .date(orderDetail.getOrders().getCreateDate())
+            .isRated(orderDetail.isRate())
             .build();
     }
 }

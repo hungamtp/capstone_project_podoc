@@ -21,6 +21,7 @@ public class OrderDetail {
     private int quantity;
     private String color;
     private String size;
+    private boolean isRate;
     @ManyToOne
     private Orders orders;
     @ManyToOne

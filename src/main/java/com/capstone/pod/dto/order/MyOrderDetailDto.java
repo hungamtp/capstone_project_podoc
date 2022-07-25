@@ -22,4 +22,5 @@ public class MyOrderDetailDto {
     private String size;
     private LocalDate date;
     private int quantity;
+    private boolean isRated;
 }

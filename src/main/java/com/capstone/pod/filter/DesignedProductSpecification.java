@@ -1,16 +1,11 @@
 package com.capstone.pod.filter;
 
-import com.capstone.pod.entities.Category_;
-import com.capstone.pod.entities.Product;
-import com.capstone.pod.entities.Product_;
+import com.capstone.pod.entities.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +14,10 @@ public class DesignedProductSpecification implements Specification<Product> {
 
     @Override
     public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+        if(criteria.getKey().equalsIgnoreCase("category")){
+            Join<Product , DesignedProduct> productJoin = root.join(DesignedProduct_.PRODUCT);
+           return  builder.equal(productJoin.join(Product_.CATEGORY).get(Category_.ID) , criteria.getValue());
+        }
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
