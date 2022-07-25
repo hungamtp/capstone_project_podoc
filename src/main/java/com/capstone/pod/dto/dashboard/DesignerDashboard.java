@@ -1,4 +1,4 @@
-package com.capstone.pod.dto.designinfo;
+package com.capstone.pod.dto.dashboard;
 
 import lombok.*;
 
@@ -9,6 +9,8 @@ import lombok.*;
 @AllArgsConstructor
 public class DesignerDashboard {
     private double income;
+    private double incomeCurrentMonth;
     private long designCount;
     private long designSoldCount;
+    private long designSoldCountCurrentMonth;
 }

@@ -44,4 +44,41 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         query.where(orderEqual , designerEqual , dateBetween);
         return entityManager.createQuery(query).getSingleResult();
     }
+
+    public Double getInComeByAdmin(LocalDate startDate, LocalDate endDate) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+        Root<OrderDetail> root = query.from(OrderDetail.class);
+        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+        Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
+        Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE));
+        query.multiselect(criteriaBuilder.sum(income));
+        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
+        query.where(orderEqual , dateBetween);
+        return entityManager.createQuery(query).getSingleResult();
+    }
+
+    public Long countSoldAll(LocalDate startDate, LocalDate endDate) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<OrderDetail> root = query.from(OrderDetail.class);
+        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+        query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
+        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
+        query.where(orderEqual  ,dateBetween);
+        return entityManager.createQuery(query).getSingleResult();
+    }
+
+    public Long countZaloPay() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<Orders> root = query.from(Orders.class);
+        query.multiselect(criteriaBuilder.count(root.get(Orders_.ID)));
+        Predicate orderEqual = criteriaBuilder.isTrue(root.get(Orders_.IS_PAID));
+        Predicate zaloPay = criteriaBuilder.like(root.get(Orders_.TRANSACTION_ID) , "%\\_%");
+        query.where(orderEqual  ,zaloPay);
+        return entityManager.createQuery(query).getSingleResult();
+    }
 }

@@ -8,6 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AddRatingDTO {
+    private String orderDetailId;
     private float ratingStar;
     private String comment;
     private String designId;
