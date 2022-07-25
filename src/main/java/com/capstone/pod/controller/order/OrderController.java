@@ -170,4 +170,10 @@ public class OrderController {
         return ResponseEntity.ok().body(ordersService.getDesignerDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
     }
 
+    @GetMapping("/dashboard/admin")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity getDashBoardAdmin() {
+        return ResponseEntity.ok().body(ordersService.getAdminDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
+    }
+
 }

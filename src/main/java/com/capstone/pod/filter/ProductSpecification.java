@@ -20,7 +20,7 @@ public class ProductSpecification implements Specification<Product> {
     @Override
     public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         if(criteria.getKey().equalsIgnoreCase("category")){
-            builder.equal(root.join(Product_.CATEGORY).get(Category_.NAME) , criteria.getValue());
+            return builder.equal(root.join(Product_.CATEGORY).get(Category_.ID) , criteria.getValue());
         }
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(

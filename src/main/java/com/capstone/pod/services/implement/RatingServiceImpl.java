@@ -6,13 +6,11 @@ import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.rating.AddRatingDTO;
 import com.capstone.pod.dto.rating.RatingDTO;
-import com.capstone.pod.entities.Credential;
-import com.capstone.pod.entities.DesignedProduct;
-import com.capstone.pod.entities.Rating;
-import com.capstone.pod.entities.User;
+import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CredentialNotFoundException;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.DesignedProductRepository;
+import com.capstone.pod.repositories.OrderDetailRepository;
 import com.capstone.pod.repositories.RatingRepository;
 import com.capstone.pod.services.RatingService;
 import lombok.AllArgsConstructor;
@@ -33,6 +31,7 @@ public class RatingServiceImpl implements RatingService {
     private RatingRepository ratingRepository;
     private DesignedProductRepository designedProductRepository;
     private CredentialRepository credentialRepository;
+    private OrderDetailRepository orderDetailRepository;
 
     @Override
     public PageDTO getAllRatingByDesignedProduct(String designedProductId, Pageable pageable) {
@@ -67,6 +66,14 @@ public class RatingServiceImpl implements RatingService {
         Credential credential = credentialRepository.findById(currentCredentialId)
             .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
 
+        OrderDetail orderDetail = orderDetailRepository.findById(addRatingDTO.getOrderDetailId()).orElseThrow(
+            () -> new IllegalArgumentException(EntityName.ORDERS_DETAIL + "_" + ErrorMessage.NOT_FOUND)
+        );
+
+        if (orderDetail.isRate()) {
+            throw new IllegalArgumentException(EntityName.ORDERS_DETAIL + "_" + ErrorMessage.IS_RATED);
+        }
+
         DesignedProduct designedProduct = designedProductRepository.findById(addRatingDTO.getDesignId()).orElseThrow(
             () -> new IllegalArgumentException(EntityName.DESIGNED_PRODUCT + "_" + ErrorMessage.NOT_FOUND)
         );
@@ -79,6 +86,8 @@ public class RatingServiceImpl implements RatingService {
             .build();
 
         ratingRepository.save(rating);
+        orderDetail.setRate(true);
+        orderDetailRepository.save(orderDetail);
         return true;
     }
 

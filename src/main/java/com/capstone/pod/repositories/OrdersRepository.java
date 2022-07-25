@@ -22,4 +22,6 @@ public interface OrdersRepository extends JpaRepository<Orders,String> , OrderRe
 
     Page<Orders> findAllByIsPaidIsFalseAndUser(Pageable pageable , User user);
 
+    Long countByIsPaid(boolean isPaid);
+
 }
