@@ -8,5 +8,6 @@ import lombok.Setter;
 @Setter
 public class PriceByFactoryDto {
     private double price;
+    private String material;
     private FactoryForProductDetailsDto factory;
 }

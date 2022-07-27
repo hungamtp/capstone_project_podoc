@@ -189,22 +189,23 @@ public class FactoryServiceImplement implements FactoryService {
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
     @Override
-    public void addPriceByFactoryToProduct(String factoryId, String productId, double price) {
+    public void addPriceByFactoryToProduct(String factoryId, String productId, double price, String material) {
        Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
        Factory factory = factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
        Optional<PriceByFactory> priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId);
        if(priceByFactoryInRepo.isPresent()){
            throw new PriceByFactoryExistedException(ProductErrorMessage.PRICE_BY_FACTORY_EXISTED);
        }
-       PriceByFactory priceByFactory = PriceByFactory.builder().factory(factory).product(product).price(price).build();
+       PriceByFactory priceByFactory = PriceByFactory.builder().factory(factory).product(product).price(price).material(material).build();
        priceByFactoryRepository.save(priceByFactory);
     }
     @Override
-    public void updatePriceByFactoryToProduct(String factoryId, String productId, double price) {
+    public void updatePriceByFactoryToProduct(String factoryId, String productId, double price, String material) {
         productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
         PriceByFactory priceByFactoryInRepo =  priceByFactoryRepository.getByProductIdAndFactoryId(productId, factoryId).orElseThrow(() -> new PriceByFactoryNotExistedException(ProductErrorMessage.PRICE_BY_FACTORY_NOT_EXISTED));
         priceByFactoryInRepo.setPrice(price);
+        priceByFactoryInRepo.setMaterial(material);
         priceByFactoryRepository.save(priceByFactoryInRepo);
     }
     @Override

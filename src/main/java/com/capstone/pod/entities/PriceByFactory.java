@@ -19,6 +19,7 @@ public class PriceByFactory {
     @Column(length = 36)
     private String id;
     private double price;
+    private String material;
     @ManyToOne
     private Factory factory;
     @ManyToOne

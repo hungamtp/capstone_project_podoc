@@ -3,10 +3,7 @@ package com.capstone.pod.controller.factory;
 import com.capstone.pod.constant.factory.FactorySuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.constant.user.UserSuccessMessage;
-import com.capstone.pod.dto.factory.AddFactoryDto;
-import com.capstone.pod.dto.factory.AddFactoryResponse;
-import com.capstone.pod.dto.factory.FactoryByIdDto;
-import com.capstone.pod.dto.factory.FactoryPageResponseDto;
+import com.capstone.pod.dto.factory.*;
 import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
 import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
@@ -90,17 +87,17 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("add-price")
-    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestParam double price ) {
+    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam String factoryId,@RequestParam String productId, @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct ) {
         ResponseDto<Void> responseDTO = new ResponseDto();
-        factoryService.addPriceByFactoryToProduct(factoryId, productId, price);
+        factoryService.addPriceByFactoryToProduct(factoryId, productId, addPriceByFactoryToProduct.getPrice(),addPriceByFactoryToProduct.getMaterial());
         responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_PRICE_TO_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("update-price")
-    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestParam double price) {
+    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct) {
         ResponseDto<Void> responseDTO = new ResponseDto();
-        factoryService.updatePriceByFactoryToProduct(factoryId, productId, price);
+        factoryService.updatePriceByFactoryToProduct(factoryId, productId, addPriceByFactoryToProduct.getPrice(), addPriceByFactoryToProduct.getMaterial());
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_PRICE_TO_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

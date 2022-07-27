@@ -23,8 +23,8 @@ public interface FactoryService {
     public UserDto updateAvatar(UpdateAvatarDto avatar, String userId);
     public void updateCollaborating(String factoryId, boolean isCollaborating);
     public void addSizeColorToProduct(String factoryId, String productId, List<SizeColorInFactoryDetailDto> sizeColors);
-    public void addPriceByFactoryToProduct(String factoryId, String productId, double price);
-    public void updatePriceByFactoryToProduct(String factoryId, String productId, double price);
+    public void addPriceByFactoryToProduct(String factoryId, String productId, double price,String material);
+    public void updatePriceByFactoryToProduct(String factoryId, String productId, double price, String material);
 
     public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId);
     public OrderDetailForPrintingDto getAllOrderDetailsForPrintingByOrderDetailsId(String orderId,String designId, String credentialId);
