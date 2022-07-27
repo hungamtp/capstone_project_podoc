@@ -237,7 +237,7 @@ public class FactoryServiceImplement implements FactoryService {
     @Override
     public OrderDetailForPrintingDto getAllOrderDetailsForPrintingByOrderDetailsId(String orderId, String designId, String credentialId) {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
-        getPermittedCredential(credentialId);
+
         if(credential.isPresent()){
           List<OrderDetail> orderDetails =  orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndFactoryId(orderId, designId, credential.get().getFactory().getId());
           OrderDetailForPrintingDto orderDetailForPrintingDto = OrderDetailForPrintingDto.builder()
@@ -263,6 +263,10 @@ public class FactoryServiceImplement implements FactoryService {
                         .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getPosition())
                         .build());
             }
+            orderDetailForPrintingDto.setCustomerName(orderDetails.get(0).getOrders().getCustomerName());
+            orderDetailForPrintingDto.setEmail(orderDetails.get(0).getOrders().getUser().getCredential().getEmail());
+            orderDetailForPrintingDto.setPhoneNumber(orderDetails.get(0).getOrders().getPhone());
+            orderDetailForPrintingDto.setAddress(orderDetails.get(0).getOrders().getPhone());
             orderDetailForPrintingDto.setOrderDetailsSupportDtos(orderDetailsSupportDtos);
             orderDetailForPrintingDto.setPreviewImages(imagePreviewDtos);
             return orderDetailForPrintingDto;

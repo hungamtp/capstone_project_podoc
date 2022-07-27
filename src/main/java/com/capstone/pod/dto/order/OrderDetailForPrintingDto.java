@@ -12,6 +12,10 @@ import java.util.List;
 @Setter
 @Builder
 public class OrderDetailForPrintingDto {
+    private String customerName;
+    private String email;
+    private String phoneNumber;
+    private String address;
     private String orderId;
     private List<ImagePreviewDto> previewImages;
     private String createDate;
