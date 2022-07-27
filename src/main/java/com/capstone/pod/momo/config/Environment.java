@@ -69,7 +69,24 @@ public class Environment {
                     return dev;
                 }
             }else{
-
+                try (InputStream input_dev = Environment.class.getClassLoader().getResourceAsStream("application-prod.properties")) {
+                    Properties prop_dev = new Properties();
+                    prop_dev.load(input_dev);
+                    MoMoEndpoint devEndpoint = new MoMoEndpoint(prop_dev.getProperty("DEV_MOMO_ENDPOINT"),
+                        prop_dev.getProperty("CREATE_URL"),
+                        prop_dev.getProperty("REFUND_URL"),
+                        prop_dev.getProperty("QUERY_URL"),
+                        prop_dev.getProperty("CONFIRM_URL"),
+                        prop_dev.getProperty("TOKEN_PAY_URL"),
+                        prop_dev.getProperty("TOKEN_BIND_URL"),
+                        prop_dev.getProperty("TOKEN_INQUIRY_URL"),
+                        prop_dev.getProperty("TOKEN_DELETE_URL"),
+                        prop_dev.getProperty("REDIRECT_URL"),
+                        prop_dev.getProperty("NOTI_URL"));
+                    PartnerInfo devInfo = new PartnerInfo(prop_dev.getProperty("DEV_PARTNER_CODE"), prop_dev.getProperty("DEV_ACCESS_KEY"), prop_dev.getProperty("DEV_SECRET_KEY"));
+                    Environment dev = new Environment(devEndpoint, devInfo, target);
+                    return dev;
+                }
             }
 
         } catch (FileNotFoundException e) {
