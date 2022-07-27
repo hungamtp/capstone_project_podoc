@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`discount` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`price_by_factory` (
     `id` VARCHAR(36) NOT NULL,
+    `material` VARCHAR(255) NULL DEFAULT NULL,
     `price` DOUBLE NOT NULL,
     `discount_id` VARCHAR(36) NULL DEFAULT NULL,
     `factory_id` VARCHAR(36) NULL DEFAULT NULL,
@@ -455,6 +456,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
     `id` VARCHAR(36) NOT NULL,
     `color` VARCHAR(255) NULL DEFAULT NULL,
+    `is_rate` BIT(1) NOT NULL,
     `quantity` INT NOT NULL,
     `size` VARCHAR(255) NULL DEFAULT NULL,
     `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
