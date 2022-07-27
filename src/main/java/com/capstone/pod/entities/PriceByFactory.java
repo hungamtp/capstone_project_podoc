@@ -24,8 +24,6 @@ public class PriceByFactory {
     private Factory factory;
     @ManyToOne
     private Product product;
-    @ManyToOne
-    private Discount discount;
     @OneToMany(mappedBy = "priceByFactory")
     private List<DesignedProduct> designedProducts;
 }

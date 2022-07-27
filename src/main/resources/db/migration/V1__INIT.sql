@@ -86,38 +86,20 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`factory` (
 
 
 -- -----------------------------------------------------
--- Table `capstone_pod`.`discount`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `capstone_pod`.`discount` (
-    `id` VARCHAR(36) NOT NULL,
-    `discount_percent` FLOAT NOT NULL,
-    `name` VARCHAR(255) NULL DEFAULT NULL,
-    PRIMARY KEY (`id`))
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
 -- Table `capstone_pod`.`price_by_factory`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`price_by_factory` (
     `id` VARCHAR(36) NOT NULL,
     `material` VARCHAR(255) NULL DEFAULT NULL,
     `price` DOUBLE NOT NULL,
-    `discount_id` VARCHAR(36) NULL DEFAULT NULL,
     `factory_id` VARCHAR(36) NULL DEFAULT NULL,
     `product_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
-    INDEX `FK9yuq8ho9f2b9l8uqv5l5p42s5` (`discount_id` ASC) VISIBLE,
     INDEX `FK62dp9k9lh0rq3a5aa5ww2ju6t` (`factory_id` ASC) VISIBLE,
     INDEX `FKlkmg7jg5eu9e9le6270j0wm4j` (`product_id` ASC) VISIBLE,
     CONSTRAINT `FK62dp9k9lh0rq3a5aa5ww2ju6t`
     FOREIGN KEY (`factory_id`)
     REFERENCES `capstone_pod`.`factory` (`id`),
-    CONSTRAINT `FK9yuq8ho9f2b9l8uqv5l5p42s5`
-    FOREIGN KEY (`discount_id`)
-    REFERENCES `capstone_pod`.`discount` (`id`),
     CONSTRAINT `FKlkmg7jg5eu9e9le6270j0wm4j`
     FOREIGN KEY (`product_id`)
     REFERENCES `capstone_pod`.`product` (`id`))
@@ -360,27 +342,6 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product_tag` (
     CONSTRAINT `FKeivmw9wmsoqjhix1fr8ndv557`
     FOREIGN KEY (`designed_product_id`)
     REFERENCES `capstone_pod`.`designed_product` (`id`))
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci;
-
-
--- -----------------------------------------------------
--- Table `capstone_pod`.`discount_time`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `capstone_pod`.`discount_time` (
-    `id` VARCHAR(36) NOT NULL,
-    `create_date` DATE NULL DEFAULT NULL,
-    `last_modified_date` DATE NULL DEFAULT NULL,
-    `end_date` DATE NULL DEFAULT NULL,
-    `is_expired` BIT(1) NOT NULL,
-    `start_date` DATE NULL DEFAULT NULL,
-    `discount_id` VARCHAR(36) NULL DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `FKkcd898uu8dxsfvfgclqcjtpfg` (`discount_id` ASC) VISIBLE,
-    CONSTRAINT `FKkcd898uu8dxsfvfgclqcjtpfg`
-    FOREIGN KEY (`discount_id`)
-    REFERENCES `capstone_pod`.`discount` (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;
