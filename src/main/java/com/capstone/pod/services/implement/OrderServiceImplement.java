@@ -13,6 +13,7 @@ import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.dashboard.AdminDashboard;
 import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
 import com.capstone.pod.dto.dashboard.DesignerDashboard;
+import com.capstone.pod.dto.dashboard.FactoryDashboard;
 import com.capstone.pod.dto.order.*;
 import com.capstone.pod.converter.OrderDetailConverter;
 import com.capstone.pod.entities.*;
@@ -448,8 +449,8 @@ public class OrderServiceImplement implements OrdersService {
     @Override
     public AdminDashboard getAdminDashboard(LocalDate startDate, LocalDate endDate) {
         List<CategorySoldCountProjection> categorySoldCountProjections = orderDetailRepository.countOrderByCategory();
-        Double income = ordersRepository.getInComeByAdmin(startDate, endDate);
-        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDate.now().withDayOfMonth(1), endDate);
+        Double income = ordersRepository.getInComeByAdmin(startDate, endDate) * 20 / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDate.now().withDayOfMonth(1), endDate) * 20 / 100;
 
         Long countZaloOrder = ordersRepository.countZaloPay();
         Long orderCount = ordersRepository.countByIsPaid(true);
@@ -463,6 +464,27 @@ public class OrderServiceImplement implements OrdersService {
             .countMomoOrder(orderCount - countZaloOrder)
             .countZaloPayOrder(countZaloOrder)
             .categorySoldCountProjections(categorySoldCountProjections)
+            .build();
+    }
+
+    @Override
+    public FactoryDashboard getFactoryDashboard(LocalDate startDate, LocalDate endDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String) authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(
+            () -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Factory factory = credential.getFactory();
+
+        Double income = ordersRepository.getInComeByFactory(factory.getId(), startDate, endDate) * 80 / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDate.now().withDayOfMonth(1), endDate) * 80 / 100;
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllByFactory(factory);
+        long isDone = orderDetails.stream().filter(orderDetail -> orderDetail.isDone()).count();
+        long isInProcess = orderDetails.size() - isDone;
+        return FactoryDashboard.builder()
+            .income(income)
+            .incomeCurrentMonth(incomeCurrentMonth)
+            .inProcessOrder(isInProcess)
+            .doneOrder(isDone)
             .build();
     }
 }

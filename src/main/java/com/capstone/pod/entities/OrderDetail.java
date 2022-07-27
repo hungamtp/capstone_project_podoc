@@ -1,5 +1,6 @@
 package com.capstone.pod.entities;
 
+import com.capstone.pod.constant.order.OrderState;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,4 +31,13 @@ public class OrderDetail {
     private Factory factory;
     @OneToMany(mappedBy = "orderDetail",cascade = CascadeType.ALL)
     List<OrderStatus> orderStatuses;
+
+    public boolean isDone(){
+        for(var state : this.orderStatuses){
+           if( state.getName().equals( OrderState.DONE.toString())){
+               return true;
+           }
+        }
+        return false;
+    }
 }
