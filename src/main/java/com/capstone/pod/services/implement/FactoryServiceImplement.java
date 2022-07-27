@@ -117,19 +117,22 @@ public class FactoryServiceImplement implements FactoryService {
         Credential credential = credentialRepository.findById(credentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         if(credential.getFactory() != null){
             List<PriceByFactory>  priceByFactories = (List<PriceByFactory>) credential.getFactory().getPriceByFactories();
-            Set<Product> productList = new HashSet<>();
+            Set<ProductDto> productDtoList = new HashSet<>();
             for (int i = 0; i < priceByFactories.size(); i++) {
-               productList.add(priceByFactories.get(i).getProduct());
+               ProductDto productDto = ProductDto.builder()
+                       .id(priceByFactories.get(i).getProduct().getId())
+                       .material(priceByFactories.get(i).getMaterial())
+                       .price(priceByFactories.get(i).getPrice())
+                       .name(priceByFactories.get(i).getProduct().getName())
+                       .isPublic(priceByFactories.get(i).getProduct().isPublic())
+                       .isDeleted(priceByFactories.get(i).getProduct().isDeleted())
+                       .productImages(priceByFactories.get(i).getProduct().getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
+                       .categoryName(priceByFactories.get(i).getProduct().getCategory().getName())
+                       .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(priceByFactories.get(i).getProduct().getId()).stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(credential.getFactory().getId())).map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
+                       .build();
+               productDtoList.add(productDto);
             }
-            List<ProductDto> productDtoList = productList.stream().map(product -> ProductDto.builder()
-                    .id(product.getId())
-                    .name(product.getName())
-                    .isPublic(product.isPublic())
-                    .isDeleted(product.isDeleted())
-                    .productImages(product.getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
-                    .categoryName(product.getCategory().getName())
-                    .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(product.getId()).stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(credential.getFactory().getId())).map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
-                    .build()).sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().collect(Collectors.toList());
+            List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
                         .name(credential.getFactory()
@@ -137,7 +140,7 @@ public class FactoryServiceImplement implements FactoryService {
                         .getLocation()).phone(credential.getPhone())
                         .address(credential.getAddress())
                         .image(credential.getImage())
-                        .productDtoList(productDtoList)
+                        .productDtoList(productDtos)
                         .isCollaborating(credential.getFactory().isCollaborating()).build();
         return factory;
         }

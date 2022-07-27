@@ -17,6 +17,8 @@ public class ProductDto {
     private String id;
     private String name;
     private String description;
+    private double price;
+    private String material;
     private boolean isPublic;
     private boolean isDeleted;
     private List<ProductImagesDto> productImages;
