@@ -8,4 +8,5 @@ public interface OrderRepositoryCustom {
     Double getInComeByAdmin(LocalDate startDate, LocalDate endDate);
     Long countSoldAll(LocalDate startDate, LocalDate endDate);
     Long countZaloPay();
+    Double getInComeByFactory(String factoryId , LocalDate startDate, LocalDate endDate);
 }

@@ -176,4 +176,11 @@ public class OrderController {
         return ResponseEntity.ok().body(ordersService.getAdminDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
     }
 
+
+    @GetMapping("/dashboard/factory")
+    @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
+    public ResponseEntity getDashBoardFactory() {
+        return ResponseEntity.ok().body(ordersService.getFactoryDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
+    }
+
 }

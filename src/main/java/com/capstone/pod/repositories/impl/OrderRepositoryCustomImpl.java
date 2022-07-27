@@ -24,13 +24,13 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE));
         query.multiselect(criteriaBuilder.sum(income));
         Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID) , userId);
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
-        query.where(orderEqual , designerEqual , dateBetween);
+        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
+        query.where(orderEqual, designerEqual, dateBetween);
         return entityManager.createQuery(query).getSingleResult();
     }
 
-    public Long countSoldByUserId(String userId , LocalDate startDate, LocalDate endDate) {
+    public Long countSoldByUserId(String userId, LocalDate startDate, LocalDate endDate) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -39,9 +39,9 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         Join<DesignedProduct, User> userJoin = detailDesignedProductJoin.join(DesignedProduct_.USER);
         query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
         Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID) , userId);
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
-        query.where(orderEqual , designerEqual , dateBetween);
+        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
+        query.where(orderEqual, designerEqual, dateBetween);
         return entityManager.createQuery(query).getSingleResult();
     }
 
@@ -51,12 +51,35 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         Root<OrderDetail> root = query.from(OrderDetail.class);
         Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
         Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
-        Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE));
+        Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = detailDesignedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
+        Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), priceByFactoryJoin.get(PriceByFactory_.PRICE));
         query.multiselect(criteriaBuilder.sum(income));
         Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
-        query.where(orderEqual , dateBetween);
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
+        query.where(orderEqual, dateBetween);
         return entityManager.createQuery(query).getSingleResult();
+    }
+
+    public Double getInComeByFactory(String factoryId, LocalDate startDate, LocalDate endDate) {
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+            Root<OrderDetail> root = query.from(OrderDetail.class);
+            Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+            Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
+            Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = detailDesignedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
+            Join<PriceByFactory, Factory> factoryFactoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY);
+            Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY)
+                , criteriaBuilder.sum(priceByFactoryJoin.get(PriceByFactory_.PRICE), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE)));
+            query.multiselect(criteriaBuilder.sum(income));
+            Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
+            Predicate factoryEqual = criteriaBuilder.equal(factoryFactoryJoin.get(Factory_.ID), factoryId);
+            query.where(orderEqual, dateBetween, factoryEqual);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (Exception e) {
+            return Double.valueOf(0);
+        }
     }
 
     public Long countSoldAll(LocalDate startDate, LocalDate endDate) {
@@ -66,8 +89,8 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
         query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
         Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE) , startDate , endDate);
-        query.where(orderEqual  ,dateBetween);
+        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
+        query.where(orderEqual, dateBetween);
         return entityManager.createQuery(query).getSingleResult();
     }
 
@@ -77,8 +100,8 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         Root<Orders> root = query.from(Orders.class);
         query.multiselect(criteriaBuilder.count(root.get(Orders_.ID)));
         Predicate orderEqual = criteriaBuilder.isTrue(root.get(Orders_.IS_PAID));
-        Predicate zaloPay = criteriaBuilder.like(root.get(Orders_.TRANSACTION_ID) , "%\\_%");
-        query.where(orderEqual  ,zaloPay);
+        Predicate zaloPay = criteriaBuilder.like(root.get(Orders_.TRANSACTION_ID), "%\\_%");
+        query.where(orderEqual, zaloPay);
         return entityManager.createQuery(query).getSingleResult();
     }
 }

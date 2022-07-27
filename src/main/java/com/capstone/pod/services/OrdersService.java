@@ -4,6 +4,7 @@ package com.capstone.pod.services;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.dashboard.AdminDashboard;
 import com.capstone.pod.dto.dashboard.DesignerDashboard;
+import com.capstone.pod.dto.dashboard.FactoryDashboard;
 import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
@@ -31,4 +32,6 @@ public interface OrdersService {
     DesignerDashboard getDesignerDashboard(LocalDate startDate , LocalDate endDate);
 
     AdminDashboard getAdminDashboard(LocalDate startDate, LocalDate endDate);
+
+    FactoryDashboard getFactoryDashboard(LocalDate startDate, LocalDate endDate);
 }
