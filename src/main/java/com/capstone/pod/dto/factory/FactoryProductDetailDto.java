@@ -13,6 +13,7 @@ public class FactoryProductDetailDto {
     private String id;
     private String name;
     private String location;
+    private String material;
     private Double price;
     private List<String> sizes;
     private List<String> area;

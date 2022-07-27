@@ -184,6 +184,8 @@ public class ProductServiceImplement implements ProductService {
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
+                    .material((groupPriceByFactory.get(factoryEntry.getKey()) != null && groupPriceByFactory.get(factoryEntry.getKey()).isEmpty()) ?
+                    "" : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getMaterial())
                     .price(
                         (groupPriceByFactory.get(factoryEntry.getKey()) != null && groupPriceByFactory.get(factoryEntry.getKey()).isEmpty()) ?
                             0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
