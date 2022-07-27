@@ -238,38 +238,41 @@ public class FactoryServiceImplement implements FactoryService {
     public OrderDetailForPrintingDto getAllOrderDetailsForPrintingByOrderDetailsId(String orderId, String designId, String credentialId) {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
 
-        if(credential.isPresent()){
-          List<OrderDetail> orderDetails =  orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndFactoryId(orderId, designId, credential.get().getFactory().getId());
-          OrderDetailForPrintingDto orderDetailForPrintingDto = OrderDetailForPrintingDto.builder()
-                  .orderId(orderDetails.get(0).getOrders().getId())
-                  .createDate(orderDetails.get(0).getOrders().getCreateDate().toString())
-                  .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
-                  .bluePrintDtos(orderDetails.get(0).getDesignedProduct().getBluePrints().stream().map(bluePrint -> modelMapper.map(bluePrint, BluePrintDto.class)).collect(Collectors.toList()))
-                  .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
-                  .status(orderDetails.get(0).getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
-                  .build();
-          List<OrderDetailsSupportDto>  orderDetailsSupportDtos = new ArrayList<>();
-          List<ImagePreviewDto>  imagePreviewDtos = new ArrayList<>();
+        if(credential.isPresent()) {
+            List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndFactoryId(orderId, designId, credential.get().getFactory().getId());
+            if (!orderDetails.isEmpty()) {
+                OrderDetailForPrintingDto orderDetailForPrintingDto = OrderDetailForPrintingDto.builder()
+                        .orderId(orderDetails.get(0).getOrders().getId())
+                        .createDate(orderDetails.get(0).getOrders().getCreateDate().toString())
+                        .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
+                        .bluePrintDtos(orderDetails.get(0).getDesignedProduct().getBluePrints().stream().map(bluePrint -> modelMapper.map(bluePrint, BluePrintDto.class)).collect(Collectors.toList()))
+                        .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
+                        .status(orderDetails.get(0).getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
+                        .build();
+                List<OrderDetailsSupportDto> orderDetailsSupportDtos = new ArrayList<>();
+                List<ImagePreviewDto> imagePreviewDtos = new ArrayList<>();
 
-            for (int i = 0; i < orderDetails.size(); i++) {
-                orderDetailsSupportDtos.add(OrderDetailsSupportDto.builder().orderDetailsId(orderDetails.get(i).getId())
-                                .color(orderDetails.get(i).getColor())
-                                .size(orderDetails.get(i).getSize())
-                                .quantity(orderDetails.get(i).getQuantity())
-                                .build());
-                imagePreviewDtos.add(ImagePreviewDto.builder()
-                        .image(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getImage())
-                        .color(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getColor())
-                        .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getPosition())
-                        .build());
+                for (int i = 0; i < orderDetails.size(); i++) {
+                    orderDetailsSupportDtos.add(OrderDetailsSupportDto.builder().orderDetailsId(orderDetails.get(i).getId())
+                            .color(orderDetails.get(i).getColor())
+                            .size(orderDetails.get(i).getSize())
+                            .quantity(orderDetails.get(i).getQuantity())
+                            .build());
+                    imagePreviewDtos.add(ImagePreviewDto.builder()
+                            .image(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getImage())
+                            .color(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getColor())
+                            .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getPosition())
+                            .build());
+                }
+                orderDetailForPrintingDto.setCustomerName(orderDetails.get(0).getOrders().getCustomerName());
+                orderDetailForPrintingDto.setEmail(orderDetails.get(0).getOrders().getUser().getCredential().getEmail());
+                orderDetailForPrintingDto.setPhoneNumber(orderDetails.get(0).getOrders().getPhone());
+                orderDetailForPrintingDto.setAddress(orderDetails.get(0).getOrders().getPhone());
+                orderDetailForPrintingDto.setOrderDetailsSupportDtos(orderDetailsSupportDtos);
+                orderDetailForPrintingDto.setPreviewImages(imagePreviewDtos);
+                return orderDetailForPrintingDto;
             }
-            orderDetailForPrintingDto.setCustomerName(orderDetails.get(0).getOrders().getCustomerName());
-            orderDetailForPrintingDto.setEmail(orderDetails.get(0).getOrders().getUser().getCredential().getEmail());
-            orderDetailForPrintingDto.setPhoneNumber(orderDetails.get(0).getOrders().getPhone());
-            orderDetailForPrintingDto.setAddress(orderDetails.get(0).getOrders().getPhone());
-            orderDetailForPrintingDto.setOrderDetailsSupportDtos(orderDetailsSupportDtos);
-            orderDetailForPrintingDto.setPreviewImages(imagePreviewDtos);
-            return orderDetailForPrintingDto;
+            else throw new OrderNotFoundException(FactoryErrorMessage.FACTORY_NOT_HAVE_THIS_ORDER);
         }
         return null;
     }

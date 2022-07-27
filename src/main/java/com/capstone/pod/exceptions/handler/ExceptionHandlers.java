@@ -40,6 +40,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(UserErrorMessage.EMAIL_OR_PASSWORD_INCORRECT);
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = OrderNotFoundException.class)
+    public ResponseEntity<Object> orderNotFoundException(OrderNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
     @ExceptionHandler(value = CategoryExistedException.class)
     public ResponseEntity<Object> categoryExistedException(CategoryExistedException exception) {
         ResponseDto dto = new ResponseDto();
