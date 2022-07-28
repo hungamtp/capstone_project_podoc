@@ -118,7 +118,7 @@ public class ProductController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @GetMapping("/admin/{id}")
-    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_FACTORY)
     public ResponseEntity<ResponseDto> getProductByIdAdmin(@PathVariable(name = "id") String productId){
         ResponseDto<ProductByAdminDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.getProductByIdAdmin(productId));
