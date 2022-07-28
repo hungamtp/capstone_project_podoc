@@ -87,7 +87,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping("add-price")
-    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam String factoryId,@RequestParam String productId, @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct ) {
+    public ResponseEntity<ResponseDto> addPriceByFactoryToProduct(@RequestParam String factoryId,@RequestParam String productId,@Validated @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct ) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.addPriceByFactoryToProduct(factoryId, productId, addPriceByFactoryToProduct.getPrice(),addPriceByFactoryToProduct.getMaterial());
         responseDTO.setSuccessMessage(FactorySuccessMessage.ADD_PRICE_TO_PRODUCT_SUCCESS);
@@ -95,7 +95,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("update-price")
-    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId, @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct) {
+    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId,@Validated @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.updatePriceByFactoryToProduct(factoryId, productId, addPriceByFactoryToProduct.getPrice(), addPriceByFactoryToProduct.getMaterial());
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_PRICE_TO_PRODUCT_SUCCESS);
