@@ -261,16 +261,18 @@ public class FactoryServiceImplement implements FactoryService {
                             .size(orderDetails.get(i).getSize())
                             .quantity(orderDetails.get(i).getQuantity())
                             .build());
-                    imagePreviewDtos.add(ImagePreviewDto.builder()
-                            .image(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getImage())
-                            .color(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getColor())
-                            .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(i).getPosition())
-                            .build());
+                    for (int j = 0; j < orderDetails.get(i).getDesignedProduct().getImagePreviews().size(); j++) {
+                        imagePreviewDtos.add(ImagePreviewDto.builder()
+                                .image(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(j).getImage())
+                                .color(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(j).getColor())
+                                .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(j).getPosition())
+                                .build());
+                    }
                 }
                 orderDetailForPrintingDto.setCustomerName(orderDetails.get(0).getOrders().getCustomerName());
                 orderDetailForPrintingDto.setEmail(orderDetails.get(0).getOrders().getUser().getCredential().getEmail());
                 orderDetailForPrintingDto.setPhoneNumber(orderDetails.get(0).getOrders().getPhone());
-                orderDetailForPrintingDto.setAddress(orderDetails.get(0).getOrders().getPhone());
+                orderDetailForPrintingDto.setAddress(orderDetails.get(0).getOrders().getAddress());
                 orderDetailForPrintingDto.setOrderDetailsSupportDtos(orderDetailsSupportDtos);
                 orderDetailForPrintingDto.setPreviewImages(imagePreviewDtos);
                 return orderDetailForPrintingDto;
