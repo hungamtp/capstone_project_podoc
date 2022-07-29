@@ -15,6 +15,7 @@ public class FactoryProductDetailDto {
     private String location;
     private String material;
     private Double price;
+    private float rate;
     private List<String> sizes;
     private List<String> area;
     private List<String> colors;
