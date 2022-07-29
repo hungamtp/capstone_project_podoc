@@ -64,8 +64,8 @@ public class ProductController {
     @PutMapping("{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> updateProduct(@Validated @RequestBody UpdateProductDto updateProductDto, @PathVariable(name="id") String productId){
-        ResponseDto<ProductDto> responseDto = new ResponseDto();
-        ProductDto productDto = productService.updateProduct(updateProductDto, productId);
+        ResponseDto<ProductReturnDto> responseDto = new ResponseDto();
+        ProductReturnDto productDto = productService.updateProduct(updateProductDto, productId);
         responseDto.setData(productDto);
         responseDto.setSuccessMessage(ProductSuccessMessage.UPDATE_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
@@ -154,7 +154,7 @@ public class ProductController {
     @PatchMapping("/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> deleteProductById(@PathVariable(name="id") String productId){
-        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        ResponseDto<ProductReturnDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.deleteProduct(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.DELETE_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
@@ -162,7 +162,7 @@ public class ProductController {
     @PatchMapping("/publish/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> publishProduct(@PathVariable(name="id") String productId){
-        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        ResponseDto<ProductReturnDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.publishProduct(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.PUBLISH_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
@@ -170,7 +170,7 @@ public class ProductController {
     @PatchMapping("/un-publish/{id}")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> unPublishProduct(@PathVariable(name="id") String productId){
-        ResponseDto<ProductDto> responseDTO = new ResponseDto();
+        ResponseDto<ProductReturnDto> responseDTO = new ResponseDto();
         responseDTO.setData(productService.unPublishProduct(productId));
         responseDTO.setSuccessMessage(ProductSuccessMessage.UN_PUBLISH_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

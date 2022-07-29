@@ -17,10 +17,10 @@ public interface ProductService {
       PageDTO getAllProducts(Specification<Product> specification, Pageable pageable);
       Page<ProductByAdminDto> getAllProductsByAdmin(Specification<Product> specification, Pageable pageable);
 
-      ProductDto updateProduct(UpdateProductDto dto, String productId);
-      ProductDto publishProduct(String productId);
-      ProductDto unPublishProduct(String productId);
-      ProductDto deleteProduct(String productId);
+      ProductReturnDto updateProduct(UpdateProductDto dto, String productId);
+      ProductReturnDto publishProduct(String productId);
+      ProductReturnDto unPublishProduct(String productId);
+      ProductReturnDto deleteProduct(String productId);
 
       ProductDetailDto getProductById(String id);
       ProductByAdminDto getProductByIdAdmin(String id);

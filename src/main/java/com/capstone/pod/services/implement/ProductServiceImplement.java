@@ -62,8 +62,9 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(UpdateProductDto productDto, String productId) {
+    public ProductReturnDto updateProduct(UpdateProductDto productDto, String productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        if(productInRepo.isDeleted()) throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_DELETED);
         Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
         productImagesRepository.deleteAllInBatch(productInRepo.getProductImages());
         List<ProductImages> imagesList = new ArrayList<>();
@@ -74,11 +75,11 @@ public class ProductServiceImplement implements ProductService {
         productInRepo.setName(productDto.getName());
         productInRepo.setCategory(category);
         productInRepo.setDescription(productDto.getDescription());
-        return modelMapper.map(productRepository.save(productInRepo), ProductDto.class);
+        return modelMapper.map(productRepository.save(productInRepo), ProductReturnDto.class);
     }
 
     @Override
-    public ProductDto publishProduct(String productId) {
+    public ProductReturnDto publishProduct(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if (product.getSizeColors().isEmpty()) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
@@ -93,14 +94,14 @@ public class ProductServiceImplement implements ProductService {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_HAVE_NO_BLUEPRINT);
         }
         product.setPublic(true);
-        return modelMapper.map(productRepository.save(product), ProductDto.class);
+        return modelMapper.map(productRepository.save(product), ProductReturnDto.class);
     }
 
     @Override
-    public ProductDto unPublishProduct(String productId) {
+    public ProductReturnDto unPublishProduct(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         product.setPublic(false);
-        return modelMapper.map(productRepository.save(product), ProductDto.class);
+        return modelMapper.map(productRepository.save(product), ProductReturnDto.class);
     }
 
     @Override
@@ -143,10 +144,10 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public ProductDto deleteProduct(String productId) {
+    public ProductReturnDto deleteProduct(String productId) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         product.setDeleted(true);
-        return modelMapper.map(productRepository.save(product), ProductDto.class);
+        return modelMapper.map(productRepository.save(product), ProductReturnDto.class);
     }
 
     @Override
