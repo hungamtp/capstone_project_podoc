@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -427,16 +428,16 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public DesignerDashboard getDesignerDashboard(LocalDate startDate, LocalDate endDate) {
+    public DesignerDashboard getDesignerDashboard(LocalDateTime startDate, LocalDateTime endDate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         User user = credential.getUser();
         Double income = ordersRepository.getInComeByUserId(user.getId(), startDate, endDate);
-        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDate.now().withDayOfMonth(1), endDate);
+        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate);
         long designCount = designedProductRepository.countAllByUser(user);
         long designSoldCount = ordersRepository.countSoldByUserId(user.getId(), startDate, endDate);
-        long designSoldCountCurrentMonth = ordersRepository.countSoldByUserId(user.getId(), LocalDate.now().withDayOfMonth(1), endDate);
+        long designSoldCountCurrentMonth = ordersRepository.countSoldByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate);
         return DesignerDashboard.builder()
             .income(income)
             .designSoldCount(designSoldCount)
@@ -447,20 +448,20 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public AdminDashboard getAdminDashboard(LocalDate startDate, LocalDate endDate) {
+    public AdminDashboard getAdminDashboard(LocalDateTime startDate, LocalDateTime endDate) {
         List<CategorySoldCountProjection> categorySoldCountProjections = orderDetailRepository.countOrderByCategory();
         Double income = ordersRepository.getInComeByAdmin(startDate, endDate) * 20 / 100;
-        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDate.now().withDayOfMonth(1), endDate) * 20 / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDateTime.now().withDayOfMonth(1), endDate) * 20 / 100;
 
         Long countZaloOrder = ordersRepository.countZaloPay();
         Long orderCount = ordersRepository.countByIsPaid(true);
         return AdminDashboard.builder()
             .orderCount(orderCount)
-            .orderCountCurrentMonth(ordersRepository.countSoldAll(LocalDate.now().withDayOfMonth(1), endDate))
+            .orderCountCurrentMonth(ordersRepository.countSoldAll(LocalDateTime.now().withDayOfMonth(1), endDate))
             .income(income)
             .incomeCurrentMonth(incomeCurrentMonth)
             .designCount(designedProductRepository.count())
-            .designSoldCount(ordersRepository.countSoldAll(LocalDate.now().withDayOfMonth(1), endDate))
+            .designSoldCount(ordersRepository.countSoldAll(LocalDateTime.now().withDayOfMonth(1), endDate))
             .countMomoOrder(orderCount - countZaloOrder)
             .countZaloPayOrder(countZaloOrder)
             .categorySoldCountProjections(categorySoldCountProjections)
@@ -468,7 +469,7 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public FactoryDashboard getFactoryDashboard(LocalDate startDate, LocalDate endDate) {
+    public FactoryDashboard getFactoryDashboard(LocalDateTime startDate, LocalDateTime endDate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(
@@ -476,7 +477,7 @@ public class OrderServiceImplement implements OrdersService {
         Factory factory = credential.getFactory();
 
         Double income = ordersRepository.getInComeByFactory(factory.getId(), startDate, endDate) * 80 / 100;
-        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDate.now().withDayOfMonth(1), endDate) * 80 / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDateTime.now().withDayOfMonth(1), endDate) * 80 / 100;
         List<OrderDetail> orderDetails = orderDetailRepository.findAllByFactory(factory);
         long isDone = orderDetails.stream().filter(orderDetail -> orderDetail.isDone()).count();
         long isInProcess = orderDetails.size() - isDone;

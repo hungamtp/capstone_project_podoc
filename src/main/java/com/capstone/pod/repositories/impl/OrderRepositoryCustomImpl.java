@@ -8,14 +8,14 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public Double getInComeByUserId(String userId, LocalDate startDate, LocalDate endDate) {
+    public Double getInComeByUserId(String userId, LocalDateTime startDate, LocalDateTime endDate) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -31,7 +31,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return entityManager.createQuery(query).getSingleResult();
     }
 
-    public Long countSoldByUserId(String userId, LocalDate startDate, LocalDate endDate) {
+    public Long countSoldByUserId(String userId, LocalDateTime startDate, LocalDateTime endDate) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -46,7 +46,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return entityManager.createQuery(query).getSingleResult();
     }
 
-    public Double getInComeByAdmin(LocalDate startDate, LocalDate endDate) {
+    public Double getInComeByAdmin(LocalDateTime startDate, LocalDateTime endDate) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -61,7 +61,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return entityManager.createQuery(query).getSingleResult();
     }
 
-    public Double getInComeByFactory(String factoryId, LocalDate startDate, LocalDate endDate) {
+    public Double getInComeByFactory(String factoryId, LocalDateTime startDate, LocalDateTime endDate) {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
             CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
@@ -83,7 +83,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         }
     }
 
-    public Long countSoldAll(LocalDate startDate, LocalDate endDate) {
+    public Long countSoldAll(LocalDateTime startDate, LocalDateTime endDate) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);

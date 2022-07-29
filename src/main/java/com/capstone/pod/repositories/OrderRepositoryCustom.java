@@ -2,14 +2,14 @@ package com.capstone.pod.repositories;
 
 import com.capstone.pod.repositories.impl.projection.FactoryRateProjection;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface OrderRepositoryCustom {
-    Double getInComeByUserId(String userId, LocalDate startDate, LocalDate endDate);
-    Long countSoldByUserId(String userId , LocalDate startDate, LocalDate endDate);
-    Double getInComeByAdmin(LocalDate startDate, LocalDate endDate);
-    Long countSoldAll(LocalDate startDate, LocalDate endDate);
+    Double getInComeByUserId(String userId, LocalDateTime startDate, LocalDateTime endDate);
+    Long countSoldByUserId(String userId , LocalDateTime startDate, LocalDateTime endDate);
+    Double getInComeByAdmin(LocalDateTime startDate, LocalDateTime endDate);
+    Long countSoldAll(LocalDateTime startDate, LocalDateTime endDate);
     Long countZaloPay();
-    Double getInComeByFactory(String factoryId , LocalDate startDate, LocalDate endDate);
+    Double getInComeByFactory(String factoryId , LocalDateTime startDate, LocalDateTime endDate);
     FactoryRateProjection getRateFactory(String factoryId);
 }
