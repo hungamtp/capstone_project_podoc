@@ -269,6 +269,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .name(designedProduct.getName())
             .designedPrice(designedProduct.getDesignedPrice())
             .publish(designedProduct.isPublish())
+            .soldCount(designedProduct.getOrderDetails().stream().mapToLong(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos, page, designedProductPage.getTotalElements());
