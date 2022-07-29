@@ -356,6 +356,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .colorAndSizes(colorAndSizes)
             .description(designedProduct.getDescription())
             .price(price)
+            .rateCount(designedProduct.getRatings().size())
             .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
             .name(designedProduct.getName())
             .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))

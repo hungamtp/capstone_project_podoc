@@ -16,6 +16,7 @@ public class DesignedProductDto {
     private String image;
     private double designedPrice;
     private double rate;
+    private int rateCount;
     private List<String> tags = new ArrayList<>();
     private String userId;
     private String username;
