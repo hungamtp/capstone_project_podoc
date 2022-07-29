@@ -53,7 +53,6 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private final PlaceHolderRepository placeHolderRepository;
 
 
-
     private User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
@@ -280,17 +279,18 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     public PageDTO viewAllDesign(Specification<DesignedProduct> specification, Pageable page) {
         Page<DesignedProduct> designedProductPage = designedProductRepository.findAll(specification, page);
         List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().map(designedProduct -> {
-               return ViewAllDesignDto.builder()
-                       .id(designedProduct.getId())
-                       .price(designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
-                       .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
-                       .name(designedProduct.getName())
-                       .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
-                       .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
-                       .publish(designedProduct.isPublish())
-                       .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
-                       .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
-                       .build();
+            return ViewAllDesignDto.builder()
+                .id(designedProduct.getId())
+                .ratingCount(designedProduct.getRatings().size())
+                .price(designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
+                .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
+                .name(designedProduct.getName())
+                .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
+                .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
+                .publish(designedProduct.isPublish())
+                .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
+                .build();
         }).collect(Collectors.toList());
         PageDTO dtoPage = PageDTO.builder().page(page.getPageNumber()).data(viewAllDesignDtos).elements((int) designedProductPage.getTotalElements()).build();
         return dtoPage;
