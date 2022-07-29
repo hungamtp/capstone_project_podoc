@@ -17,6 +17,7 @@ import com.capstone.pod.exceptions.PermissionException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.*;
+import com.capstone.pod.repositories.impl.projection.FactoryRateProjection;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -187,14 +188,16 @@ public class ProductServiceImplement implements ProductService {
             if (price < lowestPrice) {
                 lowestPrice = price;
             }
+            FactoryRateProjection factoryRateProjection = ordersRepository.getRateFactory(factory.getId());
             FactoryProductDetailDto factoryProductDetailDTO =
                 FactoryProductDetailDto.builder()
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
-                    .rate(Double.valueOf(ordersRepository.getRateFactory(factory.getId())).floatValue())
+                    .rate(factoryRateProjection.getRates() == null ? 0 : Double.valueOf(factoryRateProjection.getRates()).floatValue())
+                    .rateCount(factoryRateProjection.getCount() == null ? 0 : factoryRateProjection.getCount())
                     .material((groupPriceByFactory.get(factoryEntry.getKey()) != null && groupPriceByFactory.get(factoryEntry.getKey()).isEmpty()) ?
-                    "" : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getMaterial())
+                        "" : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getMaterial())
                     .price(
                         (groupPriceByFactory.get(factoryEntry.getKey()) != null && groupPriceByFactory.get(factoryEntry.getKey()).isEmpty()) ?
                             0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
