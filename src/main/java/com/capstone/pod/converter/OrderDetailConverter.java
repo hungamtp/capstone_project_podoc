@@ -19,7 +19,7 @@ public class OrderDetailConverter {
             .price(designedProduct.getPriceByFactory().getPrice() + designedProduct.getDesignedPrice())
             .designId(designedProduct.getId())
             .designName(designedProduct.getName())
-            .designImage(designedProduct.getImagePreviews().stream().collect(Collectors.toList()).get(0).getImage())
+            .designImage(designedProduct.getImagePreviews().stream().filter(imagePreview -> imagePreview.getPosition().equals("front")).collect(Collectors.toList()).get(0).getImage())
             .designerName(designedProduct.getUser().getFirstName() + " " + designedProduct.getUser().getLastName())
             .designerId(designedProduct.getUser().getId())
             .color(orderDetail.getColor())
