@@ -25,7 +25,7 @@ public class DesignedProductSpecificationBuilder {
             return null;
         }
         List<Specification> specs = params.stream()
-                .map(ProductSpecification::new)
+                .map(DesignedProductSpecification::new)
                 .collect(Collectors.toList());
         Specification result = specs.get(0);
         for (int i = 1; i < params.size(); i++) {
