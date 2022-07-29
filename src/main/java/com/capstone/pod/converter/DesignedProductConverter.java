@@ -22,7 +22,7 @@ public class DesignedProductConverter {
             .name(designedProduct.getName())
             .rate(designedProduct.getRatings() == null ? 0 : designedProduct.getRatings().stream().mapToDouble(Rating::getRatingStar).average().orElse(0))
             .designedPrice(designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
-            .image(designedProduct.getImagePreviews().stream().findFirst().get().getImage())
+            .image(designedProduct.getImagePreviews().stream().filter(imagePreview -> imagePreview.getPosition().equals("front")).collect(Collectors.toList()).get(0).getImage())
             .userId(designedProduct.getUser().getId())
             .username(designedProduct.getUser().getFirstName() + " " + designedProduct.getUser().getLastName())
             .soldCount(Integer.valueOf(orderIsPaid.stream().mapToInt(OrderDetail::getQuantity).sum()).longValue())
