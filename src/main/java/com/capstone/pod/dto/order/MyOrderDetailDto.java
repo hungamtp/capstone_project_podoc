@@ -3,6 +3,7 @@ package com.capstone.pod.dto.order;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class MyOrderDetailDto {
     private String designerId;
     private String color;
     private String size;
-    private LocalDate date;
+    private LocalDateTime date;
     private int quantity;
     private boolean isRated;
 }
