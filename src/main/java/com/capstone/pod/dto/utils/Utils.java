@@ -7,6 +7,7 @@ import com.capstone.pod.entities.DesignedProduct;
 import com.capstone.pod.entities.Product;
 import com.capstone.pod.exceptions.CredentialNotFoundException;
 import com.capstone.pod.exceptions.PermissionException;
+import com.capstone.pod.filter.DesignedProductSpecification;
 import com.capstone.pod.filter.DesignedProductSpecificationBuilder;
 import com.capstone.pod.filter.ProductSpecificationBuilder;
 import com.capstone.pod.jwt.JwtConfig;
