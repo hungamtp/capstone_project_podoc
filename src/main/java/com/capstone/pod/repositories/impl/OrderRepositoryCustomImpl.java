@@ -104,4 +104,23 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         query.where(orderEqual, zaloPay);
         return entityManager.createQuery(query).getSingleResult();
     }
+
+    public Double getRateFactory(String factoryId) {
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+            Root<Rating> root = query.from(Rating.class);
+            Join<Rating, DesignedProduct> designedProductJoin = root.join(Rating_.DESIGNED_PRODUCT);
+            Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = designedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
+            Join<PriceByFactory, Factory> factoryFactoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY);
+
+            Expression<Double> rate = criteriaBuilder.avg(root.get(Rating_.RATING_STAR));
+            query.multiselect(rate);
+            Predicate factoryEqual = criteriaBuilder.equal(factoryFactoryJoin.get(Factory_.ID), factoryId);
+            query.where(factoryEqual);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (Exception e) {
+            return 0d;
+        }
+    }
 }
