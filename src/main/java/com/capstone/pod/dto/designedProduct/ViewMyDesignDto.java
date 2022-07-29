@@ -14,6 +14,7 @@ import java.util.List;
 public class ViewMyDesignDto {
     private String id;
     private String name;
+    private Long soldCount;
     private boolean publish;
     private double designedPrice;
     private List<ImagePreviewDto> imagePreviews;
