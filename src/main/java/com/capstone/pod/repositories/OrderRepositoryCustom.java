@@ -1,5 +1,7 @@
 package com.capstone.pod.repositories;
 
+import com.capstone.pod.repositories.impl.projection.FactoryRateProjection;
+
 import java.time.LocalDate;
 
 public interface OrderRepositoryCustom {
@@ -9,5 +11,5 @@ public interface OrderRepositoryCustom {
     Long countSoldAll(LocalDate startDate, LocalDate endDate);
     Long countZaloPay();
     Double getInComeByFactory(String factoryId , LocalDate startDate, LocalDate endDate);
-    Double getRateFactory(String factoryId);
+    FactoryRateProjection getRateFactory(String factoryId);
 }

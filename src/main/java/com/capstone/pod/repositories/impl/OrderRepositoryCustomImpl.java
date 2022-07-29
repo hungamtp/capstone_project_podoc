@@ -2,6 +2,7 @@ package com.capstone.pod.repositories.impl;
 
 import com.capstone.pod.entities.*;
 import com.capstone.pod.repositories.OrderRepositoryCustom;
+import com.capstone.pod.repositories.impl.projection.FactoryRateProjection;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -105,22 +106,23 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         return entityManager.createQuery(query).getSingleResult();
     }
 
-    public Double getRateFactory(String factoryId) {
+    public FactoryRateProjection getRateFactory(String factoryId) {
         try {
             CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+            CriteriaQuery<FactoryRateProjection> query = criteriaBuilder.createQuery(FactoryRateProjection.class);
             Root<Rating> root = query.from(Rating.class);
             Join<Rating, DesignedProduct> designedProductJoin = root.join(Rating_.DESIGNED_PRODUCT);
             Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = designedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
             Join<PriceByFactory, Factory> factoryFactoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY);
 
             Expression<Double> rate = criteriaBuilder.avg(root.get(Rating_.RATING_STAR));
-            query.multiselect(rate);
+            query.multiselect(rate.alias("rates") ,
+                criteriaBuilder.count(root.get(Rating_.ID)).alias("count"));
             Predicate factoryEqual = criteriaBuilder.equal(factoryFactoryJoin.get(Factory_.ID), factoryId);
             query.where(factoryEqual);
             return entityManager.createQuery(query).getSingleResult();
         } catch (Exception e) {
-            return 0d;
+            return new FactoryRateProjection(0d , 0l);
         }
     }
 }
