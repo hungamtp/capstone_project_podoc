@@ -26,6 +26,7 @@ public class ViewOtherDesignDto {
     private List<ImagePreviewDto> imagePreviews;
     private double rating;
     private int sold;
+    private int rateCount;
     private List<String> tagName;
     private Set<ColorInDesignDto> colors;
     private Set sizes;

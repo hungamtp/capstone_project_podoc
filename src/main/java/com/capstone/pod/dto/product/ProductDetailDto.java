@@ -17,6 +17,8 @@ public class ProductDetailDto {
     private String description;
     private Double lowestPrice;
     private Double highestPrice;
+    private float rate;
+    private int rateCount;
     private List<String> images;
     private Collection<ProductImagesDto> productImages;
     private String categoryName;

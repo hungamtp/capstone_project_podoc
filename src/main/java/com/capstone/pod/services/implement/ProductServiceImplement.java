@@ -17,6 +17,7 @@ import com.capstone.pod.exceptions.PermissionException;
 import com.capstone.pod.exceptions.ProductNameExistException;
 import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.*;
+import com.capstone.pod.repositories.impl.projection.FactoryRateProjection;
 import com.capstone.pod.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -38,6 +39,7 @@ public class ProductServiceImplement implements ProductService {
     private final PriceByFactoryRepository priceByFactoryRepository;
     private final ModelMapper modelMapper;
     private final ProductBluePrintRepository productBluePrintRepository;
+    private final OrdersRepository ordersRepository;
 
     private final ProductImagesRepository productImagesRepository;
     private final FactoryConverter factoryConverter;
@@ -154,6 +156,13 @@ public class ProductServiceImplement implements ProductService {
         if (!product.isPublic() || product.isDeleted()) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST);
         }
+
+        List<Rating> rates = product.getDesignedProducts().stream()
+            .flatMap(designedProduct -> designedProduct.getRatings().stream())
+            .collect(Collectors.toList());
+
+        OptionalDouble rateProduct = rates.stream().mapToDouble(Rating::getRatingStar).average();
+
         List<SizeColorByFactory> sizeColorByFactoryList = new ArrayList<>();
         for (var sizeColor : product.getSizeColors()) {
             for (var sizeColorByFactory : sizeColor.getSizeColorByFactories()) {
@@ -179,13 +188,16 @@ public class ProductServiceImplement implements ProductService {
             if (price < lowestPrice) {
                 lowestPrice = price;
             }
+            FactoryRateProjection factoryRateProjection = ordersRepository.getRateFactory(factory.getId());
             FactoryProductDetailDto factoryProductDetailDTO =
                 FactoryProductDetailDto.builder()
                     .id(factory.getId())
                     .name(factory.getName())
                     .location(factory.getLocation())
+                    .rate(factoryRateProjection.getRates() == null ? 0 : Double.valueOf(factoryRateProjection.getRates()).floatValue())
+                    .rateCount(factoryRateProjection.getCount() == null ? 0 : factoryRateProjection.getCount())
                     .material((groupPriceByFactory.get(factoryEntry.getKey()) != null && groupPriceByFactory.get(factoryEntry.getKey()).isEmpty()) ?
-                    "" : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getMaterial())
+                        "" : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getMaterial())
                     .price(
                         (groupPriceByFactory.get(factoryEntry.getKey()) != null && groupPriceByFactory.get(factoryEntry.getKey()).isEmpty()) ?
                             0 : groupPriceByFactory.get(factoryEntry.getKey()).get(0).getPrice())
@@ -202,6 +214,8 @@ public class ProductServiceImplement implements ProductService {
         return ProductDetailDto.builder()
             .id(product.getId())
             .name(product.getName())
+            .rate(rateProduct.isPresent() ? Double.valueOf(rateProduct.getAsDouble()).floatValue() : 0)
+            .rateCount(rates.size())
             .description(product.getDescription())
             .images(product.getProductImages().stream().map(ProductImages::getImage).collect(Collectors.toList()))
             .tags(product.getProductTags().stream().map(t -> t.getTag().getName()).collect(Collectors.toList()))

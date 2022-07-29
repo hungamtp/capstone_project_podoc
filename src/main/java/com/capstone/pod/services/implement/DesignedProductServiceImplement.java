@@ -269,6 +269,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .name(designedProduct.getName())
             .designedPrice(designedProduct.getDesignedPrice())
             .publish(designedProduct.isPublish())
+            .soldCount(designedProduct.getOrderDetails().stream().mapToLong(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos, page, designedProductPage.getTotalElements());
@@ -355,6 +356,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .colorAndSizes(colorAndSizes)
             .description(designedProduct.getDescription())
             .price(price)
+            .rateCount(designedProduct.getRatings().size())
             .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
             .name(designedProduct.getName())
             .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))

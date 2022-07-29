@@ -103,6 +103,7 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_ALL_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto> getProductById(@PathVariable(name = "id") String productId){
         ResponseDto<ProductDetailDto> responseDTO = new ResponseDto();
@@ -110,6 +111,7 @@ public class ProductController {
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_BY_ID_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+
     @GetMapping("design/{id}")
     public ResponseEntity<ResponseDto> getBluePrintByProductId(@PathVariable(name = "id") String productId){
         ResponseDto<List<ProductBluePrintDto>> responseDTO = new ResponseDto();
