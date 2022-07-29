@@ -28,6 +28,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -167,20 +168,20 @@ public class OrderController {
     @GetMapping("/dashboard")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
     public ResponseEntity getDashBoard() {
-        return ResponseEntity.ok().body(ordersService.getDesignerDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
+        return ResponseEntity.ok().body(ordersService.getDesignerDashboard(LocalDateTime.now().minusYears(1), LocalDateTime.now()));
     }
 
     @GetMapping("/dashboard/admin")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity getDashBoardAdmin() {
-        return ResponseEntity.ok().body(ordersService.getAdminDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
+        return ResponseEntity.ok().body(ordersService.getAdminDashboard(LocalDateTime.now().minusYears(1), LocalDateTime.now()));
     }
 
 
     @GetMapping("/dashboard/factory")
     @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
     public ResponseEntity getDashBoardFactory() {
-        return ResponseEntity.ok().body(ordersService.getFactoryDashboard(LocalDate.now().minusYears(1), LocalDate.now()));
+        return ResponseEntity.ok().body(ordersService.getFactoryDashboard(LocalDateTime.now().minusYears(1), LocalDateTime.now()));
     }
 
 }

@@ -11,7 +11,7 @@ import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.momo.models.PaymentResponse;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrdersService {
@@ -29,9 +29,9 @@ public interface OrdersService {
 
     PaymentResponse orderOwnDesign(OrderOwnDesignDto orderOwnDesignDto, int paymentMethod) throws Exception;
 
-    DesignerDashboard getDesignerDashboard(LocalDate startDate , LocalDate endDate);
+    DesignerDashboard getDesignerDashboard(LocalDateTime startDate , LocalDateTime endDate);
 
-    AdminDashboard getAdminDashboard(LocalDate startDate, LocalDate endDate);
+    AdminDashboard getAdminDashboard(LocalDateTime startDate, LocalDateTime endDate);
 
-    FactoryDashboard getFactoryDashboard(LocalDate startDate, LocalDate endDate);
+    FactoryDashboard getFactoryDashboard(LocalDateTime startDate, LocalDateTime endDate);
 }
