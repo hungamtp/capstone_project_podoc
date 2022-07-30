@@ -29,7 +29,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
         Predicate orderIsPaidTrue = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
         List<Order> orders = new ArrayList<>();
         orders.add(criteriaBuilder.desc(ordersJoin.get(Orders_.CREATE_DATE)));
-        query.where(userIdEqual, orderIsPaidTrue);
+        query.where(userIdEqual, orderIsPaidTrue).orderBy(orders);
         return entityManager.createQuery(query).setMaxResults(size).setFirstResult((page - 1) * size).getResultList();
     }
 
