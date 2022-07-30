@@ -20,4 +20,20 @@ public class SizeUtils {
 
     }};
 
+    public static List<String> sortSize(List<String> sizeInput){
+        for (int i = 0 ; i < sizeInput.size() ; i++){
+            String sizeTemp = null;
+            for (int j = i+1 ; j < sizeInput.size() ; j++){
+                if(sizes.get(sizeInput.get(i)) != null && sizes.get(sizeInput.get(j)) != null){
+                    if(sizes.get(sizeInput.get(i)) > sizes.get(sizeInput.get(j))){
+                        sizeTemp = new String(sizeInput.get(i));
+                        sizeInput.set(i , sizeInput.get(j)) ;
+                        sizeInput.set(j , sizeTemp);
+                    }
+                }
+            }
+        }
+        return  sizeInput;
+    }
+
 }
