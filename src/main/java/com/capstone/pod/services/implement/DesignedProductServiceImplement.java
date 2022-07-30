@@ -19,6 +19,7 @@ import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
+import com.capstone.pod.utils.SizeUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -347,6 +348,20 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .color(sizeColor.getColor().getName() + "-" + sizeColor.getColor().getImageColor())
                 .size(sizeColor.getSize().getName()).build()).collect(Collectors.toList());
 
+        for (int i = 0; i < sizeColorDto.size(); i++) {
+            for (int j = i + 1; j < sizeColorDto.size(); j++) {
+                SizeColorDesignedAndFactorySellDto temp = null;
+                if(SizeUtils.sizes.get(sizeColorDto.get(i).getSize()) != null && SizeUtils.sizes.get(sizeColorDto.get(j).getSize()) != null) {
+                    if (SizeUtils.sizes.get(sizeColorDto.get(i).getSize()) > SizeUtils.sizes.get(sizeColorDto.get(j).getSize())) {
+                        temp = new SizeColorDesignedAndFactorySellDto(sizeColorDto.get(i).getColor(), sizeColorDto.get(i).getSize());
+                        sizeColorDto.get(i).setColor(sizeColorDto.get(j).getColor());
+                        sizeColorDto.get(i).setSize(sizeColorDto.get(j).getSize());
+                        sizeColorDto.get(j).setColor(temp.getColor());
+                        sizeColorDto.get(j).setSize(temp.getSize());
+                    }
+                }
+            }
+        }
         Map<String, List<SizeColorDesignedAndFactorySellDto>> colorAndSizes = sizeColorDto.stream().collect(Collectors.groupingBy(sizeColor -> sizeColor.getColor()));
 
         double price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
