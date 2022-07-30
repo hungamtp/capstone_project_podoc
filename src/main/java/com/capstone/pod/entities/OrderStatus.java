@@ -1,6 +1,7 @@
 package com.capstone.pod.entities;
 
 import com.capstone.pod.dto.support.Auditable;
+import com.capstone.pod.dto.support.AuditableDateTime;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
@@ -15,7 +16,7 @@ import java.util.Comparator;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderStatus extends Auditable implements Comparable<OrderStatus> {
+public class OrderStatus extends AuditableDateTime implements Comparable<OrderStatus> {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")

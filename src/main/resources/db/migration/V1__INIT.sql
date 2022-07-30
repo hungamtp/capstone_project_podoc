@@ -446,8 +446,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
     `id` VARCHAR(36) NOT NULL,
-    `create_date` DATE NULL DEFAULT NULL,
-    `last_modified_date` DATE NULL DEFAULT NULL,
+    `create_date` DATETIME NULL DEFAULT NULL,
+    `last_modified_date` DATETIME NULL DEFAULT NULL,
     `name` VARCHAR(255) NULL DEFAULT NULL,
     `order_detail_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
