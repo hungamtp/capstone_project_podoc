@@ -1,14 +1,12 @@
 package com.capstone.pod.entities;
 
-import com.capstone.pod.dto.support.Auditable;
+import com.capstone.pod.dto.support.AuditableDateTime;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +16,7 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DesignedProduct  extends Auditable {
+public class DesignedProduct  extends AuditableDateTime {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")

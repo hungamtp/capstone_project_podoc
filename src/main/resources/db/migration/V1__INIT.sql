@@ -113,8 +113,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`price_by_factory` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`designed_product` (
     `id` VARCHAR(36) NOT NULL,
-    `create_date` DATE NULL DEFAULT NULL,
-    `last_modified_date` DATE NULL DEFAULT NULL,
+    `create_date` DATETIME NULL DEFAULT NULL,
+    `last_modified_date` DATETIME NULL DEFAULT NULL,
     `description` VARCHAR(255) NULL DEFAULT NULL,
     `designed_price` DOUBLE NOT NULL,
     `name` VARCHAR(255) NULL DEFAULT NULL,
@@ -392,8 +392,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
     `id` VARCHAR(36) NOT NULL,
-    `create_date` DATE NULL DEFAULT NULL,
-    `last_modified_date` DATE NULL DEFAULT NULL,
+    `create_date` DATETIME NULL DEFAULT NULL,
+    `last_modified_date` DATETIME NULL DEFAULT NULL,
     `address` VARCHAR(255) NULL DEFAULT NULL,
     `customer_name` VARCHAR(255) NULL DEFAULT NULL,
     `is_paid` BIT(1) NOT NULL,
