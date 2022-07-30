@@ -5,6 +5,7 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.http.ResponseDto;
+import com.capstone.pod.entities.DesignedProduct_;
 import com.capstone.pod.services.DesignedProductService;
 import com.capstone.pod.dto.utils.Utils;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -86,7 +88,7 @@ public class DesignedProductController {
     @GetMapping("/mydesign")
     public ResponseEntity<ResponseDto> viewMyDesign(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
         ResponseDto<Page<ViewMyDesignDto>> responseDto = new ResponseDto();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize).withSort(Sort.by(DesignedProduct_.CREATE_DATE).descending());
         responseDto.setData(designedProductService.viewMyDesign(pageable));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_DESIGNED_PRODUCT_SUCCESS);
         return ResponseEntity.ok().body(responseDto);

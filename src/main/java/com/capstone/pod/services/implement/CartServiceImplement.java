@@ -2,6 +2,7 @@ package com.capstone.pod.services.implement;
 
 import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
+import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.converter.CartDetailConverter;
 import com.capstone.pod.dto.cartdetail.AddToCartDto;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
@@ -11,6 +12,8 @@ import com.capstone.pod.exceptions.CredentialNotFoundException;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.CartService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -85,14 +88,19 @@ public class CartServiceImplement implements CartService {
         return productHaveNotEnoughQuantity;
     }
 
+
     public CartDetailDto addToCart(AddToCartDto addToCartDto, String email) {
         Cart cart = getCartByEmail(email);
         DesignedProduct designedProduct = designedProductRepository.findById(addToCartDto.getDesignId())
             .orElseThrow(() -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
             );
+        Credential credential = getCredential();
 
-        if (!designedProduct.isPublish())
-            throw new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND);
+        if(!designedProduct.getUser().getId().equals(credential.getUser().getId())){
+            if (!designedProduct.isPublish())
+                throw new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND);
+        }
+
 
 
         Optional<CartDetail> cartDetail = cartDetailRepository
@@ -176,6 +184,13 @@ public class CartServiceImplement implements CartService {
         }
 
         return cart;
+    }
+
+    private Credential getCredential() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String) authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        return credential;
     }
 
 }
