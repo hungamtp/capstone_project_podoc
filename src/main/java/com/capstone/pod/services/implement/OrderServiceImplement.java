@@ -5,6 +5,7 @@ import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
+import com.capstone.pod.constant.order.OrderErrorMessage;
 import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
@@ -50,6 +51,7 @@ public class OrderServiceImplement implements OrdersService {
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
     private final OrdersRepository ordersRepository;
+    private final OrderStatusRepository orderStatusRepository;
     private final ShippingInfoRepository shippingInfoRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
@@ -487,5 +489,19 @@ public class OrderServiceImplement implements OrdersService {
             .inProcessOrder(isInProcess)
             .doneOrder(isDone)
             .build();
+    }
+
+    @Override
+    public void updateOrderDetailsStatus(String orderDetailId,String orderStatus) {
+        OrderDetail orderDetail =  orderDetailRepository.findById(orderDetailId).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+        for (int i = 0; i < OrderState.getAllOrderState().size(); i++) {
+            if(orderStatus.equals(OrderState.getAllOrderState().get(i))){
+                orderDetail.getOrderStatuses().add(OrderStatus.builder().name(orderStatus).build());
+            }
+            else {
+                throw new OrderNotFoundException(OrderErrorMessage.STATUS_EXCEPTION);
+            }
+        }
+        orderDetailRepository.save(orderDetail);
     }
 }

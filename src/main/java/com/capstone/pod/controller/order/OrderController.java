@@ -184,4 +184,12 @@ public class OrderController {
         return ResponseEntity.ok().body(ordersService.getFactoryDashboard(LocalDateTime.now().minusYears(1), LocalDateTime.now()));
     }
 
+    @PutMapping("update-order-status")
+    @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
+    public ResponseEntity updateOrderStatus(@RequestParam String orderDetailId, @RequestParam String orderStatus) {
+        ResponseDto responseDTO = new ResponseDto();
+        ordersService.updateOrderDetailsStatus(orderDetailId, orderStatus);
+        responseDTO.setSuccessMessage(OrderSuccessMessage.UPDATE_ORDER_DETAIL_STATUS_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
 }

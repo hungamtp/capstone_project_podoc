@@ -34,4 +34,6 @@ public interface OrdersService {
     AdminDashboard getAdminDashboard(LocalDateTime startDate, LocalDateTime endDate);
 
     FactoryDashboard getFactoryDashboard(LocalDateTime startDate, LocalDateTime endDate);
+
+    void updateOrderDetailsStatus(String orderDetailId,String orderStatus);
 }
