@@ -21,6 +21,7 @@ public class MyOrderDetailDto {
     private String designerId;
     private String color;
     private String size;
+    private String status;
     private LocalDateTime date;
     private int quantity;
     private boolean isRated;

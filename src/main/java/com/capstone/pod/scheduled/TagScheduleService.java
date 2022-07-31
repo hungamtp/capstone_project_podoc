@@ -28,7 +28,9 @@ public class TagScheduleService {
     private DesignedProductTagRepository designedProductTagRepository;
 
 
-    @Scheduled(fixedDelay = 5000)
+//    @Scheduled(fixedDelay = 5000)
+    // run after 5s
+    @Scheduled(cron = "0 0 0 * * *")
     public void scheduledMethod() {
         List<DesignedProduct> bestSeller = designedProductRepository.get4BestSeller();
 

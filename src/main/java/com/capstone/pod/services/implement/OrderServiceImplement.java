@@ -339,7 +339,10 @@ public class OrderServiceImplement implements OrdersService {
         Credential credential = credentialRepository.findById(currentCredentialId)
             .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
 
-        return orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page, size, credential.getUser().getId()).stream().map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail)).collect(Collectors.toList());
+        return orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page, size, credential.getUser().getId())
+            .stream()
+            .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
+            .collect(Collectors.toList());
     }
 
     @Override
