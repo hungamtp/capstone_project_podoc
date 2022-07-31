@@ -537,7 +537,6 @@ public class OrderServiceImplement implements OrdersService {
             OrderDetail orderDetail =  orderDetailRepository.findById(orderDetailIds.get(i)).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
             orderDetails.add(orderDetail);
         }
-
         for (int i = 0; i < orderDetails.size() ; i++) {
             for (int j = 0; i < OrderState.getAllOrderState().size(); j++) {
                 if(orderStatus.equals(OrderState.getAllOrderState().get(j))){

@@ -36,7 +36,7 @@ public class OrderDetail {
 
     public boolean isDone(){
         for(var state : this.orderStatuses){
-           if( state.getName().equals( OrderState.DONE.toString())){
+           if( state.getName().equals(OrderState.DONE)){
                return true;
            }
         }
