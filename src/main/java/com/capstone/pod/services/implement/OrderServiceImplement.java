@@ -539,7 +539,7 @@ public class OrderServiceImplement implements OrdersService {
         for (int i = 0; i < orderDetails.size() ; i++) {
             for (int j = 0; j < OrderState.getAllOrderState().size(); j++) {
                 if(orderStatus.equals(OrderState.getAllOrderState().get(j))){
-                    orderDetails.get(i).getOrderStatuses().add(OrderStatus.builder().name(orderStatus).build());
+                    orderDetails.get(i).getOrderStatuses().add(OrderStatus.builder().orderDetail(orderDetails.get(i)).name(orderStatus).build());
                 }
             }
         }
