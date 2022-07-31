@@ -492,16 +492,23 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public void updateOrderDetailsStatus(String orderDetailId,String orderStatus) {
-        OrderDetail orderDetail =  orderDetailRepository.findById(orderDetailId).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
-        for (int i = 0; i < OrderState.getAllOrderState().size(); i++) {
-            if(orderStatus.equals(OrderState.getAllOrderState().get(i))){
-                orderDetail.getOrderStatuses().add(OrderStatus.builder().name(orderStatus).build());
-            }
-            else {
-                throw new OrderNotFoundException(OrderErrorMessage.STATUS_EXCEPTION);
+    public void updateOrderDetailsStatus(List<String> orderDetailIds, String orderStatus) {
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (int i = 0; i < orderDetailIds.size(); i++) {
+            OrderDetail orderDetail =  orderDetailRepository.findById(orderDetailIds.get(i)).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+            orderDetails.add(orderDetail);
+        }
+
+        for (int i = 0; i < orderDetails.size() ; i++) {
+            for (int j = 0; i < OrderState.getAllOrderState().size(); j++) {
+                if(orderStatus.equals(OrderState.getAllOrderState().get(j))){
+                    orderDetails.get(i).getOrderStatuses().add(OrderStatus.builder().name(orderStatus).build());
+                }
+                else {
+                    throw new OrderNotFoundException(OrderErrorMessage.STATUS_EXCEPTION);
+                }
             }
         }
-        orderDetailRepository.save(orderDetail);
+        orderDetailRepository.saveAll(orderDetails);
     }
 }

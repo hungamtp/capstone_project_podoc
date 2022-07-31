@@ -186,9 +186,9 @@ public class OrderController {
 
     @PutMapping("update-order-status")
     @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
-    public ResponseEntity updateOrderStatus(@RequestParam String orderDetailId, @RequestParam String orderStatus) {
+    public ResponseEntity updateOrderStatus(@RequestBody List<String> orderDetailIds, @RequestParam String orderStatus) {
         ResponseDto responseDTO = new ResponseDto();
-        ordersService.updateOrderDetailsStatus(orderDetailId, orderStatus);
+        ordersService.updateOrderDetailsStatus(orderDetailIds, orderStatus);
         responseDTO.setSuccessMessage(OrderSuccessMessage.UPDATE_ORDER_DETAIL_STATUS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
