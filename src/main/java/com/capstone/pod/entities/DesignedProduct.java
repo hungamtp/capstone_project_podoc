@@ -55,7 +55,7 @@ public class DesignedProduct  extends AuditableDateTime {
     private Set<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    private Set<DesignedProductTag> designedProductTags;
+    private List<DesignedProductTag> designedProductTags;
 
 
 }
