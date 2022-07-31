@@ -13,4 +13,5 @@ public final class EntityName {
     public static final String ORDERS="ORDERS";
     public static final String ORDERS_DETAIL="ORDERS_DETAIL";
     public static final String SIZE_PRODUCT="SIZE_PRODUCT";
+    public static final String TAG="TAG";
 }
