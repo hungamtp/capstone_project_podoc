@@ -28,9 +28,7 @@ public class TagScheduleService {
     private DesignedProductTagRepository designedProductTagRepository;
 
 
-    @Scheduled(cron = "15 * * * * *")
-//	@Scheduled(initialDelayString = "5000" ,fixedDelayString = "9000")
-    // 1000 milli sec = 1sec
+    @Scheduled(fixedDelay = 5000)
     public void scheduledMethod() {
         List<DesignedProduct> bestSeller = designedProductRepository.get4BestSeller();
 
@@ -70,9 +68,7 @@ public class TagScheduleService {
                 designedProductTagRepository.deleteById(designedProductTag.getId());
             }
         }
-
-
-
-        System.out.println("Hello Scheduler One :" + new Date());
+        System.out.println("UPDATE TAG BEST-SELLER");
     }
+
 }
