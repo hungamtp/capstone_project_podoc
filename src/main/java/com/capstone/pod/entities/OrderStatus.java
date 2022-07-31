@@ -28,7 +28,7 @@ public class OrderStatus extends AuditableDateTime implements Comparable<OrderSt
 
     @Override
     public int compareTo(@NotNull OrderStatus o) {
-        return this.lastModifiedDate.isAfter(o.lastModifiedDate) ? 1 : -1;
+        return this.lastModifiedDate.isAfter(o.lastModifiedDate) ? -1 : 1;
     }
 
 
