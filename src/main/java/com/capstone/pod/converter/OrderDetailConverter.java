@@ -28,6 +28,7 @@ public class OrderDetailConverter {
             .provider(orderDetail.getFactory().getName())
             .date(orderDetail.getOrders().getCreateDate())
             .isRated(orderDetail.isRate())
+            .status(orderDetail.latestStatus())
             .build();
     }
 }
