@@ -11,6 +11,6 @@ public final class OrderState {
     public static final String DELIVERED = "DELIVERED";
     public static final String DONE = "DONE";
     public static List<String> getAllOrderState(){
-       return Arrays.asList(PENDING,PRINTING,PACKAGING,DELIVERING,DELIVERED);
+       return Arrays.asList(PENDING,PRINTING,PACKAGING,DELIVERING,DELIVERED,DONE);
     }
 }

@@ -537,12 +537,9 @@ public class OrderServiceImplement implements OrdersService {
             orderDetails.add(orderDetail);
         }
         for (int i = 0; i < orderDetails.size() ; i++) {
-            for (int j = 0; i < OrderState.getAllOrderState().size(); j++) {
+            for (int j = 0; j < OrderState.getAllOrderState().size(); j++) {
                 if(orderStatus.equals(OrderState.getAllOrderState().get(j))){
                     orderDetails.get(i).getOrderStatuses().add(OrderStatus.builder().name(orderStatus).build());
-                }
-                else {
-                    throw new OrderNotFoundException(OrderErrorMessage.STATUS_EXCEPTION);
                 }
             }
         }
