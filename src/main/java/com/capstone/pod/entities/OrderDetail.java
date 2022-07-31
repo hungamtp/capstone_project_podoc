@@ -31,6 +31,8 @@ public class OrderDetail {
     private Factory factory;
     @OneToMany(mappedBy = "orderDetail",cascade = CascadeType.ALL)
     List<OrderStatus> orderStatuses;
+    @OneToOne(mappedBy = "orderDetail")
+    private PrintingInfo printingInfo;
 
     public boolean isDone(){
         for(var state : this.orderStatuses){

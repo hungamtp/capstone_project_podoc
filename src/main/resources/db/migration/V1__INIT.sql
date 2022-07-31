@@ -461,6 +461,40 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_status` (
 
 
 -- -----------------------------------------------------
+-- Table `capstone_pod`.`printing_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`printing_info` (
+    `id` VARCHAR(36) NOT NULL,
+    `order_detail_id` VARCHAR(36) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `FK3fsw8cuhymi04iefc8lc4yplr` (`order_detail_id` ASC) VISIBLE,
+    CONSTRAINT `FK3fsw8cuhymi04iefc8lc4yplr`
+    FOREIGN KEY (`order_detail_id`)
+    REFERENCES `capstone_pod`.`order_detail` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`printing_blue_print`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`printing_blue_print` (
+    `id` VARCHAR(36) NOT NULL,
+    `frame_image` VARCHAR(255) NULL DEFAULT NULL,
+    `position` VARCHAR(255) NULL DEFAULT NULL,
+    `printing_info_id` VARCHAR(36) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `FK4khsfm7v35pp978wsl29w6cw1` (`printing_info_id` ASC) VISIBLE,
+    CONSTRAINT `FK4khsfm7v35pp978wsl29w6cw1`
+    FOREIGN KEY (`printing_info_id`)
+    REFERENCES `capstone_pod`.`printing_info` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
 -- Table `capstone_pod`.`placeholder`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
@@ -471,11 +505,62 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`placeholder` (
     `width` DOUBLE NOT NULL,
     `width_rate` DOUBLE NOT NULL,
     `blue_print_id` VARCHAR(36) NULL DEFAULT NULL,
+    `printing_blue_print_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     INDEX `FKd3nbe4gk5ewrogucgqfby4qo6` (`blue_print_id` ASC) VISIBLE,
+    INDEX `FKoxwlih415plj27d97j0dklb88` (`printing_blue_print_id` ASC) VISIBLE,
     CONSTRAINT `FKd3nbe4gk5ewrogucgqfby4qo6`
     FOREIGN KEY (`blue_print_id`)
-    REFERENCES `capstone_pod`.`blue_print` (`id`))
+    REFERENCES `capstone_pod`.`blue_print` (`id`),
+    CONSTRAINT `FKoxwlih415plj27d97j0dklb88`
+    FOREIGN KEY (`printing_blue_print_id`)
+    REFERENCES `capstone_pod`.`printing_blue_print` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`printing_design_info`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`printing_design_info` (
+    `id` VARCHAR(36) NOT NULL,
+    `font` VARCHAR(255) NULL DEFAULT NULL,
+    `height` DOUBLE NOT NULL,
+    `left_position` DOUBLE NOT NULL,
+    `name` VARCHAR(255) NULL DEFAULT NULL,
+    `rotate` DOUBLE NOT NULL,
+    `scales` DOUBLE NOT NULL,
+    `src` VARCHAR(255) NULL DEFAULT NULL,
+    `text_color` VARCHAR(255) NULL DEFAULT NULL,
+    `top_position` DOUBLE NOT NULL,
+    `types` VARCHAR(255) NULL DEFAULT NULL,
+    `width` DOUBLE NOT NULL,
+    `printing_blue_print_id` VARCHAR(36) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `FK7kfb2kuvbk6ss3an2ewi6qb7e` (`printing_blue_print_id` ASC) VISIBLE,
+    CONSTRAINT `FK7kfb2kuvbk6ss3an2ewi6qb7e`
+    FOREIGN KEY (`printing_blue_print_id`)
+    REFERENCES `capstone_pod`.`printing_blue_print` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`printing_image_preview`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`printing_image_preview` (
+    `id` VARCHAR(36) NOT NULL,
+    `color` VARCHAR(255) NULL DEFAULT NULL,
+    `image` VARCHAR(255) NULL DEFAULT NULL,
+    `position` VARCHAR(255) NULL DEFAULT NULL,
+    `printing_info_id` VARCHAR(36) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    INDEX `FKhgyem84ts7oorhikae1pvcd3m` (`printing_info_id` ASC) VISIBLE,
+    CONSTRAINT `FKhgyem84ts7oorhikae1pvcd3m`
+    FOREIGN KEY (`printing_info_id`)
+    REFERENCES `capstone_pod`.`printing_info` (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;

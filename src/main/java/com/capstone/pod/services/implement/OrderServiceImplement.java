@@ -57,16 +57,48 @@ public class OrderServiceImplement implements OrdersService {
     private final SizeColorRepository sizeColorRepository;
     private final CredentialRepository credentialRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final ModelMapper modelMapper;
     private final ZaloService zaloService;
     private final OrderDetailConverter orderDetailConverter;
     private final DesignedProductRepository designedProductRepository;
+    private final PrintingInfoRepository printingInfoRepository;
+    private final ColorRepository colorRepository;
 
     private Credential getCredential() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         return credential;
+    }
+    private List<PrintingInfo> saveDesignForPrinting(Cart cart, OrderDetail orderDetail){
+        List<PrintingInfo> printingInfos = new ArrayList<>();
+        for (int i = 0; i < cart.getCartDetails().size(); i++) {
+            PrintingInfo printingInfo = PrintingInfo.builder().orderDetail(orderDetail).build();
+            List<PrintingImagePreview> printingImagePreviews = new ArrayList<>();
+            for (int j = 0; j < cart.getCartDetails().get(i).getDesignedProduct().getImagePreviews().size(); j++) {
+                ImagePreview imagePreview = cart.getCartDetails().get(i).getDesignedProduct().getImagePreviews().get(j);
+                PrintingImagePreview printingImagePreview = PrintingImagePreview.builder().image(imagePreview.getImage()).color(imagePreview.getColor()).position(imagePreview.getPosition()).printingInfo(printingInfo).build();
+                printingImagePreviews.add(printingImagePreview);
+            }
+            List<PrintingBluePrint> printingBluePrints = new ArrayList<>();
+            for (int j = 0; j < cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().size(); j++) {
+                Placeholder placeholder = cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getPlaceholder();
+                PrintingPlaceholder printingPlaceholder = PrintingPlaceholder.builder().top(placeholder.getTop()).width(placeholder.getWidth()).height(placeholder.getHeight()).widthRate(placeholder.getWidthRate()).heightRate(placeholder.getHeightRate()).build();
+                List<PrintingDesignInfo> printingDesignInfos = new ArrayList<>();
+                PrintingBluePrint printingBluePrint = PrintingBluePrint.builder().frameImage(cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getFrameImage()).position(cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getPosition()).printingInfo(printingInfo).printingPlaceholder(printingPlaceholder).printingDesignInfos(printingDesignInfos).build();
+                for (int k = 0; k < cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getDesignInfos().size(); k++) {
+                    DesignInfo designInfo = cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getDesignInfos().get(k);
+                    PrintingDesignInfo printingDesignInfo = PrintingDesignInfo.builder().printingBluePrint(printingBluePrint).name(designInfo.getName()).types(designInfo.getTypes()).height(designInfo.getHeight()).width(designInfo.getWidth()).leftPosition(designInfo.getLeftPosition()).topPosition(designInfo.getTopPosition()).rotate(designInfo.getRotate()).scales(designInfo.getScales()).font(designInfo.getFont()).textColor(designInfo.getTextColor()).src(designInfo.getSrc()).build();
+                    printingDesignInfos.add(printingDesignInfo);
+                }
+                printingBluePrints.add(printingBluePrint);
+            }
+
+            printingInfo.setPrintingBluePrints(printingBluePrints);
+            printingInfo.setPreviewImages(printingImagePreviews);
+            printingInfos.add(printingInfo);
+        }
+        return printingInfos;
+
     }
 
     @Override
@@ -87,6 +119,7 @@ public class OrderServiceImplement implements OrdersService {
         if (shippingInfoDto.isShouldSave()) {
             shippingInfoRepository.save(shippingInfo);
         }
+
         List<CartDetail> cartDetailList = cart.getCartDetails();
         if (cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
         Credential currentCredential = getCredential();
@@ -97,6 +130,7 @@ public class OrderServiceImplement implements OrdersService {
         Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
+        List<PrintingInfo> printingInfos = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
             if (cartDetailList.get(i).getDesignedProduct().getProduct().isDeleted()) {
                 throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_SUPPORT_FOR_ORDER);
@@ -116,6 +150,10 @@ public class OrderServiceImplement implements OrdersService {
                 .factory(cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getFactory())
                 .designedProduct(cartDetailList.get(i).getDesignedProduct())
                 .build();
+            //save design for printing if there's any edit to the design will have no effect
+            for (int j = 0; j < saveDesignForPrinting(cart, orderDetail).size(); j++) {
+                printingInfos.add(saveDesignForPrinting(cart, orderDetail).get(j));
+            }
             orderStatus.setOrderDetail(orderDetail);
             int finalI = i;
             SizeColor sizeColor = sizeColorRepository
@@ -144,6 +182,7 @@ public class OrderServiceImplement implements OrdersService {
         order.setPaid(false);
         order.setTransactionId("");
         ordersRepository.save(order);
+        printingInfoRepository.saveAll(printingInfos);
         cartDetailRepository.deleteAllInBatch(cartDetailList);
 
         // create payment info
