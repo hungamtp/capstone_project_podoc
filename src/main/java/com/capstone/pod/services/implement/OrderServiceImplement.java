@@ -69,10 +69,10 @@ public class OrderServiceImplement implements OrdersService {
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         return credential;
     }
-    private List<PrintingInfo> saveDesignForPrinting(Cart cart, OrderDetail orderDetail){
-        List<PrintingInfo> printingInfos = new ArrayList<>();
+    private PrintingInfo saveDesignForPrinting(Cart cart, OrderDetail orderDetail){
+        PrintingInfo printingInfo = PrintingInfo.builder().build();
         for (int i = 0; i < cart.getCartDetails().size(); i++) {
-            PrintingInfo printingInfo = PrintingInfo.builder().orderDetail(orderDetail).build();
+            printingInfo.setOrderDetail(orderDetail);
             List<PrintingImagePreview> printingImagePreviews = new ArrayList<>();
             for (int j = 0; j < cart.getCartDetails().get(i).getDesignedProduct().getImagePreviews().size(); j++) {
                 ImagePreview imagePreview = cart.getCartDetails().get(i).getDesignedProduct().getImagePreviews().get(j);
@@ -95,10 +95,8 @@ public class OrderServiceImplement implements OrdersService {
 
             printingInfo.setPrintingBluePrints(printingBluePrints);
             printingInfo.setPreviewImages(printingImagePreviews);
-            printingInfos.add(printingInfo);
         }
-        return printingInfos;
-
+        return printingInfo;
     }
 
     @Override
@@ -151,9 +149,7 @@ public class OrderServiceImplement implements OrdersService {
                 .designedProduct(cartDetailList.get(i).getDesignedProduct())
                 .build();
             //save design for printing if there's any edit to the design will have no effect
-            for (int j = 0; j < saveDesignForPrinting(cart, orderDetail).size(); j++) {
-                printingInfos.add(saveDesignForPrinting(cart, orderDetail).get(j));
-            }
+            printingInfos.add(saveDesignForPrinting(cart, orderDetail));
             orderStatus.setOrderDetail(orderDetail);
             int finalI = i;
             SizeColor sizeColor = sizeColorRepository
