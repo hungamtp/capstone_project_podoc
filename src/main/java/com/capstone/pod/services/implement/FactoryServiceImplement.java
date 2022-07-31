@@ -248,8 +248,7 @@ public class FactoryServiceImplement implements FactoryService {
                         .orderId(orderDetails.get(0).getOrders().getId())
                         .createDate(orderDetails.get(0).getOrders().getCreateDate().toString())
                         .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
-                        .bluePrintDtos(orderDetails.get(0).getDesignedProduct().getBluePrints().stream().map(bluePrint -> modelMapper.map(bluePrint, BluePrintDto.class)).collect(Collectors.toList()))
-                        .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
+                        .bluePrintDtos(orderDetails.get(0).getPrintingInfo().getPrintingBluePrints().stream().map(bluePrint -> modelMapper.map(bluePrint, BluePrintDto.class)).collect(Collectors.toList()))
                         .status(orderDetails.get(0).getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
                         .build();
                 List<OrderDetailsSupportDto> orderDetailsSupportDtos = new ArrayList<>();
@@ -261,11 +260,11 @@ public class FactoryServiceImplement implements FactoryService {
                             .size(orderDetails.get(i).getSize())
                             .quantity(orderDetails.get(i).getQuantity())
                             .build());
-                    for (int j = 0; j < orderDetails.get(i).getDesignedProduct().getImagePreviews().size(); j++) {
+                    for (int j = 0; j < orderDetails.get(i).getPrintingInfo().getPreviewImages().size(); j++) {
                         imagePreviewDtos.add(ImagePreviewDto.builder()
-                                .image(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(j).getImage())
-                                .color(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(j).getColor())
-                                .position(orderDetails.get(i).getDesignedProduct().getImagePreviews().get(j).getPosition())
+                                .image(orderDetails.get(i).getPrintingInfo().getPreviewImages().get(j).getImage())
+                                .color(orderDetails.get(i).getPrintingInfo().getPreviewImages().get(j).getColor())
+                                .position(orderDetails.get(i).getPrintingInfo().getPreviewImages().get(j).getPosition())
                                 .build());
                     }
                 }
