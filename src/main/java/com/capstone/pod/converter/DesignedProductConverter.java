@@ -20,6 +20,7 @@ public class DesignedProductConverter {
         return DesignedProductDto.builder()
             .id(designedProduct.getId())
             .name(designedProduct.getName())
+            .tags(designedProduct.getDesignedProductTags().stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
             .rateCount(designedProduct.getRatings().size())
             .rate(designedProduct.getRatings() == null ? 0 : designedProduct.getRatings().stream().mapToDouble(Rating::getRatingStar).average().orElse(0))
             .designedPrice(designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
