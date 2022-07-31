@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -41,5 +42,16 @@ public class OrderDetail {
            }
         }
         return false;
+    }
+
+    public String latestStatus(){
+        String result = "";
+        LocalDateTime localDateTime = LocalDateTime.MIN;
+        for(var status : this.orderStatuses){
+            if(status.getCreateDate().isAfter(localDateTime)){
+                result = status.getName();
+            }
+        }
+        return result;
     }
 }
