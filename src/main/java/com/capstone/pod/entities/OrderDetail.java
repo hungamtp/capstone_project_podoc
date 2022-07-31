@@ -49,6 +49,7 @@ public class OrderDetail {
         LocalDateTime localDateTime = LocalDateTime.MIN;
         for(var status : this.orderStatuses){
             if(status.getCreateDate().isAfter(localDateTime)){
+                localDateTime = status.getCreateDate();
                 result = status.getName();
             }
         }
