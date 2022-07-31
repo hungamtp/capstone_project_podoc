@@ -1015,3 +1015,10 @@ INSERT INTO capstone_pod.size_product (id,height,size,width,product_id) VALUES
                                                                             ('f8eb5960-da3a-4601-ab57-6550e41145ba',30.0,'L',24.0,'036814a2-1349-4c4a-b398-4e2387eea5b1'),
                                                                             ('fb5eae9f-23ce-4fdf-a26f-059cc88d7abd',34.45,'M',21.46,'85d4c7a8-edd9-43db-9176-dc3ed7634665'),
                                                                             ('fc73d3e3-d058-4e06-8527-2de5509d9eab',26.0,'XS',18.0,'0eb0964d-bb4e-484a-af4b-8b6e1e4f67a1');
+
+INSERT INTO capstone_pod.tag
+(id, is_exist, name)
+VALUES
+('1', 1, 'Bán chạy'),
+('2', 1, 'Mới'),
+('3', 1, 'Ưu đãi');
