@@ -3,7 +3,6 @@ package com.capstone.pod.services;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.entities.DesignedProduct;
-import com.capstone.pod.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

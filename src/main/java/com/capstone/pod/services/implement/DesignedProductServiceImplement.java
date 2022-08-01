@@ -209,6 +209,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         if (!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
             .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        if(designedProduct.getProduct().isDeleted()) new DesignedProductNotExistException(DesignedProductErrorMessage.PRODUCT_DELETE_DESIGNED_PRODUCT_NOT_EXIST);
         DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProduct, DesignedProductReturnDto.class);
         Set<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
@@ -263,12 +264,12 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
-        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId( page, credential.getUser().getId());
         List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
             .id(designedProduct.getId())
             .name(designedProduct.getName())
             .designedPrice(designedProduct.getDesignedPrice())
-            .publish(designedProduct.isPublish())
+            .publish(designedProduct.isPublish()).isProductOfDesignDeleted(designedProduct.getProduct().isDeleted())
             .soldCount(designedProduct.getOrderDetails().stream().mapToLong(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());

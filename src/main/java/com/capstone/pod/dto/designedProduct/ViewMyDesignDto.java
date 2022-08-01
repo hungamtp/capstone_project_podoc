@@ -18,4 +18,5 @@ public class ViewMyDesignDto {
     private boolean publish;
     private double designedPrice;
     private List<ImagePreviewDto> imagePreviews;
+    private boolean isProductOfDesignDeleted;
 }
