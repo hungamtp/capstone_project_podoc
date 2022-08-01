@@ -9,14 +9,18 @@ import javax.persistence.criteria.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class DesignedProductSpecification implements Specification<Product> {
+public class DesignedProductSpecification implements Specification<DesignedProduct> {
     private SearchCriteria criteria;
 
     @Override
-    public Predicate toPredicate(Root<Product> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+    public Predicate toPredicate(Root<DesignedProduct> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
         if(criteria.getKey().equalsIgnoreCase("category")){
             Join<Product , DesignedProduct> productJoin = root.join(DesignedProduct_.PRODUCT);
            return  builder.equal(productJoin.join(Product_.CATEGORY).get(Category_.ID) , criteria.getValue());
+        }
+        if(criteria.getKey().equalsIgnoreCase("isDeleted")){
+            Join<DesignedProduct , Product> productJoin = root.join(DesignedProduct_.PRODUCT);
+           return  builder.isFalse(productJoin.get(Product_.IS_DELETED));
         }
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(

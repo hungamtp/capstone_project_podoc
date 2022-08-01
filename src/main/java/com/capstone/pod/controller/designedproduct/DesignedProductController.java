@@ -114,7 +114,7 @@ public class DesignedProductController {
     public ResponseEntity<ResponseDto> viewAllDesign(@RequestParam Integer pageNumber, @RequestParam Integer pageSize, @RequestParam @Nullable String search) {
         ResponseDto<PageDTO> responseDto = new ResponseDto();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        search = StringUtils.isEmpty(search) ? "publish:true" : search.concat(", publish:true");
+        search = StringUtils.isEmpty(search) ? "publish:true,isDeleted:false" : search.concat(", publish:true,isDeleted:false");
         Specification spec = Utils.buildDesignedProductSpecifications(search);
         responseDto.setData(designedProductService.viewAllDesign(spec,pageable));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_ALL_DESIGN_SUCCESS);
