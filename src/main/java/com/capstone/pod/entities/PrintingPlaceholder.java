@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "placeholder")
 public class PrintingPlaceholder {
     @Id
     @GeneratedValue(generator = "uuid2")
