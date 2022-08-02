@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface OrderDetailRepository extends JpaRepository<OrderDetail,String> , OrderDetailRepositoryCustom {
     List<OrderDetail> findAllByDesignedProductId(String designId);
-    Page<OrderDetail> findAllByFactoryId(Pageable page, String factoryId);
+    List<OrderDetail> findAllByFactoryId(String factoryId);
     List<OrderDetail> findAllByFactory(Factory factory);
 
     List<OrderDetail> findAllByOrdersIdAndDesignedProductIdAndFactoryId(String orderId, String designId, String factoryId);

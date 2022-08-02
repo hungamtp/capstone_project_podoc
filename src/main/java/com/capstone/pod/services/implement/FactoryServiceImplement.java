@@ -212,13 +212,13 @@ public class FactoryServiceImplement implements FactoryService {
         priceByFactoryRepository.save(priceByFactoryInRepo);
     }
     @Override
-    public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId) {
+    public List<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(String credentialId) {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
         getPermittedCredential(credentialId);
         if(credential.isPresent()){
             if(credential.get().getFactory()!=null){
-               Page<OrderDetail> orderDetailPage= orderDetailRepository.findAllByFactoryId(page, credential.get().getFactory().getId());
-               Page<OrderDetailFactoryDto> orderDetailFactoryDtos = orderDetailPage.map(orderDetail -> OrderDetailFactoryDto.builder()
+                List<OrderDetail> orderDetailList= orderDetailRepository.findAllByFactoryId(credential.get().getFactory().getId());
+                List<OrderDetailFactoryDto> orderDetailFactoryDtos = orderDetailList.stream().filter(orderDetail ->orderDetail.getOrders().isPaid()==true).map(orderDetail -> OrderDetailFactoryDto.builder()
                        .id(orderDetail.getId())
                        .orderId(orderDetail.getOrders().getId())
                        .designId(orderDetail.getDesignedProduct().getId())
@@ -230,7 +230,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .price((orderDetail.getDesignedProduct().getPriceByFactory().getPrice() + orderDetail.getDesignedProduct().getDesignedPrice() ) * orderDetail.getQuantity())
                        .quantity(orderDetail.getQuantity())
                        .status(orderStatusRepository.findAllByOrderDetailId(orderDetail.getId()).stream().sorted().map(orderStatus -> orderStatus.getName()).collect(Collectors.toList()).get(0))
-                       .build());
+                       .build()).collect(Collectors.toList());
                return orderDetailFactoryDtos;
             }
         }

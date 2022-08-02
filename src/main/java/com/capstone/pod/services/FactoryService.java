@@ -26,6 +26,6 @@ public interface FactoryService {
     public void addPriceByFactoryToProduct(String factoryId, String productId, double price,String material);
     public void updatePriceByFactoryToProduct(String factoryId, String productId, double price, String material);
 
-    public Page<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(Pageable page, String credentialId);
+    public List<OrderDetailFactoryDto> getAllOrderDetailsForFactoryByCredentialId(String credentialId);
     public OrderDetailForPrintingDto getAllOrderDetailsForPrintingByOrderDetailsId(String orderId,String designId, String credentialId);
 }

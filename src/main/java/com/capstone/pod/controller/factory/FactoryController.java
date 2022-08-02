@@ -111,11 +111,10 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
     @GetMapping("order-details/{id}")
-    public ResponseEntity<ResponseDto> getAllOrderDetailsForFactoryByCredentialId(@PathVariable(name = "id") String credentialId, @RequestParam int pageNumber, @RequestParam int pageSize) {
-        ResponseDto<Page<OrderDetailFactoryDto>> responseDTO = new ResponseDto();
-        Pageable pageable = PageRequest.of(pageNumber,pageSize);
-        Page<OrderDetailFactoryDto> page  = factoryService.getAllOrderDetailsForFactoryByCredentialId(pageable, credentialId);
-        responseDTO.setData(page);
+    public ResponseEntity<ResponseDto> getAllOrderDetailsForFactoryByCredentialId(@PathVariable(name = "id") String credentialId) {
+        ResponseDto<List<OrderDetailFactoryDto>> responseDTO = new ResponseDto();
+        List<OrderDetailFactoryDto> list  = factoryService.getAllOrderDetailsForFactoryByCredentialId(credentialId);
+        responseDTO.setData(list);
         responseDTO.setSuccessMessage(FactorySuccessMessage.GET_ALL_ORDER_DETAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
