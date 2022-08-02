@@ -40,9 +40,6 @@ public class CartDetailConverter {
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.CREDENTIAL+"_"+ErrorMessage.NOT_FOUND)
         );
-        User user = userRepository.findUserByCredential(credential).orElseThrow(
-            () -> new EntityNotFoundException(EntityName.USER +"_" + ErrorMessage.NOT_FOUND)
-        );
 
         boolean isPrivate = true;
 
@@ -52,7 +49,7 @@ public class CartDetailConverter {
             isPrivate = true;
         }
         else{
-            if(designedProduct.getUser().getId().equals(user.getId())){
+            if(designedProduct.getUser().getId().equals(credential.getUser().getId())){
                 isPrivate = false;
             }
             else{
