@@ -115,7 +115,20 @@ public class OrderServiceImplement implements OrdersService {
             .user(getCredential().getUser())
             .build();
         if (shippingInfoDto.isShouldSave()) {
-            shippingInfoRepository.save(shippingInfo);
+            boolean check = true;
+            List<ShippingInfo> shippingInfos = shippingInfoRepository.findAllByUserId(getCredential().getUser().getId());
+            for (int i = 0; i < shippingInfos.size(); i++) {
+                if(shippingInfos.get(i).getEmailAddress()==shippingInfoDto.getEmail()
+                        && shippingInfos.get(i).getPhoneNumber()==shippingInfoDto.getPhone()
+                        && shippingInfos.get(i).getShippingAddress()==shippingInfoDto.getAddress()
+                        && shippingInfos.get(i).getName()==shippingInfoDto.getName()
+                ){
+                    check = false;
+                }
+            }
+            if(check) {
+                shippingInfoRepository.save(shippingInfo);
+            }
         }
 
         List<CartDetail> cartDetailList = cart.getCartDetails();
