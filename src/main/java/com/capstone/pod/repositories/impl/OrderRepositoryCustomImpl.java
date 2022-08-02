@@ -16,49 +16,62 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     private EntityManager entityManager;
 
     public Double getInComeByUserId(String userId, LocalDateTime startDate, LocalDateTime endDate) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
-        Root<OrderDetail> root = query.from(OrderDetail.class);
-        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
-        Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
-        Join<DesignedProduct, User> userJoin = detailDesignedProductJoin.join(DesignedProduct_.USER);
-        Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE));
-        query.multiselect(criteriaBuilder.sum(income));
-        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
-        query.where(orderEqual, designerEqual, dateBetween);
-        return entityManager.createQuery(query).getSingleResult();
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+            Root<OrderDetail> root = query.from(OrderDetail.class);
+            Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+            Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
+            Join<DesignedProduct, User> userJoin = detailDesignedProductJoin.join(DesignedProduct_.USER);
+            Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE));
+            query.multiselect(criteriaBuilder.sum(income));
+            Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
+            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
+            query.where(orderEqual, designerEqual, dateBetween);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (IllegalArgumentException e) {
+            return 0d;
+        }
     }
 
     public Long countSoldByUserId(String userId, LocalDateTime startDate, LocalDateTime endDate) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-        Root<OrderDetail> root = query.from(OrderDetail.class);
-        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
-        Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
-        Join<DesignedProduct, User> userJoin = detailDesignedProductJoin.join(DesignedProduct_.USER);
-        query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
-        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
-        query.where(orderEqual, designerEqual, dateBetween);
-        return entityManager.createQuery(query).getSingleResult();
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+            Root<OrderDetail> root = query.from(OrderDetail.class);
+            Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+            Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
+            Join<DesignedProduct, User> userJoin = detailDesignedProductJoin.join(DesignedProduct_.USER);
+            query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
+            Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
+            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
+            query.where(orderEqual, designerEqual, dateBetween);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (IllegalArgumentException e) {
+            return 0l;
+        }
+
     }
 
     public Double getInComeByAdmin(LocalDateTime startDate, LocalDateTime endDate) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
-        Root<OrderDetail> root = query.from(OrderDetail.class);
-        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
-        Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
-        Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = detailDesignedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
-        Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), priceByFactoryJoin.get(PriceByFactory_.PRICE));
-        query.multiselect(criteriaBuilder.sum(income));
-        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
-        query.where(orderEqual, dateBetween);
-        return entityManager.createQuery(query).getSingleResult();
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Double> query = criteriaBuilder.createQuery(Double.class);
+            Root<OrderDetail> root = query.from(OrderDetail.class);
+            Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+            Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
+            Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = detailDesignedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
+            Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), priceByFactoryJoin.get(PriceByFactory_.PRICE));
+            query.multiselect(criteriaBuilder.sum(income));
+            Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
+            query.where(orderEqual, dateBetween);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (IllegalArgumentException e) {
+            return 0d;
+        }
     }
 
     public Double getInComeByFactory(String factoryId, LocalDateTime startDate, LocalDateTime endDate) {
@@ -74,7 +87,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 , criteriaBuilder.sum(priceByFactoryJoin.get(PriceByFactory_.PRICE), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE)));
             query.multiselect(criteriaBuilder.sum(income));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
+            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
             Predicate factoryEqual = criteriaBuilder.equal(factoryFactoryJoin.get(Factory_.ID), factoryId);
             query.where(orderEqual, dateBetween, factoryEqual);
             return entityManager.createQuery(query).getSingleResult();
@@ -84,26 +97,36 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     }
 
     public Long countSoldAll(LocalDateTime startDate, LocalDateTime endDate) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-        Root<OrderDetail> root = query.from(OrderDetail.class);
-        Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
-        query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
-        Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
-        Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate, endDate);
-        query.where(orderEqual, dateBetween);
-        return entityManager.createQuery(query).getSingleResult();
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+            Root<OrderDetail> root = query.from(OrderDetail.class);
+            Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
+            query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
+            Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
+            query.where(orderEqual, dateBetween);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (IllegalArgumentException e) {
+            return 0L;
+        }
+
     }
 
     public Long countZaloPay() {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
-        Root<Orders> root = query.from(Orders.class);
-        query.multiselect(criteriaBuilder.count(root.get(Orders_.ID)));
-        Predicate orderEqual = criteriaBuilder.isTrue(root.get(Orders_.IS_PAID));
-        Predicate zaloPay = criteriaBuilder.like(root.get(Orders_.TRANSACTION_ID), "%\\_%");
-        query.where(orderEqual, zaloPay);
-        return entityManager.createQuery(query).getSingleResult();
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+            Root<Orders> root = query.from(Orders.class);
+            query.multiselect(criteriaBuilder.count(root.get(Orders_.ID)));
+            Predicate orderEqual = criteriaBuilder.isTrue(root.get(Orders_.IS_PAID));
+            Predicate zaloPay = criteriaBuilder.like(root.get(Orders_.TRANSACTION_ID), "%\\_%");
+            query.where(orderEqual, zaloPay);
+            return entityManager.createQuery(query).getSingleResult();
+        } catch (IllegalArgumentException e) {
+            return 0l;
+        }
+
     }
 
     public FactoryRateProjection getRateFactory(String factoryId) {
@@ -116,13 +139,13 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             Join<PriceByFactory, Factory> factoryFactoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY);
 
             Expression<Double> rate = criteriaBuilder.avg(root.get(Rating_.RATING_STAR));
-            query.multiselect(rate.alias("rates") ,
+            query.multiselect(rate.alias("rates"),
                 criteriaBuilder.count(root.get(Rating_.ID)).alias("count"));
             Predicate factoryEqual = criteriaBuilder.equal(factoryFactoryJoin.get(Factory_.ID), factoryId);
             query.where(factoryEqual);
             return entityManager.createQuery(query).getSingleResult();
         } catch (Exception e) {
-            return new FactoryRateProjection(0d , 0l);
+            return new FactoryRateProjection(0d, 0l);
         }
     }
 }
