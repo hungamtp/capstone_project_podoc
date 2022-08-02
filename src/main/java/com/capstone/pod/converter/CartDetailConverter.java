@@ -4,6 +4,7 @@ import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.entities.*;
+import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.UserRepository;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class CartDetailConverter {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CredentialRepository credentialRepository;
+
 
     public List<CartDetailDto> entityToDtos(List<CartDetail> cartDetails) {
         return cartDetails.stream().map((cartDetail -> entityToDto(cartDetail))).collect(Collectors.toList());
@@ -32,19 +36,36 @@ public class CartDetailConverter {
 
     public CartDetailDto entityToDto(CartDetail cartDetail) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Credential credential =(Credential) authentication.getCredentials();
+        String currentCredentialId = (String) authentication.getCredentials();
+        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.CREDENTIAL+"_"+ErrorMessage.NOT_FOUND)
+        );
         User user = userRepository.findUserByCredential(credential).orElseThrow(
             () -> new EntityNotFoundException(EntityName.USER +"_" + ErrorMessage.NOT_FOUND)
         );
 
+        boolean isPrivate = true;
+
+
         DesignedProduct designedProduct = cartDetail.getDesignedProduct();
+        if(designedProduct.getProduct().isDeleted()  || !designedProduct.getProduct().isPublic()){
+            isPrivate = true;
+        }
+        else{
+            if(designedProduct.getUser().getId().equals(user.getId())){
+                isPrivate = false;
+            }
+            else{
+                isPrivate = designedProduct.isPublish();
+            }
+        }
         return CartDetailDto.builder()
             .id(cartDetail.getId()).cartId(cartDetail.getCart().getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
             .designedProductName(cartDetail.getDesignedProduct().getName())
             .color(cartDetail.getColor())
             .size(cartDetail.getSize())
-            .publish(designedProduct.getUser().getId().equals(user.getId()) ? true : designedProduct.isPublish())
+            .publish(isPrivate)
             .designedImage(cartDetail.getDesignedProduct().getImagePreviews()
                 .stream()
                 .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
