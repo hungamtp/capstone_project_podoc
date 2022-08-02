@@ -118,11 +118,7 @@ public class OrderServiceImplement implements OrdersService {
             boolean check = true;
             List<ShippingInfo> shippingInfos = shippingInfoRepository.findAllByUserId(getCredential().getUser().getId());
             for (int i = 0; i < shippingInfos.size(); i++) {
-                if(shippingInfos.get(i).getEmailAddress()==shippingInfoDto.getEmail()
-                        && shippingInfos.get(i).getPhoneNumber()==shippingInfoDto.getPhone()
-                        && shippingInfos.get(i).getShippingAddress()==shippingInfoDto.getAddress()
-                        && shippingInfos.get(i).getName()==shippingInfoDto.getName()
-                ){
+                if(shippingInfos.get(i).getPhoneNumber().equals(shippingInfoDto.getPhone())){
                     check = false;
                 }
             }
