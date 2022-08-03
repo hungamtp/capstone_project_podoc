@@ -4,6 +4,7 @@ import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.entities.*;
+import com.capstone.pod.repositories.ColorRepository;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.UserRepository;
 import org.apache.catalina.core.ApplicationContext;
@@ -25,37 +26,41 @@ public class CartDetailConverter {
     @Autowired
     private CredentialRepository credentialRepository;
 
+    @Autowired
+    private ColorRepository colorRepository;
+
 
     public List<CartDetailDto> entityToDtos(List<CartDetail> cartDetails) {
         return cartDetails.stream().map((cartDetail -> entityToDto(cartDetail))).collect(Collectors.toList());
     }
 
-    public List<CartDetail> dtoToEntities(List<CartDetailDto> dtos , String cartId) {
-        return dtos.stream().map((dto -> dtoToEntity(dto , cartId))).collect(Collectors.toList());
+    public List<CartDetail> dtoToEntities(List<CartDetailDto> dtos, String cartId) {
+        return dtos.stream().map((dto -> dtoToEntity(dto, cartId))).collect(Collectors.toList());
     }
 
     public CartDetailDto entityToDto(CartDetail cartDetail) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(
-            () -> new EntityNotFoundException(EntityName.CREDENTIAL+"_"+ErrorMessage.NOT_FOUND)
+            () -> new EntityNotFoundException(EntityName.CREDENTIAL + "_" + ErrorMessage.NOT_FOUND)
         );
 
         boolean publish = false;
 
 
         DesignedProduct designedProduct = cartDetail.getDesignedProduct();
-        if(designedProduct.getProduct().isDeleted()  || !designedProduct.getProduct().isPublic()){
+        if (designedProduct.getProduct().isDeleted() || !designedProduct.getProduct().isPublic()) {
             publish = false;
-        }
-        else{
-            if(designedProduct.getUser().getId().equals(credential.getUser().getId())){
+        } else {
+            if (designedProduct.getUser().getId().equals(credential.getUser().getId())) {
                 publish = true;
-            }
-            else{
+            } else {
                 publish = designedProduct.isPublish();
             }
         }
+        Color color = colorRepository.findByName(cartDetail.getColor()).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.COLOR + "_" + ErrorMessage.NOT_FOUND)
+        );
         return CartDetailDto.builder()
             .id(cartDetail.getId()).cartId(cartDetail.getCart().getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
@@ -66,13 +71,14 @@ public class CartDetailConverter {
             .designedImage(cartDetail.getDesignedProduct().getImagePreviews()
                 .stream()
                 .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
+                .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
                 .collect(Collectors.toList()).get(0).getImage())
             .price(Double.valueOf(cartDetail.getDesignedProduct().getDesignedPrice() + cartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
             .quantity(cartDetail.getQuantity())
             .build();
     }
 
-    private CartDetail dtoToEntity(CartDetailDto cartDetailDTO , String cartId) {
+    private CartDetail dtoToEntity(CartDetailDto cartDetailDTO, String cartId) {
         return CartDetail.builder()
             .id(cartDetailDTO.getId())
             .designedProduct(DesignedProduct.builder().id(cartDetailDTO.getDesignedProductId()).build())
