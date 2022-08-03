@@ -64,6 +64,7 @@ public class OrderServiceImplement implements OrdersService {
     private final PrintingInfoRepository printingInfoRepository;
     private final ColorRepository colorRepository;
 
+
     private Credential getCredential() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
@@ -565,5 +566,16 @@ public class OrderServiceImplement implements OrdersService {
             }
         }
         orderDetailRepository.saveAll(orderDetails);
+    }
+
+    @Override
+    public List<MyOrderDetailDto> getOderDetailByOrderId(String orderId) {
+        Orders orders = ordersRepository.findById(orderId).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.ORDERS+"_"+ErrorMessage.NOT_FOUND)
+        );
+        return orderDetailRepository.findAllByOrders(orders)
+            .stream()
+            .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
+            .collect(Collectors.toList());
     }
 }
