@@ -52,7 +52,7 @@ public class DesignedProduct  extends AuditableDateTime {
     private Set<Rating> ratings;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
-    private Set<OrderDetail> orderDetails;
+    private List<OrderDetail> orderDetails;
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)
     private List<DesignedProductTag> designedProductTags;
