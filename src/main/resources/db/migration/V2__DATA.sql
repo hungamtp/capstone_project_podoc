@@ -44,8 +44,8 @@ INSERT INTO capstone_pod.credential (id,create_date,last_modified_date,address,e
 
 
 INSERT INTO capstone_pod.`size` (id,name) VALUES
-                                              ('8c4af1c3-3779-4df3-be04-1a7df03081cb','2Xl'),
-                                              ('cc6ff8a6-8305-4699-ab43-001c48566cf4','3Xl'),
+                                              ('8c4af1c3-3779-4df3-be04-1a7df03081cb','2XL'),
+                                              ('cc6ff8a6-8305-4699-ab43-001c48566cf4','3XL'),
                                               ('5e742daa-e88c-4b05-b92f-8ca55ab42a22','L'),
                                               ('b52852b9-526c-46cc-84b7-c1b0262063d3','M'),
                                               ('56c2f38d-b57b-4855-9f2f-768b25565a63','S'),
