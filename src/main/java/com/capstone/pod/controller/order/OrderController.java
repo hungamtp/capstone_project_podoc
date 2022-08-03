@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import javax.xml.bind.DatatypeConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -191,5 +192,10 @@ public class OrderController {
         ordersService.updateOrderDetailsStatus(orderDetailIds, orderStatus);
         responseDTO.setSuccessMessage(OrderSuccessMessage.UPDATE_ORDER_DETAIL_STATUS_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity getAllOrderDetailByOrderId(@PathVariable String orderId ) {
+        return ResponseEntity.ok().body(ordersService.getOderDetailByOrderId(orderId));
     }
 }
