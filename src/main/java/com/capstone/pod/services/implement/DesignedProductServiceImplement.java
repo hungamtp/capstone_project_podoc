@@ -192,6 +192,8 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                     .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                     .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
                     .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
+                        .textColor(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTextColor())
+                        .font(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getFont())
                     .build();
                 bluePrint.getDesignInfos().add(designInfo);
             }
