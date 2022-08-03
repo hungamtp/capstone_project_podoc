@@ -198,4 +198,10 @@ public class OrderController {
     public ResponseEntity getAllOrderDetailByOrderId(@PathVariable String orderId ) {
         return ResponseEntity.ok().body(ordersService.getOderDetailByOrderId(orderId));
     }
+
+    @PostMapping("/noti")
+    public ResponseEntity noti(@PathVariable String orderId ) {
+        System.out.println("hung");
+        return ResponseEntity.ok().body("String");
+    }
 }

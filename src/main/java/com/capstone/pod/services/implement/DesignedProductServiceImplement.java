@@ -272,7 +272,10 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .name(designedProduct.getName())
             .designedPrice(designedProduct.getDesignedPrice())
             .publish(designedProduct.isPublish()).isProductOfDesignDeleted(designedProduct.getProduct().isDeleted())
-            .soldCount(designedProduct.getOrderDetails().stream().mapToLong(OrderDetail::getQuantity).sum())
+            .soldCount(designedProduct.getOrderDetails().stream()
+                .filter(orderDetail -> orderDetail.getOrders().isPaid())
+                .collect(Collectors.toList()).stream()
+                .mapToLong(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewMyDesignDto> dtoPage = new PageImpl<>(viewMyDesignDtos, page, designedProductPage.getTotalElements());
@@ -293,7 +296,11 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
                 .publish(designedProduct.isPublish())
                 .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
-                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
+                .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream()
+                    .filter(orderDetail -> orderDetail.getOrders().isPaid())
+                    .collect(Collectors.toList())
+                    .stream()
+                    .mapToInt(OrderDetail::getQuantity).sum())
                 .build();
         }).collect(Collectors.toList());
         PageDTO dtoPage = PageDTO.builder().page(page.getPageNumber()).data(viewAllDesignDtos).elements((int) designedProductPage.getTotalElements()).build();

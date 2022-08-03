@@ -15,7 +15,7 @@ public class DesignedProductConverter {
     public DesignedProductDto entityToDesignedProductDto(DesignedProduct designedProduct) {
         List<OrderDetail> orderIsPaid = designedProduct.getOrderDetails()
             .stream()
-            .filter(orderDetail -> orderDetail.getOrders().isPaid())
+            .filter(orderDetail ->  orderDetail.getOrders().isPaid() == true)
             .collect(Collectors.toList());
         return DesignedProductDto.builder()
             .id(designedProduct.getId())
