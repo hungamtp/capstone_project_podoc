@@ -19,7 +19,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -86,7 +85,7 @@ public class EmailServiceImplement implements EmailService {
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage,true);
         mimeMessageHelper.setTo(credential.getEmail());
         mimeMessageHelper.setSubject("Thư lấy lại mật khẩu từ PODOC");
-        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://podoc.store/reset-password/"
+        mimeMessageHelper.setText("Lấy lại mật khẩu thành công, vui lòng nhấn đường link bên dưới để đặt lại mật khẩu  \n"+"http://podoc.store/auth/reset-password/"
                 +credential.getEmail()+"/"
                 +token
                 +"\nChúc bạn một ngày làm việc tốt lành, \n" +
