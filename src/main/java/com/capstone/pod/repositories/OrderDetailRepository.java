@@ -13,7 +13,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,String>
     List<OrderDetail> findAllByDesignedProductId(String designId);
     List<OrderDetail> findAllByFactoryId(String factoryId);
     List<OrderDetail> findAllByFactory(Factory factory);
-    List<OrderDetail> findAllByOrdersIdAndDesignedProductId(String orderId, String designId);
+    OrderDetail findByOrdersIdAndDesignedProductId(String orderId, String designId);
 
     List<OrderDetail> findAllByOrdersIdAndDesignedProductIdAndFactoryId(String orderId, String designId, String factoryId);
 }
