@@ -3,6 +3,7 @@ package com.capstone.pod.controller.cart;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.cartdetail.AddToCartDto;
 import com.capstone.pod.dto.cartdetail.CartDetailDto;
+import com.capstone.pod.dto.cartdetail.CartNotEnoughDto;
 import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.services.CartService;
 import com.capstone.pod.dto.utils.Utils;
@@ -49,7 +50,13 @@ public class CartController {
     public ResponseEntity checkQuantityCart(HttpServletRequest request, @RequestBody List<CartDetailDto> cartDetailDTO) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
-        return ResponseEntity.ok().body(cartService.checkQuantityBeforeOrder(cartDetailDTO, email));
+        List<CartNotEnoughDto> result = cartService.checkQuantityBeforeOrder(cartDetailDTO , email);
+        if(result.size() == 0){
+            return ResponseEntity.ok().body("ENOUGH");
+        }else {
+            return ResponseEntity.badRequest().body(cartService.checkQuantityBeforeOrder(cartDetailDTO, email));
+        }
+
     }
 
     @PutMapping("/addToCart")
