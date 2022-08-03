@@ -41,19 +41,19 @@ public class CartDetailConverter {
             () -> new EntityNotFoundException(EntityName.CREDENTIAL+"_"+ErrorMessage.NOT_FOUND)
         );
 
-        boolean isPrivate = true;
+        boolean publish = false;
 
 
         DesignedProduct designedProduct = cartDetail.getDesignedProduct();
         if(designedProduct.getProduct().isDeleted()  || !designedProduct.getProduct().isPublic()){
-            isPrivate = true;
+            publish = false;
         }
         else{
             if(designedProduct.getUser().getId().equals(credential.getUser().getId())){
-                isPrivate = false;
+                publish = true;
             }
             else{
-                isPrivate = designedProduct.isPublish();
+                publish = designedProduct.isPublish();
             }
         }
         return CartDetailDto.builder()
@@ -62,7 +62,7 @@ public class CartDetailConverter {
             .designedProductName(cartDetail.getDesignedProduct().getName())
             .color(cartDetail.getColor())
             .size(cartDetail.getSize())
-            .publish(isPrivate)
+            .publish(publish)
             .designedImage(cartDetail.getDesignedProduct().getImagePreviews()
                 .stream()
                 .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
