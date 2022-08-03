@@ -10,13 +10,16 @@ import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.validation_message.ValidationMessage;
+import com.capstone.pod.converter.OrderDetailConverter;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.dashboard.AdminDashboard;
 import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
 import com.capstone.pod.dto.dashboard.DesignerDashboard;
 import com.capstone.pod.dto.dashboard.FactoryDashboard;
-import com.capstone.pod.dto.order.*;
-import com.capstone.pod.converter.OrderDetailConverter;
+import com.capstone.pod.dto.order.AllOrderDto;
+import com.capstone.pod.dto.order.MyOrderDetailDto;
+import com.capstone.pod.dto.order.OrderOwnDesignDto;
+import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.enums.PaymentMethod;
 import com.capstone.pod.exceptions.*;
@@ -28,7 +31,6 @@ import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -38,7 +40,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -171,7 +172,6 @@ public class OrderServiceImplement implements OrdersService {
             if (sizeColorByFactory.getQuantity() < cartDetailList.get(i).getQuantity()) {
                 throw new QuantityNotEnoughException(ProductErrorMessage.QUANTITY_BY_FACTORY_NOT_ENOUGH);
             }
-            sizeColorByFactory.setQuantity(sizeColorByFactory.getQuantity() - cartDetailList.get(i).getQuantity());
             sizeColorByFactories.add(sizeColorByFactory);
             orderDetails.add(orderDetail);
             totalPrice += cartDetailList.get(i).getQuantity() * (cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
@@ -189,7 +189,6 @@ public class OrderServiceImplement implements OrdersService {
         order.setTransactionId("");
         ordersRepository.save(order);
         printingInfoRepository.saveAll(printingInfos);
-        cartDetailRepository.deleteAllInBatch(cartDetailList);
 
         // create payment info
         PaymentResponse paymentResponse = null;
@@ -250,7 +249,20 @@ public class OrderServiceImplement implements OrdersService {
         if (orders.isPaid()) {
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
-
+        Cart cart = cartRepository.findCartByUser(getCredential().getUser());
+        List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
+        List<CartDetail> cartDetailList = cart.getCartDetails();
+        for (int i = 0; i < cartDetailList.size(); i++) {
+            List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersIdAndDesignedProductId(orders.getId(),cartDetailList.get(i).getDesignedProduct().getId());
+            OrderDetail orderDetail = orderDetails.get(i);
+            Optional<SizeColor> sizeColor = sizeColorRepository
+                    .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+            Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
+            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() - cartDetailList.get(i).getQuantity());
+            sizeColorByFactories.add(sizeColorByFactory.get());
+        }
+        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
+        cartDetailRepository.deleteAllInBatch(cartDetailList);
         orders.setPaid(true);
         ordersRepository.save(orders);
     }
