@@ -7,6 +7,7 @@ import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.dto.utils.Utils;
+import com.capstone.pod.momo.MomoCallbackRequestBody;
 import com.capstone.pod.momo.models.PaymentResponse;
 import com.capstone.pod.momo.shared.utils.LogUtils;
 import com.capstone.pod.services.OrdersService;
@@ -132,7 +133,6 @@ public class OrderController {
     public String callback(@RequestBody String jsonStr) throws InvalidKeyException, NoSuchAlgorithmException {
         HmacSHA256 = Mac.getInstance("HmacSHA256");
         HmacSHA256.init(new SecretKeySpec(key2.getBytes(), "HmacSHA256"));
-        System.out.println("hung");
         JSONObject result = new JSONObject();
 
         try {
@@ -152,6 +152,7 @@ public class OrderController {
                 // thanh toán thành công
                 // merchant cập nhật trạng thái cho đơn hàng
                 JSONObject data = new JSONObject(dataStr);
+                ordersService.completeOrder(data.get("app_trans_id").toString());
                 logger.info("update order's status = success where app_trans_id = " + data.getString("app_trans_id"));
 
                 result.put("return_code", 1);
@@ -199,9 +200,11 @@ public class OrderController {
         return ResponseEntity.ok().body(ordersService.getOderDetailByOrderId(orderId));
     }
 
-    @PostMapping("/noti")
-    public ResponseEntity noti(@PathVariable String orderId ) {
-        System.out.println("hung");
-        return ResponseEntity.ok().body("String");
+    @PostMapping("/momo/callback")
+    public ResponseEntity noti(@RequestBody MomoCallbackRequestBody request ) {
+        if(request.getResultCode() == 0){
+            ordersService.completeOrder(request.getOrderId());
+        }
+        return ResponseEntity.ok().body("PAID_SUCCESS");
     }
 }

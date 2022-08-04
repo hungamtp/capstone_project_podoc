@@ -1,5 +1,6 @@
 package com.capstone.pod.zalo;
 
+import com.capstone.pod.momo.config.Environment;
 import com.capstone.pod.momo.models.PaymentResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -35,14 +37,23 @@ public class ZaloService {
     }
 
     public PaymentResponse createZaloPayOrder(Long amount , String description , String transactionId) throws IOException {
-        Random rand = new Random();
         final Map embed_data = new HashMap(){{}};
         embed_data.put("redirecturl" ,"http://podod.store/thankyou");
+        try (InputStream input = Environment.class.getClassLoader().getResourceAsStream("application.properties")) {
+            Properties prop = new Properties();
+            prop.load(input);
+            if(prop.getProperty("spring.profiles.active").toString().equals("prod")){
+                embed_data.put("redirecturl" , "http://podoc.store/thankyou");
+            }else {
+                embed_data.put("redirecturl" ,"http://localhost:3000/thankyou");
+            }
+        }
         Map<String, Object> order = new HashMap<String, Object>(){{
             put("app_id", config.get("app_id"));
             put("app_trans_id", transactionId); // translation missing: vi.docs.shared.sample_code.comments.app_trans_id
             put("app_time", System.currentTimeMillis()); // miliseconds
             put("app_user", "user123");
+            put("callback_url", "http://157.245.49.136:8080/order/callback");
             put("amount", amount);
             put("description", description);
             put("bank_code", "zalopayapp");
