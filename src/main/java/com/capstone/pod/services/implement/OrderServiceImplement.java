@@ -250,6 +250,9 @@ public class OrderServiceImplement implements OrdersService {
         if (orders.isPaid()) {
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
+        orders.setPaid(true);
+        ordersRepository.save(orders);
+
         Cart cart = cartRepository.findCartByUser(getCredential().getUser());
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<CartDetail> cartDetailList = cart.getCartDetails();
@@ -264,8 +267,6 @@ public class OrderServiceImplement implements OrdersService {
         }
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
         cartDetailRepository.deleteAllInBatch(cartDetailList);
-        orders.setPaid(true);
-        ordersRepository.save(orders);
     }
 
     @Override
