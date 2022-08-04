@@ -75,7 +75,7 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         List<Order> orderList = new ArrayList();
         orderList.add(criteriaBuilder.desc(criteriaBuilder.sum(orderDetailJoin.get(OrderDetail_.QUANTITY))));
         Predicate productIsDelete = criteriaBuilder.isFalse(productJoin.get(Product_.IS_DELETED));
-        Predicate publish = criteriaBuilder.isFalse(root.get(DesignedProduct_.PUBLISH));
+        Predicate publish = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
         Predicate isPublicTrue = criteriaBuilder.isTrue(productJoin.get(Product_.IS_PUBLIC));
         query.orderBy(orderList).where(productIsDelete , isPublicTrue , publish);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
