@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @Builder
@@ -16,4 +17,5 @@ public class AllOrderDto {
     private LocalDateTime createdDate;
     private Boolean isPaid;
     private int countItem;
+    private List<MyOrderDetailDto> orderDetailDtos;
 }
