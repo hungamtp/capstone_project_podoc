@@ -342,6 +342,9 @@ public class OrderServiceImplement implements OrdersService {
                 .isPaid(orders.isPaid())
                 .totalBill(orders.getPrice())
                 .createdDate(orders.getCreateDate())
+                .orderDetailDtos(orders.getOrderDetails().stream()
+                    .map( orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
+                    .collect(Collectors.toList()))
                 .build();
         }).collect(Collectors.toList());
         pageDTO.setData(orderDtos);
