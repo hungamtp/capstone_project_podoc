@@ -257,8 +257,8 @@ public class OrderServiceImplement implements OrdersService {
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<CartDetail> cartDetailList = cart.getCartDetails();
         for (int i = 0; i < cartDetailList.size(); i++) {
-            List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersIdAndDesignedProductId(orders.getId(),cartDetailList.get(i).getDesignedProduct().getId());
-            OrderDetail orderDetail = orderDetails.get(i);
+            Optional<OrderDetail> orderDetailOptional = orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndColorAndSize(orders.getId(),cartDetailList.get(i).getDesignedProduct().getId(),cartDetailList.get(i).getColor(), cartDetailList.get(i).getSize());
+            OrderDetail orderDetail = orderDetailOptional.get();
             Optional<SizeColor> sizeColor = sizeColorRepository
                     .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());

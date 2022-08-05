@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 
@@ -14,7 +15,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,String>
     List<OrderDetail> findAllByDesignedProductId(String designId);
     List<OrderDetail> findAllByFactoryId(String factoryId);
     List<OrderDetail> findAllByFactory(Factory factory);
-    List<OrderDetail> findAllByOrdersIdAndDesignedProductId(String orderId, String designId);
+    Optional<OrderDetail> findAllByOrdersIdAndDesignedProductIdAndColorAndSize(String orderId, String designId,String color, String size);
     List<OrderDetail> findAllByOrders(Orders orders);
     List<OrderDetail> findAllByOrdersIdAndDesignedProductIdAndFactoryId(String orderId, String designId, String factoryId);
 }

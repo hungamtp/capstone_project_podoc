@@ -11,8 +11,6 @@ import com.capstone.pod.momo.MomoCallbackRequestBody;
 import com.capstone.pod.momo.models.PaymentResponse;
 import com.capstone.pod.momo.shared.utils.LogUtils;
 import com.capstone.pod.services.OrdersService;
-import com.capstone.pod.services.PayService;
-import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
@@ -25,11 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
-import javax.websocket.server.PathParam;
 import javax.xml.bind.DatatypeConverter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,8 +35,6 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrdersService ordersService;
-    private final PayService payService;
-    private final ZaloService zaloService;
 
     @PostMapping("/{paymentMethod}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
