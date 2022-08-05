@@ -250,6 +250,8 @@ public class OrderServiceImplement implements OrdersService {
         for (int i = 0; i < printingInfos.size(); i++) {
             for (int j = 0; j < printingInfos.get(i).getPreviewImages().size(); j++) {
                 printingImagePreviews.add(printingInfos.get(i).getPreviewImages().get(j));
+            }
+            for (int j = 0; j < printingInfos.get(i).getPrintingBluePrints().size(); j++) {
                 printingBluePrints.add(printingInfos.get(i).getPrintingBluePrints().get(j));
             }
         }
