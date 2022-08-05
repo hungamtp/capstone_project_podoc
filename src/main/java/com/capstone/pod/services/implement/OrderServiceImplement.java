@@ -338,7 +338,7 @@ public class OrderServiceImplement implements OrdersService {
             List<OrderDetail> orderDetails = orders.getOrderDetails();
             return AllOrderDto.builder()
                 .orderId(orders.getId())
-                .countItem(orderDetails.size())
+                .countItem(orderDetails.stream().mapToInt(OrderDetail::getQuantity).sum())
                 .isPaid(orders.isPaid())
                 .totalBill(orders.getPrice())
                 .createdDate(orders.getCreateDate())
