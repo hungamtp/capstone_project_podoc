@@ -38,7 +38,6 @@ public class ZaloService {
 
     public PaymentResponse createZaloPayOrder(Long amount , String description , String transactionId) throws IOException {
         final Map embed_data = new HashMap(){{}};
-        embed_data.put("redirecturl" ,"http://podod.store/thankyou");
         try (InputStream input = Environment.class.getClassLoader().getResourceAsStream("application.properties")) {
             Properties prop = new Properties();
             prop.load(input);
