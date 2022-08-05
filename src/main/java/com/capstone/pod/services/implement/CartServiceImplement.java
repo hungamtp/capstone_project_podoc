@@ -101,7 +101,9 @@ public class CartServiceImplement implements CartService {
                 throw new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND);
         }
 
-
+        Color color = colorRepository.findByName(addToCartDto.getColor()).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.COLOR + "_" + ErrorMessage.NOT_FOUND)
+        );
 
         Optional<CartDetail> cartDetail = cartDetailRepository
             .findByDesignedProductAndColorAndSize(designedProduct, addToCartDto.getColor(), addToCartDto.getSize());
@@ -119,7 +121,11 @@ public class CartServiceImplement implements CartService {
                .color(cartDetail.get().getColor())
                .size(cartDetail.get().getSize())
                .publish(true)
-               .designedImage(cartDetail.get().getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
+               .designedImage(designedProduct.getImagePreviews()
+                   .stream()
+                   .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
+                   .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
+                   .collect(Collectors.toList()).get(0).getImage())
                .price(Double.valueOf(cartDetail.get().getDesignedProduct().getDesignedPrice() + cartDetail.get().getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
                .quantity(savedCartDetail.getQuantity())
                .build();
@@ -140,7 +146,11 @@ public class CartServiceImplement implements CartService {
                 .color(savedCartDetail.getColor())
                 .size(savedCartDetail.getSize())
                 .publish(true)
-                .designedImage(savedCartDetail.getDesignedProduct().getImagePreviews().stream().map(ImagePreview::getImage).collect(Collectors.toList()).get(0))
+                .designedImage(designedProduct.getImagePreviews()
+                    .stream()
+                    .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
+                    .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
+                    .collect(Collectors.toList()).get(0).getImage())
                 .price(Double.valueOf(savedCartDetail.getDesignedProduct().getDesignedPrice() + savedCartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
                 .quantity(savedCartDetail.getQuantity())
                 .build();
