@@ -52,7 +52,12 @@ public class OrderServiceImplement implements OrdersService {
     private final CartRepository cartRepository;
     private final CartDetailRepository cartDetailRepository;
     private final OrdersRepository ordersRepository;
-    private final OrderStatusRepository orderStatusRepository;
+    private final PrintingInfoRepository printingInfoRepository;
+    private final PrintingDesignInfoRepository printingDesignInfoRepository;
+    private final PrintingPlaceHolderRepository printingPlaceHolderRepository;
+    private final PrintingBluePrintRepository printingBluePrintRepository;
+    private final PrintingImageRepository printingImageRepository;
+
     private final ShippingInfoRepository shippingInfoRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
     private final SizeColorRepository sizeColorRepository;
@@ -61,7 +66,7 @@ public class OrderServiceImplement implements OrdersService {
     private final ZaloService zaloService;
     private final OrderDetailConverter orderDetailConverter;
     private final DesignedProductRepository designedProductRepository;
-    private final PrintingInfoRepository printingInfoRepository;
+
     private final ColorRepository colorRepository;
 
 
@@ -226,6 +231,41 @@ public class OrderServiceImplement implements OrdersService {
         }
 
         return paymentResponse;
+    }
+
+    @Override
+    public void deleteOrderHasnotPaid(String orderId) {
+        Orders orders = ordersRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(orders);
+        List<PrintingInfo> printingInfos = new ArrayList<>();
+        List<PrintingImagePreview> printingImagePreviews = new ArrayList<>();
+        List<PrintingBluePrint> printingBluePrints = new ArrayList<>();
+        List<PrintingPlaceholder> printingPlaceholders = new ArrayList<>();
+        List<PrintingDesignInfo> printingDesignInfos = new ArrayList<>();
+        for (int i = 0; i < orderDetails.size() ; i++) {
+            printingInfos.add(orderDetails.get(i).getPrintingInfo());
+        }
+        for (int i = 0; i < printingInfos.size(); i++) {
+            for (int j = 0; j < printingInfos.get(i).getPreviewImages().size(); j++) {
+                printingImagePreviews.add(printingInfos.get(i).getPreviewImages().get(j));
+                printingBluePrints.add(printingInfos.get(i).getPrintingBluePrints().get(j));
+            }
+        }
+        for (int i = 0; i < printingBluePrints.size(); i++) {
+            printingPlaceholders.add(printingBluePrints.get(i).getPrintingPlaceholder());
+            for (int j = 0; j < printingBluePrints.get(i).getPrintingDesignInfos().size(); j++) {
+                printingDesignInfos.add(printingBluePrints.get(i).getPrintingDesignInfos().get(j));
+
+            }
+        }
+        printingDesignInfoRepository.deleteAllInBatch(printingDesignInfos);
+        printingPlaceHolderRepository.deleteAllInBatch(printingPlaceholders);
+        printingBluePrintRepository.deleteAllInBatch(printingBluePrints);
+        printingImageRepository.deleteAllInBatch(printingImagePreviews);
+        printingInfoRepository.deleteAllInBatch(printingInfos);
+        ordersRepository.delete(orders);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

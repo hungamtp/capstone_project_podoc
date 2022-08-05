@@ -16,6 +16,7 @@ import java.util.List;
 
 public interface OrdersService {
     PaymentResponse addOrder(ShippingInfoDto shippingInfoDto, int paymentMethod) throws Exception;
+    void deleteOrderHasnotPaid(String orderId) ;
 
     void completeOrder(String paymentId);
 

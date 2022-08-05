@@ -55,6 +55,14 @@ public class OrderController {
         responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
+    @DeleteMapping
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> deleteOrderHasnotPaid(@RequestParam String orderId) {
+        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
+        ordersService.deleteOrderHasnotPaid(orderId);
+        responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
 
 
     @GetMapping("/complete")
