@@ -67,9 +67,18 @@ public class UserServiceImplement implements UserService {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
         Page<Credential> credentials = credentialRepository.findAll(pageable);
         List<UserDto> listUserDto = credentials.stream()
-                .filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_USER)|| credential.getRole().getName().equals(RoleName.ROLE_ADMIN)).
+                .filter(credential -> credential.getRole().getName().equals(RoleName.ROLE_USER) || credential.getRole().getName().equals(RoleName.ROLE_ADMIN)).
                 map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
-        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,credentials.getTotalElements());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
+        return pageUserDTO;
+    }
+    @Override
+    public Page<UserDto> getAllUserByName(int pageNum, int pageSize, String name) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Page<Credential> credentials = credentialRepository.findAllByUserFirstNameContains(pageable, name);
+        List<UserDto> listUserDto = credentials.stream()
+                .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
         return pageUserDTO;
     }
 
