@@ -22,6 +22,9 @@ public class ProductSpecification implements Specification<Product> {
         if(criteria.getKey().equalsIgnoreCase("category")){
             return builder.equal(root.join(Product_.CATEGORY).get(Category_.ID) , criteria.getValue());
         }
+        if(criteria.getKey().equalsIgnoreCase("categoryName")){
+            return builder.equal(root.join(Product_.CATEGORY).get(Category_.NAME) , criteria.getValue());
+        }
         if (criteria.getOperation().equalsIgnoreCase(">")) {
             return builder.greaterThanOrEqualTo(
                     root.<String>get(criteria.getKey()), criteria.getValue().toString());
