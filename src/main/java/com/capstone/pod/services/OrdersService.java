@@ -26,7 +26,7 @@ public interface OrdersService {
 
     PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception;
 
-    List<MyOrderDetailDto> getAllMyOrderDetail(int page, int size);
+    PageDTO getAllMyOrderDetail(int page, int size);
 
     PaymentResponse orderOwnDesign(OrderOwnDesignDto orderOwnDesignDto, int paymentMethod) throws Exception;
 

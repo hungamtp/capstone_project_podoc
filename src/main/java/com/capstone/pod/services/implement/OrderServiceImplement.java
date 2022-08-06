@@ -28,6 +28,7 @@ import com.capstone.pod.momo.enums.RequestType;
 import com.capstone.pod.momo.models.PaymentResponse;
 import com.capstone.pod.momo.processor.CreateOrderMoMo;
 import com.capstone.pod.repositories.*;
+import com.capstone.pod.repositories.result.AllOrderDetail;
 import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;
@@ -332,8 +333,8 @@ public class OrderServiceImplement implements OrdersService {
         User user = credential.getUser();
         Page<Orders> ordersPage = ordersRepository.findAllByIsPaidIsFalseAndUser(pageable, user);
         PageDTO pageDTO = new PageDTO();
-        pageDTO.setPage(pageDTO.getPage());
-        pageDTO.setElements(pageDTO.getElements());
+        pageDTO.setPage(pageable.getPageNumber());
+        pageDTO.setElements(Long.valueOf(ordersPage.getTotalElements()).intValue());
         List<AllOrderDto> orderDtos = ordersPage.stream().map(orders -> {
             List<OrderDetail> orderDetails = orders.getOrderDetails();
             return AllOrderDto.builder()
@@ -398,16 +399,23 @@ public class OrderServiceImplement implements OrdersService {
     }
 
 
-    public List<MyOrderDetailDto> getAllMyOrderDetail(int page, int size) {
+    public PageDTO getAllMyOrderDetail(int page, int size) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId)
             .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
 
-        return orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page, size, credential.getUser().getId())
+        AllOrderDetail allOrderDetail =
+            orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page, size, credential.getUser().getId());
+        return PageDTO.builder()
+            .data(allOrderDetail.getResult()
             .stream()
             .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()))
+            .elements(allOrderDetail.getElements())
+            .page(page)
+            .build();
+
     }
 
     @Override
