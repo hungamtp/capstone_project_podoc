@@ -127,8 +127,8 @@ public class UserController {
         return ResponseEntity.ok().body(responseDTO);
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    @GetMapping("email/{email}")
-    public ResponseEntity<ResponseDto> findByEmail(@PathVariable(name = "email") String email) {
+    @GetMapping("email")
+    public ResponseEntity<ResponseDto> findByEmail(@RequestParam String email) {
         ResponseDto<UserDto> responseDTO = new ResponseDto();
         UserDto user = userService.findByEmail(email);
         responseDTO.setData(user);

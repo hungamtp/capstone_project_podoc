@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface CredentialRepository extends JpaRepository<Credential,String> {
         public Optional<Credential> findCredentialByEmail(String email);
-        public Optional<Credential> findCredentialByEmailLikeIgnoreCase(String email);
+        public Optional<Credential> findCredentialByEmailContains(String email);
         public Page<Credential> findAllByRoleName(Pageable pageable, String roleName);
 }

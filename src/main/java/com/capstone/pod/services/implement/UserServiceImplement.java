@@ -89,7 +89,7 @@ public class UserServiceImplement implements UserService {
     }
     @Override
     public UserDto findByEmail(String email) {
-        Credential credential = credentialRepository.findCredentialByEmailLikeIgnoreCase(email)
+        Credential credential = credentialRepository.findCredentialByEmailContains(email)
                 .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
         UserDto userDto = modelMapper.map(credential, UserDto.class);
         return userDto;
