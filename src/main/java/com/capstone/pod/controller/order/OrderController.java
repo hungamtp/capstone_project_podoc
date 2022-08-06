@@ -105,8 +105,8 @@ public class OrderController {
 
     @GetMapping("/orderdetail")
     public ResponseEntity getAllOrderDetail(@RequestParam int page, @RequestParam int size) {
-        if (page < 1) {
-            throw new IllegalStateException("PAGE > 0");
+        if (page < 0) {
+            throw new IllegalStateException("PAGE >= 0");
         }
 
         return ResponseEntity.ok().body(ordersService.getAllMyOrderDetail(page, size));

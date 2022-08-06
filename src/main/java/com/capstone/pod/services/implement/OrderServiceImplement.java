@@ -406,7 +406,7 @@ public class OrderServiceImplement implements OrdersService {
             .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
 
         AllOrderDetail allOrderDetail =
-            orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page, size, credential.getUser().getId());
+            orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page + 1 , size, credential.getUser().getId());
         return PageDTO.builder()
             .data(allOrderDetail.getResult()
             .stream()
