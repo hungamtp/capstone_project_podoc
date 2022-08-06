@@ -195,7 +195,7 @@ public class OrderServiceImplement implements OrdersService {
         order.setTransactionId("");
         ordersRepository.save(order);
         printingInfoRepository.saveAll(printingInfos);
-
+        cartRepository.delete(cart);
         // create payment info
         PaymentResponse paymentResponse = null;
         String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
