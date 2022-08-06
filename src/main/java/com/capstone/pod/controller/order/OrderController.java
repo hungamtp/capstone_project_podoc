@@ -108,12 +108,8 @@ public class OrderController {
         if (page < 1) {
             throw new IllegalStateException("PAGE > 0");
         }
-        var result = ordersService.getAllMyOrderDetail(page, size);
-        PageDTO pageDTO = new PageDTO();
-        pageDTO.setElements(result.size());
-        pageDTO.setData(result);
-        pageDTO.setPage(page);
-        return ResponseEntity.ok().body(pageDTO);
+
+        return ResponseEntity.ok().body(ordersService.getAllMyOrderDetail(page, size));
     }
 
     @PutMapping

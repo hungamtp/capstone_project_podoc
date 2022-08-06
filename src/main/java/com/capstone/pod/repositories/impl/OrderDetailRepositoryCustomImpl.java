@@ -3,6 +3,7 @@ package com.capstone.pod.repositories.impl;
 import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.repositories.OrderDetailRepositoryCustom;
+import com.capstone.pod.repositories.result.AllOrderDetail;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,7 +19,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public List<OrderDetail> findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
+    public AllOrderDetail findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<OrderDetail> query = criteriaBuilder.createQuery(OrderDetail.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -30,7 +31,8 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
         List<Order> orders = new ArrayList<>();
         orders.add(criteriaBuilder.desc(ordersJoin.get(Orders_.CREATE_DATE)));
         query.where(userIdEqual, orderIsPaidTrue).orderBy(orders);
-        return entityManager.createQuery(query).setMaxResults(size).setFirstResult((page - 1) * size).getResultList();
+        int elements = entityManager.createQuery(query).getResultList().size();
+        return new AllOrderDetail(entityManager.createQuery(query).setMaxResults(size).setFirstResult((page - 1) * size).getResultList(), elements);
     }
 
     public List<CategorySoldCountProjection> countOrderByCategory() {
