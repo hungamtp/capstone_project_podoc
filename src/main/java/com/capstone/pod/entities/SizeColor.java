@@ -5,8 +5,6 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -33,5 +31,7 @@ public class SizeColor{
 
     @OneToMany(mappedBy = "sizeColor")
     private List<SizeColorByFactory> sizeColorByFactories;
-
+    public String getColorNameImage(){
+        return color.getName()+"-"+color.getImageColor();
+    }
 }

@@ -8,10 +8,11 @@ import com.capstone.pod.dto.http.ResponseDto;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDto;
+import com.capstone.pod.dto.sizecolor.SizeColorInRawProductDto;
 import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
+import com.capstone.pod.dto.utils.Utils;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.services.SizeColorService;
-import com.capstone.pod.dto.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -182,6 +183,15 @@ public class ProductController {
         List<SizeColorReturnDto> sizeColorDtos = sizeColorService.addSizeColor(id, dto);
         responseDto.setData(sizeColorDtos);
         responseDto.setSuccessMessage(ProductSuccessMessage.ADD_SIZE_COLOR_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @GetMapping("size-color-raw/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> getSizeColorByRawProductId(@PathVariable(name = "id") String id){
+        ResponseDto<List<SizeColorInRawProductDto>> responseDto = new ResponseDto();
+        List<SizeColorInRawProductDto> sizeColorDtos = productService.getColorSizeMapByColorByProductId(id);
+        responseDto.setData(sizeColorDtos);
+        responseDto.setSuccessMessage(ProductSuccessMessage.GET_SIZES_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
 }

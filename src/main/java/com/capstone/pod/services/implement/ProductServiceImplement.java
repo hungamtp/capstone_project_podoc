@@ -10,6 +10,7 @@ import com.capstone.pod.dto.factory.FactoryProductDetailDto;
 import com.capstone.pod.dto.placeholder.PlaceHolderDto;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
+import com.capstone.pod.dto.sizecolor.SizeColorInRawProductDto;
 import com.capstone.pod.dto.tag.TagDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
@@ -39,6 +40,7 @@ public class ProductServiceImplement implements ProductService {
     private final PriceByFactoryRepository priceByFactoryRepository;
     private final ModelMapper modelMapper;
     private final ProductBluePrintRepository productBluePrintRepository;
+    private final SizeColorRepository sizeColorRepository;
     private final OrdersRepository ordersRepository;
 
     private final ProductImagesRepository productImagesRepository;
@@ -317,5 +319,29 @@ public class ProductServiceImplement implements ProductService {
         productBluePrint.setPlaceHolderHeight(dto.getPlaceHolderHeight());
         productBluePrint.setPlaceHolderWidth(dto.getPlaceHolderWidth());
         return modelMapper.map(productBluePrintRepository.save(productBluePrint), EditProductBluePrintDto.class);
+    }
+
+    @Override
+    public List<SizeColorInRawProductDto> getColorSizeMapByColorByProductId(String productId) {
+        List<SizeColor> sizeColors = sizeColorRepository.findSizeColorByProductId(productId);
+        Map<String,List<String>> map = new HashMap<>();
+        for (SizeColor sizeColor:sizeColors) {
+                map.put(sizeColor.getColorNameImage(),getListSizeByColorName(sizeColors,sizeColor.getColor().getName()));
+        }
+        List<SizeColorInRawProductDto> list = new ArrayList<>();
+        for (Map.Entry<String,List<String>> entry : map.entrySet()){
+            list.add(SizeColorInRawProductDto.builder().color(entry.getKey()).sizes(entry.getValue()).build());
+        }
+        return list;
+
+    }
+    private List<String> getListSizeByColorName(List<SizeColor> sizeColor, String colorName){
+        List<String> sizes = new ArrayList<>();
+        for (int i = 0; i < sizeColor.size(); i++) {
+            if(sizeColor.get(i).getColor().getName().equals(colorName)){
+                sizes.add(sizeColor.get(i).getSize().getName());
+            }
+        }
+        return sizes;
     }
 }

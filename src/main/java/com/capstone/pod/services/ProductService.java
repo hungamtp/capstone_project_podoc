@@ -4,6 +4,7 @@ import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.product.*;
 import com.capstone.pod.dto.sizecolor.SizeColorByProductIdDto;
+import com.capstone.pod.dto.sizecolor.SizeColorInRawProductDto;
 import com.capstone.pod.entities.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,4 +35,7 @@ public interface ProductService {
 
       AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto);
       EditProductBluePrintDto editProductBluePrint(String productBlueprintId, EditProductBluePrintDto dto);
+
+      List<SizeColorInRawProductDto> getColorSizeMapByColorByProductId(String productId);
+
 }
