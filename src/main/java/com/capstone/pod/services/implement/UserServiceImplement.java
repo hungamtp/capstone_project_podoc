@@ -78,7 +78,7 @@ public class UserServiceImplement implements UserService {
         Page<Credential> credentials = credentialRepository.findAllByUserFirstNameContains(pageable, name);
         List<UserDto> listUserDto = credentials.stream()
                 .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
-        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,credentials.getTotalElements());
         return pageUserDTO;
     }
 

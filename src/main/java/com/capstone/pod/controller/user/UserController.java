@@ -128,9 +128,9 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @GetMapping("firstName")
-    public ResponseEntity<ResponseDto> findAll(@RequestParam int pageNumber, @RequestParam int pageSize,@RequestParam String firstName) {
+    public ResponseEntity<ResponseDto> findAllByFirstName(@RequestParam int pageNumber, @RequestParam int pageSize,@RequestParam String firstName) {
         ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
-        Page<UserDto> users = userService.getAllUserByName(pageNumber, pageSize,firstName);
+        Page<UserDto> users = userService.getAllUserByName(pageNumber, pageSize, firstName);
         responseDTO.setData(users);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_ALL_USER_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
