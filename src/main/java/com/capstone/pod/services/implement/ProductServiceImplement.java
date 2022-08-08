@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.groupingBy;
 
@@ -64,7 +65,7 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public ProductReturnDto updateProduct(UpdateProductDto productDto, String productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
-        if(productInRepo.isDeleted()) throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_DELETED);
+        if (productInRepo.isDeleted()) throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_DELETED);
         Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
         productImagesRepository.deleteAllInBatch(productInRepo.getProductImages());
         List<ProductImages> imagesList = new ArrayList<>();
@@ -84,7 +85,7 @@ public class ProductServiceImplement implements ProductService {
         if (product.getSizeColors().isEmpty()) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
         }
-        if (product.getSizeColors().get(0).getSizeColorByFactories().isEmpty()) {
+        if (product.getSizeColors().stream().flatMap(sizeColor -> Stream.of(sizeColor.getSizeColorByFactories())).collect(Collectors.toList()).size() == 0) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
         }
         if (product.getPriceByFactories().isEmpty()) {
