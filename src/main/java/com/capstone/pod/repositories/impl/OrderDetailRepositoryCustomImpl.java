@@ -19,7 +19,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public AllOrderDetail findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
+    public AllOrderDetail  findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<OrderDetail> query = criteriaBuilder.createQuery(OrderDetail.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
