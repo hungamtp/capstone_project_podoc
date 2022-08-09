@@ -9,6 +9,7 @@ import com.capstone.pod.dto.cartdetail.CartDetailDto;
 import com.capstone.pod.dto.cartdetail.CartNotEnoughDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.CredentialNotFoundException;
+import com.capstone.pod.exceptions.SizeColorFactoryNotFoundException;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.CartService;
 import lombok.AllArgsConstructor;
@@ -170,7 +171,9 @@ public class CartServiceImplement implements CartService {
 
         SizeColorByFactory sizeColorByFactory = sizeColorByFactoryRepository
             .findByFactoryAndSizeColor(designedProduct.getPriceByFactory().getFactory(), sizeColor)
-            .orElseThrow(() -> new EntityNotFoundException(EntityName.SIZE_COLOR_FACTORY + ErrorMessage.NOT_FOUND));
+            .orElseThrow(
+                () -> new SizeColorFactoryNotFoundException(EntityName.SIZE_COLOR_FACTORY + ErrorMessage.NOT_FOUND)
+            );
 
         return sizeColorByFactory.getQuantity() < quantity ? sizeColorByFactory.getQuantity() : 0;
     }
