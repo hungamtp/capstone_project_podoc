@@ -108,6 +108,11 @@ public class CartServiceImplement implements CartService {
         Optional<CartDetail> cartDetail = cartDetailRepository
             .findByDesignedProductAndColorAndSize(designedProduct, addToCartDto.getColor(), addToCartDto.getSize());
 
+        var imagePreview = designedProduct.getImagePreviews()
+            .stream()
+            .filter(image -> image.getPosition().equalsIgnoreCase("front"))
+            .filter(image1 -> image1.getColor().equalsIgnoreCase(color.getImageColor()))
+            .collect(Collectors.toList());
         if (cartDetail.isPresent()) {
             CartDetail savedCartDetail = cartDetail.get();
             savedCartDetail.setQuantity(savedCartDetail.getQuantity() + addToCartDto.getQuantity());
@@ -121,11 +126,7 @@ public class CartServiceImplement implements CartService {
                .color(cartDetail.get().getColor())
                .size(cartDetail.get().getSize())
                .publish(true)
-               .designedImage(designedProduct.getImagePreviews()
-                   .stream()
-                   .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
-                   .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
-                   .collect(Collectors.toList()).get(0).getImage())
+               .designedImage(imagePreview.size() != 0 ? imagePreview.get(0).getImage() : "")
                .price(Double.valueOf(cartDetail.get().getDesignedProduct().getDesignedPrice() + cartDetail.get().getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
                .quantity(savedCartDetail.getQuantity())
                .build();
@@ -146,11 +147,7 @@ public class CartServiceImplement implements CartService {
                 .color(savedCartDetail.getColor())
                 .size(savedCartDetail.getSize())
                 .publish(true)
-                .designedImage(designedProduct.getImagePreviews()
-                    .stream()
-                    .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
-                    .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
-                    .collect(Collectors.toList()).get(0).getImage())
+                .designedImage(imagePreview.size() != 0 ? imagePreview.get(0).getImage() : "")
                 .price(Double.valueOf(savedCartDetail.getDesignedProduct().getDesignedPrice() + savedCartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
                 .quantity(savedCartDetail.getQuantity())
                 .build();

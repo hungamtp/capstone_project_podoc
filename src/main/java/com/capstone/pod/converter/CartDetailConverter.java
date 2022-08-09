@@ -61,6 +61,11 @@ public class CartDetailConverter {
         Color color = colorRepository.findByName(cartDetail.getColor()).orElseThrow(
             () -> new EntityNotFoundException(EntityName.COLOR + "_" + ErrorMessage.NOT_FOUND)
         );
+        var imagePreview = cartDetail.getDesignedProduct().getImagePreviews()
+            .stream()
+            .filter(image -> image.getPosition().equalsIgnoreCase("front"))
+            .filter(image1 -> image1.getColor().equalsIgnoreCase(color.getImageColor()))
+            .collect(Collectors.toList());
         return CartDetailDto.builder()
             .id(cartDetail.getId()).cartId(cartDetail.getCart().getId())
             .designedProductId(cartDetail.getDesignedProduct().getId())
@@ -68,11 +73,7 @@ public class CartDetailConverter {
             .color(cartDetail.getColor())
             .size(cartDetail.getSize())
             .publish(publish)
-            .designedImage(cartDetail.getDesignedProduct().getImagePreviews()
-                .stream()
-                .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
-                .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
-                .collect(Collectors.toList()).get(0).getImage())
+            .designedImage(imagePreview.size() != 0 ? imagePreview.get(0).getImage() : "")
             .price(Double.valueOf(cartDetail.getDesignedProduct().getDesignedPrice() + cartDetail.getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
             .quantity(cartDetail.getQuantity())
             .build();
