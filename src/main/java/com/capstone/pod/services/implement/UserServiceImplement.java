@@ -98,7 +98,7 @@ public class UserServiceImplement implements UserService {
     }
     @Override
     public Page<UserDto> findByEmail(Pageable pageable ,String email) {
-        Page<Credential> credentials = credentialRepository.findCredentialByEmailContainsIgnoreCase(pageable, email);
+        Page<Credential> credentials = credentialRepository.findCredentialByEmailContainsIgnoreCaseAndUserFirstNameContains(pageable, email,"");
         List<UserDto> list = credentials.stream().map(credential -> modelMapper.map(credential, UserDto.class)).collect(Collectors.toList());
         Page<UserDto> userDtoPages = new PageImpl<>(list,pageable,credentials.getTotalElements());
         return userDtoPages;
