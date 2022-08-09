@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -228,6 +229,13 @@ public class ExceptionHandlers extends RuntimeException {
         ResponseDto dto = new ResponseDto();
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
+    }
+
+    @ExceptionHandler(value = SizeColorFactoryNotFoundException.class)
+    public ResponseEntity<Object> errorSizeColorFactory(SizeColorFactoryNotFoundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.ok().body(new ArrayList<>());
     }
 
 
