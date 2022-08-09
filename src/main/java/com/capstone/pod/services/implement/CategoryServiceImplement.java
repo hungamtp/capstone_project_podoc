@@ -8,6 +8,7 @@ import com.capstone.pod.entities.Category;
 import com.capstone.pod.exceptions.CategoryExistedException;
 import com.capstone.pod.exceptions.CategoryNotFoundException;
 import com.capstone.pod.repositories.CategoryRepository;
+import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class CategoryServiceImplement implements CategoryService {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -35,7 +37,10 @@ public class CategoryServiceImplement implements CategoryService {
     @Override
     public CategoryDto deleteCategory(String categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_ID_NOT_FOUND));
-        category.setDeleted(true);
+        if(productRepository.findAllByCategory(category).isEmpty()){
+            category.setDeleted(true);
+        }
+        else throw new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_EXISTED_IN_PRODUCT);
         return modelMapper.map(categoryRepository.save(category),CategoryDto.class);
     }
 
