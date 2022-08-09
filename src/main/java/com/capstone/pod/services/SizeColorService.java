@@ -4,7 +4,6 @@ import com.capstone.pod.dto.color.ColorDto;
 import com.capstone.pod.dto.size.SizeDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
-import com.capstone.pod.entities.Color;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,5 +16,7 @@ public interface SizeColorService {
     public SizeDto addSize(SizeDto sizeDto);
     public Page<ColorDto> getAllColor(Pageable pageable);
     public ColorDto addColor(ColorDto colorDto);
+    public ColorDto updateColor(ColorDto colorDto);
+    public SizeDto updateSize(SizeDto sizeDto);
 
 }

@@ -2,7 +2,6 @@ package com.capstone.pod.controller.sizecolor;
 
 import com.capstone.pod.constant.product.ProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
-import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.sizecolor.SizeColorSuccessMessage;
 import com.capstone.pod.dto.color.ColorDto;
 import com.capstone.pod.dto.http.ResponseDto;
@@ -15,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,6 +54,24 @@ public class SizeColorController {
     public ResponseEntity<ResponseDto> addSize(@RequestBody SizeDto dto){
         ResponseDto<SizeDto> responseDto = new ResponseDto();
         SizeDto sizes = sizeColorService.addSize(dto);
+        responseDto.setData(sizes);
+        responseDto.setSuccessMessage(SizeColorSuccessMessage.ADD_SIZE_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PutMapping("/color")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> updateColor(@RequestBody ColorDto dto){
+        ResponseDto<ColorDto> responseDto = new ResponseDto();
+        ColorDto colors = sizeColorService.updateColor(dto);
+        responseDto.setData(colors);
+        responseDto.setSuccessMessage(SizeColorSuccessMessage.ADD_COLOR_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+    @PutMapping("/size")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> updateSize(@RequestBody SizeDto dto){
+        ResponseDto<SizeDto> responseDto = new ResponseDto();
+        SizeDto sizes = sizeColorService.updateSize(dto);
         responseDto.setData(sizes);
         responseDto.setSuccessMessage(SizeColorSuccessMessage.ADD_SIZE_SUCCESS);
         return ResponseEntity.ok().body(responseDto);

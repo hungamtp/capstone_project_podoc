@@ -14,5 +14,6 @@ public class ColorDto {
     private String id;
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
+    @NotBlank(message = ValidationMessage.COLOR_VALID_MESSAGE)
     private String imageColor;
 }

@@ -25,7 +25,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,5 +100,20 @@ public class SizeColorServiceImplement implements SizeColorService {
         if(colorInRepo.isPresent()) throw new SizeExistedException(String.format(SizeColorErrorMessage.COLOR_EXISTED_EXCEPTION,colorDto.getName()));
         Color color = Color.builder().imageColor(colorDto.getImageColor()).name(colorDto.getName()).build();
         return modelMapper.map(colorRepository.save(color),ColorDto.class);
+    }
+
+    @Override
+    public ColorDto updateColor(ColorDto colorDto) {
+       Color color = colorRepository.findById(colorDto.getId()).orElseThrow(() -> new ColorNotFoundException(SizeColorErrorMessage.COLOR_NOT_FOUND_EXCEPTION));
+       color.setImageColor(colorDto.getImageColor());
+       color.setName(colorDto.getName());
+       return modelMapper.map(colorRepository.save(color),ColorDto.class);
+    }
+
+    @Override
+    public SizeDto updateSize(SizeDto sizeDto) {
+        Size size = sizeRepository.findById(sizeDto.getId()).orElseThrow(() -> new ColorNotFoundException(SizeColorErrorMessage.SIZE_NOT_FOUND_EXCEPTION));
+        size.setName(sizeDto.getName());
+        return modelMapper.map(sizeRepository.save(size),SizeDto.class);
     }
 }
