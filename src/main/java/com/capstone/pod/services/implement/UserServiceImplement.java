@@ -97,11 +97,11 @@ public class UserServiceImplement implements UserService {
         return userDto;
     }
     @Override
-    public UserDto findByEmail(String email) {
-        Credential credential = credentialRepository.findCredentialByEmailContains(email)
-                .orElseThrow(() -> new UserNotFoundException(UserErrorMessage.USER_NOT_FOUND));
-        UserDto userDto = modelMapper.map(credential, UserDto.class);
-        return userDto;
+    public Page<UserDto> findByEmail(Pageable pageable ,String email) {
+        Page<Credential> credentials = credentialRepository.findCredentialByEmailContainsIgnoreCase(pageable, email);
+        List<UserDto> list = credentials.stream().map(credential -> modelMapper.map(credential, UserDto.class)).collect(Collectors.toList());
+        Page<UserDto> userDtoPages = new PageImpl<>(list,pageable,credentials.getTotalElements());
+        return userDtoPages;
     }
 
     @Override

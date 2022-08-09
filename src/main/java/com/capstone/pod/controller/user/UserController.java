@@ -9,6 +9,8 @@ import com.capstone.pod.services.EmailService;
 import com.capstone.pod.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -137,9 +139,10 @@ public class UserController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @GetMapping("email")
-    public ResponseEntity<ResponseDto> findByEmail(@RequestParam String email) {
-        ResponseDto<UserDto> responseDTO = new ResponseDto();
-        UserDto user = userService.findByEmail(email);
+    public ResponseEntity<ResponseDto> findByEmail(@RequestParam int pageNumber, @RequestParam int pageSize,@RequestParam String email) {
+        ResponseDto<Page<UserDto>> responseDTO = new ResponseDto();
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<UserDto> user = userService.findByEmail(pageable, email);
         responseDTO.setData(user);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_USER_BY_EMAIL_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
