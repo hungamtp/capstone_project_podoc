@@ -321,7 +321,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
-        Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos, page, viewOtherDesignDtos.size());
+        Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos, page, designedProductPage.getTotalPages());
         return dtoPage;
     }
 
