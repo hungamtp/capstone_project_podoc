@@ -1,10 +1,8 @@
 package com.capstone.pod.dto.designedProduct;
 
-import com.capstone.pod.dto.color.ColorDto;
 import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
-import com.capstone.pod.dto.user.UserDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import lombok.*;
 
@@ -20,6 +18,7 @@ import java.util.Set;
 public class ViewOtherDesignDto {
     private String id;
     private String name;
+    private String material;
     private boolean publish;
     private double price;
     private UserInDesignDto user;

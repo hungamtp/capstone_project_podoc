@@ -376,7 +376,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
 
         double price = designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice();
         ViewOtherDesignDto dto = ViewOtherDesignDto.builder()
-            .id(designedProduct.getId())
+            .id(designedProduct.getId()).material(designedProduct.getPriceByFactory().getMaterial())
             .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
             .colorAndSizes(colorAndSizes)
             .description(designedProduct.getDescription())
