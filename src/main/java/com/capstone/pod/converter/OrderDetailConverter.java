@@ -21,21 +21,22 @@ public class OrderDetailConverter {
 
     private final ColorRepository colorRepository;
 
-    public MyOrderDetailDto entityToMyOrderDetailDto (OrderDetail orderDetail){
+    public MyOrderDetailDto entityToMyOrderDetailDto(OrderDetail orderDetail) {
         DesignedProduct designedProduct = orderDetail.getDesignedProduct();
         Color color = colorRepository.findByName(orderDetail.getColor()).orElseThrow(
             () -> new EntityNotFoundException(EntityName.COLOR + "_" + ErrorMessage.NOT_FOUND)
         );
+        var imagePreviews = designedProduct.getImagePreviews()
+            .stream()
+            .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
+            .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
+            .collect(Collectors.toList());
         return MyOrderDetailDto.builder()
             .id(orderDetail.getId())
             .price(designedProduct.getPriceByFactory().getPrice() + designedProduct.getDesignedPrice())
             .designId(designedProduct.getId())
             .designName(designedProduct.getName())
-            .designImage(designedProduct.getImagePreviews()
-                .stream()
-                .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
-                .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
-                .collect(Collectors.toList()).get(0).getImage())
+            .designImage(imagePreviews.size() != 0 ? imagePreviews.get(0).getImage() : "")
             .designerName(designedProduct.getUser().getFirstName() + " " + designedProduct.getUser().getLastName())
             .designerId(designedProduct.getUser().getId())
             .color(orderDetail.getColor())
