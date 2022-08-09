@@ -105,6 +105,10 @@ public class SizeColorServiceImplement implements SizeColorService {
     @Override
     public ColorDto updateColor(ColorDto colorDto) {
        Color color = colorRepository.findById(colorDto.getId()).orElseThrow(() -> new ColorNotFoundException(SizeColorErrorMessage.COLOR_NOT_FOUND_EXCEPTION));
+        List<Color> colorList = colorRepository.findAll();
+        for (int i = 0; i < colorList.size(); i++) {
+            if(colorList.get(i).getName().equalsIgnoreCase(colorDto.getName())) throw new ColorNotFoundException(SizeColorErrorMessage.COLOR_EXISTED_EXCEPTION);
+        }
        color.setImageColor(colorDto.getImageColor());
        color.setName(colorDto.getName());
        return modelMapper.map(colorRepository.save(color),ColorDto.class);
@@ -113,6 +117,10 @@ public class SizeColorServiceImplement implements SizeColorService {
     @Override
     public SizeDto updateSize(SizeDto sizeDto) {
         Size size = sizeRepository.findById(sizeDto.getId()).orElseThrow(() -> new ColorNotFoundException(SizeColorErrorMessage.SIZE_NOT_FOUND_EXCEPTION));
+        List<Size> sizeList = sizeRepository.findAll();
+        for (int i = 0; i < sizeList.size(); i++) {
+            if(sizeList.get(i).getName().equalsIgnoreCase(sizeDto.getName())) throw new ColorNotFoundException(SizeColorErrorMessage.SIZE_EXISTED_EXCEPTION);
+        }
         size.setName(sizeDto.getName());
         return modelMapper.map(sizeRepository.save(size),SizeDto.class);
     }
