@@ -11,6 +11,7 @@ import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInRawProductDto;
 import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
 import com.capstone.pod.dto.utils.Utils;
+import com.capstone.pod.entities.Product_;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.services.SizeColorService;
 import lombok.RequiredArgsConstructor;
@@ -96,9 +97,8 @@ public class ProductController {
         ResponseDto<Page<ProductDto>> responseDTO = new ResponseDto();
 
         Pageable pageable = PageRequest.of(Optional.ofNullable(pageNumber)
-                .orElse(0), Optional.ofNullable(pageSize).orElse(9), sort.equals("createDate")
-                ? Sort.by("createDate").descending() : Sort.by(!sort.equals("") ? sort : "id")
-                .ascending());
+                .orElse(0), Optional.ofNullable(pageSize).orElse(9),
+                sort.equals(Product_.CREATE_DATE) ? Sort.by(Product_.CREATE_DATE).descending() : Sort.by(!sort.equals("") ? sort : "id").ascending());
         Specification spec = Utils.buildProductSpecifications(search);
         responseDTO.setData(productService.getAllProductsByAdmin(spec, pageable));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_ALL_PRODUCT_SUCCESS);
