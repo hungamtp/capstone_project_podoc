@@ -593,8 +593,8 @@ public class OrderServiceImplement implements OrdersService {
             () -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Factory factory = credential.getFactory();
 
-        Double income = ordersRepository.getInComeByFactory(factory.getId(), startDate, endDate) * 80 / 100;
-        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDateTime.now().withDayOfMonth(1), endDate) * 80 / 100;
+        Double income = ordersRepository.getInComeByFactory(factory.getId(), startDate, endDate) * (100-factory.getTradeDiscount()) / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDateTime.now().withDayOfMonth(1), endDate) * (100-factory.getTradeDiscount()) / 100;
         List<OrderDetail> orderDetails = orderDetailRepository.findAllByFactory(factory);
         long isDone = orderDetails.stream().filter(orderDetail -> orderDetail.isDone()).count();
         long isInProcess = orderDetails.size() - isDone;
