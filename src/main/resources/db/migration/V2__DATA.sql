@@ -5,11 +5,11 @@ INSERT INTO capstone_pod.`role` (id,name) VALUES
                                               ('3','FACTORY'),
                                               ('1','USER');
 
-INSERT INTO capstone_pod.factory (id,is_collaborating,location,name) VALUES
-                                                                         ('0caef37e-3849-49d1-ab41-c77b960514dd',1,'10 Đ. Nguyễn Văn Nguyễn, Tân Định, Quận 1, Thành phố Hồ Chí Minh','5THEWAY'),
-                                                                         ('baf544e1-1a21-47c5-8bd8-ea2171ad8274',1,'258/13 Cách Mạng Tháng Tám, Phường 10, Quận 3, TP.HCM','Potato Clothing'),
-                                                                         ('cc42380d-aece-4f49-a003-b672df301468',1,'1F Quách Điêu, Ấp 3, Xã Vĩnh Lộc A, Huyện Bình Chánh, TP.HCM','DONY'),
-                                                                         ('dde085a9-6275-44ba-ad5b-3f7c35f201b3',1,'Xa lộ Hà Nội, TP. Thủ Đức','Noway Clothing');
+INSERT INTO capstone_pod.factory (id,trade_discount,is_collaborating,location,name) VALUES
+                                                                         ('0caef37e-3849-49d1-ab41-c77b960514dd',20,1,'10 Đ. Nguyễn Văn Nguyễn, Tân Định, Quận 1, Thành phố Hồ Chí Minh','5THEWAY'),
+                                                                         ('baf544e1-1a21-47c5-8bd8-ea2171ad8274',20,1,'258/13 Cách Mạng Tháng Tám, Phường 10, Quận 3, TP.HCM','Potato Clothing'),
+                                                                         ('cc42380d-aece-4f49-a003-b672df301468',20,1,'1F Quách Điêu, Ấp 3, Xã Vĩnh Lộc A, Huyện Bình Chánh, TP.HCM','DONY'),
+                                                                         ('dde085a9-6275-44ba-ad5b-3f7c35f201b3',20,1,'Xa lộ Hà Nội, TP. Thủ Đức','Noway Clothing');
 
 INSERT INTO capstone_pod.`user` (id,first_name,last_name,status) VALUES
                                                                      ('2afeb771-4dbf-417e-96d0-8c35b9bff79a','Sang','Vu Viet','ACTIVE'),

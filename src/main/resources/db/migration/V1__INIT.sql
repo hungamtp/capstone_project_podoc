@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`category` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product` (
     `id` VARCHAR(36) NOT NULL,
-    `create_date` DATE NULL DEFAULT NULL,
-    `last_modified_date` DATE NULL DEFAULT NULL,
+    `create_date` DATETIME NULL DEFAULT NULL,
+    `last_modified_date` DATETIME NULL DEFAULT NULL,
     `description` VARCHAR(255) NULL DEFAULT NULL,
     `is_deleted` BIT(1) NOT NULL,
     `is_public` BIT(1) NOT NULL,
@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`factory` (
     `is_collaborating` BIT(1) NOT NULL,
     `location` VARCHAR(255) NULL DEFAULT NULL,
     `name` VARCHAR(255) NULL DEFAULT NULL,
+    `trade_discount` DOUBLE NOT NULL,
     PRIMARY KEY (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
@@ -382,6 +383,20 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
     CONSTRAINT `FKkhpt0kvab2o7vns3ikvne5fk9`
     FOREIGN KEY (`designed_product_id`)
     REFERENCES `capstone_pod`.`designed_product` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `capstone_pod`.`material`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `capstone_pod`.`material` (
+    `id` VARCHAR(36) NOT NULL,
+    `create_date` DATETIME NULL DEFAULT NULL,
+    `last_modified_date` DATETIME NULL DEFAULT NULL,
+    `name` VARCHAR(255) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`))
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci;

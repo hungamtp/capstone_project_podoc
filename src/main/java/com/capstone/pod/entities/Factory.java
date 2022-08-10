@@ -21,9 +21,8 @@ public class Factory{
     @Column(length = 36)
     private String id;
     private boolean isCollaborating;
-
     private String name;
-
+    private double tradeDiscount;
     private String location;
 
     @OneToOne(mappedBy = "factory")
