@@ -92,7 +92,7 @@ public class ProductServiceImplement implements ProductService {
         }
         boolean check = false;
         for (int i = 0; i < product.getSizeProduct().size(); i++) {
-            if(product.getSizeProduct().get(i).getSize().equals("L")) check = true;
+            if(product.getSizeProduct().get(i).getSize().equalsIgnoreCase("L")) check = true;
         }
         if(!check) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_SIZE_L);
