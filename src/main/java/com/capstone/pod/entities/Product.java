@@ -1,6 +1,6 @@
 package com.capstone.pod.entities;
 
-import com.capstone.pod.dto.support.Auditable;
+import com.capstone.pod.dto.support.AuditableDateTime;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,7 +23,7 @@ import java.util.List;
         @Index(columnList = "name , isDeleted , isPublic")
     }
 )
-public class Product extends Auditable {
+public class Product extends AuditableDateTime {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")

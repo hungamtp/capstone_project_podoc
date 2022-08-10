@@ -59,6 +59,12 @@ public class ExceptionHandlers extends RuntimeException {
         dto.setErrorMessage(exception.getMessage());
         return ResponseEntity.badRequest().body(dto);
     }
+    @ExceptionHandler(value = MaterialException.class)
+    public ResponseEntity<Object> materialException(MaterialException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
     @ExceptionHandler(value = QuantityNotEnoughException.class)
     public ResponseEntity<Object> quantityNotEnoughException(QuantityNotEnoughException exception) {
         ResponseDto dto = new ResponseDto();
