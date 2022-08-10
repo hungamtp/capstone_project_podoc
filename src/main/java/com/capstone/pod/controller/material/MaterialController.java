@@ -35,7 +35,7 @@ public class MaterialController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PostMapping
-    public ResponseEntity<ResponseDto> add(@Validated MaterialDto dto)
+    public ResponseEntity<ResponseDto> add(@RequestBody @Validated MaterialDto dto)
     {
         ResponseDto<MaterialDto> responseDTO = new ResponseDto();
         MaterialDto material = materialService.addMaterial(dto);
@@ -45,7 +45,7 @@ public class MaterialController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PutMapping
-    public ResponseEntity<ResponseDto> edit(@Validated MaterialDto dto)
+    public ResponseEntity<ResponseDto> edit(@RequestBody @Validated MaterialDto dto)
     {
         ResponseDto<MaterialDto> responseDTO = new ResponseDto();
         MaterialDto material = materialService.editMaterial(dto);
