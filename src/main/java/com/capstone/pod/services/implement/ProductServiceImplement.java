@@ -90,6 +90,13 @@ public class ProductServiceImplement implements ProductService {
         if (product.getSizeColors().stream().flatMap(sizeColor -> Stream.of(sizeColor.getSizeColorByFactories())).collect(Collectors.toList()).size() == 0) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_COLOR_AND_SIZE);
         }
+        boolean check = false;
+        for (int i = 0; i < product.getSizeProduct().size(); i++) {
+            if(product.getSizeProduct().get(i).getSize().equals("L")) check = true;
+        }
+        if(!check) {
+            throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_SIZE_L);
+        }
         if (product.getPriceByFactories().isEmpty()) {
             throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_HAVE_PRICE);
         }

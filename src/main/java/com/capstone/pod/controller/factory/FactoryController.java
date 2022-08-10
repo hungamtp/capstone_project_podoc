@@ -95,7 +95,7 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     @PatchMapping("update-price")
-    public ResponseEntity<ResponseDto> apdatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId,@Validated @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct) {
+    public ResponseEntity<ResponseDto> updatePriceByFactoryToProduct(@RequestParam String factoryId, @RequestParam String productId,@Validated @RequestBody AddPriceByFactoryDto addPriceByFactoryToProduct) {
         ResponseDto<Void> responseDTO = new ResponseDto();
         factoryService.updatePriceByFactoryToProduct(factoryId, productId, addPriceByFactoryToProduct.getPrice(), addPriceByFactoryToProduct.getMaterial());
         responseDTO.setSuccessMessage(FactorySuccessMessage.UPDATE_PRICE_TO_PRODUCT_SUCCESS);
