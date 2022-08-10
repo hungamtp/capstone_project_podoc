@@ -10,6 +10,7 @@ import lombok.*;
 public class OrderDetailsSupportDto {
     private String orderDetailsId;
     private String color;
+    private String colorImage;
     private String size;
     private int quantity;
 }

@@ -56,6 +56,7 @@ public class FactoryServiceImplement implements FactoryService {
 
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final ColorRepository colorRepository;
     private  Credential getPermittedCredential(String credentialId) {
         Credential credential = credentialRepository.findById(credentialId)
                 .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
@@ -257,6 +258,7 @@ public class FactoryServiceImplement implements FactoryService {
                 for (int i = 0; i < orderDetails.size(); i++) {
                     orderDetailsSupportDtos.add(OrderDetailsSupportDto.builder().orderDetailsId(orderDetails.get(i).getId())
                             .color(orderDetails.get(i).getColor())
+                            .colorImage(colorRepository.findByName(orderDetails.get(i).getColor()).get().getImageColor())
                             .size(orderDetails.get(i).getSize())
                             .quantity(orderDetails.get(i).getQuantity())
                             .build());
