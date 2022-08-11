@@ -20,7 +20,7 @@ public interface OrdersRepository extends JpaRepository<Orders,String> , OrderRe
     @Query(nativeQuery = true , value = "update orders  set transaction_id = ?2 where id = ?1")
     void updatePaymentId(String orderId , String paymentId);
 
-    Page<Orders> findAllByIsPaidIsFalseAndUser(Pageable pageable , User user);
+    Page<Orders> findAllByUser(Pageable pageable , User user);
 
     Long countByIsPaid(boolean isPaid);
 

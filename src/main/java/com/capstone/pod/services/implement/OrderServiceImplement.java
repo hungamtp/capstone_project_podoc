@@ -77,7 +77,8 @@ public class OrderServiceImplement implements OrdersService {
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         return credential;
     }
-    private PrintingInfo saveDesignForPrinting(Cart cart, OrderDetail orderDetail){
+
+    private PrintingInfo saveDesignForPrinting(Cart cart, OrderDetail orderDetail) {
         PrintingInfo printingInfo = PrintingInfo.builder().build();
         for (int i = 0; i < cart.getCartDetails().size(); i++) {
             printingInfo.setOrderDetail(orderDetail);
@@ -127,11 +128,11 @@ public class OrderServiceImplement implements OrdersService {
             boolean check = true;
             List<ShippingInfo> shippingInfos = shippingInfoRepository.findAllByUserId(getCredential().getUser().getId());
             for (int i = 0; i < shippingInfos.size(); i++) {
-                if(shippingInfos.get(i).getPhoneNumber().equals(shippingInfoDto.getPhone())){
+                if (shippingInfos.get(i).getPhoneNumber().equals(shippingInfoDto.getPhone())) {
                     check = false;
                 }
             }
-            if(check) {
+            if (check) {
                 shippingInfoRepository.save(shippingInfo);
             }
         }
@@ -235,40 +236,49 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public void deleteOrderHasnotPaid(String orderId) {
-        Orders orders = ordersRepository.findById(orderId).orElseThrow(()->new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
-        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
-        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
-        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(orders);
-        List<PrintingInfo> printingInfos = new ArrayList<>();
-        List<PrintingImagePreview> printingImagePreviews = new ArrayList<>();
-        List<PrintingBluePrint> printingBluePrints = new ArrayList<>();
-        List<PrintingPlaceholder> printingPlaceholders = new ArrayList<>();
-        List<PrintingDesignInfo> printingDesignInfos = new ArrayList<>();
-        for (int i = 0; i < orderDetails.size() ; i++) {
-            printingInfos.add(orderDetails.get(i).getPrintingInfo());
-        }
-        for (int i = 0; i < printingInfos.size(); i++) {
-            for (int j = 0; j < printingInfos.get(i).getPreviewImages().size(); j++) {
-                printingImagePreviews.add(printingInfos.get(i).getPreviewImages().get(j));
-            }
-            for (int j = 0; j < printingInfos.get(i).getPrintingBluePrints().size(); j++) {
-                printingBluePrints.add(printingInfos.get(i).getPrintingBluePrints().get(j));
-            }
-        }
-        for (int i = 0; i < printingBluePrints.size(); i++) {
-            printingPlaceholders.add(printingBluePrints.get(i).getPrintingPlaceholder());
-            for (int j = 0; j < printingBluePrints.get(i).getPrintingDesignInfos().size(); j++) {
-                printingDesignInfos.add(printingBluePrints.get(i).getPrintingDesignInfos().get(j));
+    public void cancelOrder(String orderId) {
+        Orders orders = ordersRepository.findById(orderId).orElseThrow(
+            () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+        orders.setCanceled(true);
+        if(orders.isPaid()){
+            // Refund
 
-            }
         }
-        printingDesignInfoRepository.deleteAllInBatch(printingDesignInfos);
-        printingPlaceHolderRepository.deleteAllInBatch(printingPlaceholders);
-        printingBluePrintRepository.deleteAllInBatch(printingBluePrints);
-        printingImageRepository.deleteAllInBatch(printingImagePreviews);
-        printingInfoRepository.deleteAllInBatch(printingInfos);
-        ordersRepository.delete(orders);
+
+        ordersRepository.save(orders);
+
+        //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+//        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
+//        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(orders);
+//        List<PrintingInfo> printingInfos = new ArrayList<>();
+//        List<PrintingImagePreview> printingImagePreviews = new ArrayList<>();
+//        List<PrintingBluePrint> printingBluePrints = new ArrayList<>();
+//        List<PrintingPlaceholder> printingPlaceholders = new ArrayList<>();
+//        List<PrintingDesignInfo> printingDesignInfos = new ArrayList<>();
+//        for (int i = 0; i < orderDetails.size() ; i++) {
+//            printingInfos.add(orderDetails.get(i).getPrintingInfo());
+//        }
+//        for (int i = 0; i < printingInfos.size(); i++) {
+//            for (int j = 0; j < printingInfos.get(i).getPreviewImages().size(); j++) {
+//                printingImagePreviews.add(printingInfos.get(i).getPreviewImages().get(j));
+//            }
+//            for (int j = 0; j < printingInfos.get(i).getPrintingBluePrints().size(); j++) {
+//                printingBluePrints.add(printingInfos.get(i).getPrintingBluePrints().get(j));
+//            }
+//        }
+//        for (int i = 0; i < printingBluePrints.size(); i++) {
+//            printingPlaceholders.add(printingBluePrints.get(i).getPrintingPlaceholder());
+//            for (int j = 0; j < printingBluePrints.get(i).getPrintingDesignInfos().size(); j++) {
+//                printingDesignInfos.add(printingBluePrints.get(i).getPrintingDesignInfos().get(j));
+//
+//            }
+//        }
+//        printingDesignInfoRepository.deleteAllInBatch(printingDesignInfos);
+//        printingPlaceHolderRepository.deleteAllInBatch(printingPlaceholders);
+//        printingBluePrintRepository.deleteAllInBatch(printingBluePrints);
+//        printingImageRepository.deleteAllInBatch(printingImagePreviews);
+//        printingInfoRepository.deleteAllInBatch(printingInfos);
+//        ordersRepository.delete(orders);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -286,24 +296,28 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public void completeOrder(String paymentId) {
+    public void completeOrder(String paymentId, String zp_trans_id) {
+        //set appTransId and update status of order
         Orders orders = ordersRepository.findByTransactionId(paymentId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
         if (orders.isPaid()) {
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
+        orders.setAppTransId(zp_trans_id);
         orders.setPaid(true);
         ordersRepository.save(orders);
 
+        //remove cart detail
+        //minus quantity
         Cart cart = cartRepository.findCartByUser(getCredential().getUser());
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<CartDetail> cartDetailList = cart.getCartDetails();
         for (int i = 0; i < cartDetailList.size(); i++) {
-            Optional<OrderDetail> orderDetailOptional = orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndColorAndSize(orders.getId(),cartDetailList.get(i).getDesignedProduct().getId(),cartDetailList.get(i).getColor(), cartDetailList.get(i).getSize());
+            Optional<OrderDetail> orderDetailOptional = orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndColorAndSize(orders.getId(), cartDetailList.get(i).getDesignedProduct().getId(), cartDetailList.get(i).getColor(), cartDetailList.get(i).getSize());
             OrderDetail orderDetail = orderDetailOptional.get();
             Optional<SizeColor> sizeColor = sizeColorRepository
-                    .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
             sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() - cartDetailList.get(i).getQuantity());
             sizeColorByFactories.add(sizeColorByFactory.get());
@@ -326,12 +340,12 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public PageDTO getAllOrderIsNotPaid(String email, Pageable pageable) {
+    public PageDTO getAllOrder(String email, Pageable pageable) {
         Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
             () -> new CredentialNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
         );
         User user = credential.getUser();
-        Page<Orders> ordersPage = ordersRepository.findAllByIsPaidIsFalseAndUser(pageable, user);
+        Page<Orders> ordersPage = ordersRepository.findAllByUser(pageable, user);
         PageDTO pageDTO = new PageDTO();
         pageDTO.setPage(pageable.getPageNumber());
         pageDTO.setElements(Long.valueOf(ordersPage.getTotalElements()).intValue());
@@ -343,8 +357,10 @@ public class OrderServiceImplement implements OrdersService {
                 .isPaid(orders.isPaid())
                 .totalBill(orders.getPrice())
                 .createdDate(orders.getCreateDate())
+                .canCancel(orders.canCancel())
+                .canceled(orders.isCanceled())
                 .orderDetailDtos(orders.getOrderDetails().stream()
-                    .map( orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
+                    .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
                     .collect(Collectors.toList()))
                 .build();
         }).collect(Collectors.toList());
@@ -406,12 +422,12 @@ public class OrderServiceImplement implements OrdersService {
             .orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
 
         AllOrderDetail allOrderDetail =
-            orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page + 1 , size, credential.getUser().getId());
+            orderDetailRepository.findAllOrderDetailIsPaidTrueOrderDetail(page + 1, size, credential.getUser().getId());
         return PageDTO.builder()
             .data(allOrderDetail.getResult()
-            .stream()
-            .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
-            .collect(Collectors.toList()))
+                .stream()
+                .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
+                .collect(Collectors.toList()))
             .elements(allOrderDetail.getElements())
             .page(page)
             .build();
@@ -593,8 +609,8 @@ public class OrderServiceImplement implements OrdersService {
             () -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         Factory factory = credential.getFactory();
 
-        Double income = ordersRepository.getInComeByFactory(factory.getId(), startDate, endDate) * (100-factory.getTradeDiscount()) / 100;
-        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDateTime.now().withDayOfMonth(1), endDate) * (100-factory.getTradeDiscount()) / 100;
+        Double income = ordersRepository.getInComeByFactory(factory.getId(), startDate, endDate) * (100 - factory.getTradeDiscount()) / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByFactory(factory.getId(), LocalDateTime.now().withDayOfMonth(1), endDate) * (100 - factory.getTradeDiscount()) / 100;
         List<OrderDetail> orderDetails = orderDetailRepository.findAllByFactory(factory);
         long isDone = orderDetails.stream().filter(orderDetail -> orderDetail.isDone()).count();
         long isInProcess = orderDetails.size() - isDone;
@@ -610,12 +626,12 @@ public class OrderServiceImplement implements OrdersService {
     public void updateOrderDetailsStatus(List<String> orderDetailIds, String orderStatus) {
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (int i = 0; i < orderDetailIds.size(); i++) {
-            OrderDetail orderDetail =  orderDetailRepository.findById(orderDetailIds.get(i)).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+            OrderDetail orderDetail = orderDetailRepository.findById(orderDetailIds.get(i)).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
             orderDetails.add(orderDetail);
         }
-        for (int i = 0; i < orderDetails.size() ; i++) {
+        for (int i = 0; i < orderDetails.size(); i++) {
             for (int j = 0; j < OrderState.getAllOrderState().size(); j++) {
-                if(orderStatus.equals(OrderState.getAllOrderState().get(j))){
+                if (orderStatus.equals(OrderState.getAllOrderState().get(j))) {
                     orderDetails.get(i).getOrderStatuses().add(OrderStatus.builder().orderDetail(orderDetails.get(i)).name(orderStatus).build());
                 }
             }
@@ -626,7 +642,7 @@ public class OrderServiceImplement implements OrdersService {
     @Override
     public List<MyOrderDetailDto> getOderDetailByOrderId(String orderId) {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
-            () -> new EntityNotFoundException(EntityName.ORDERS+"_"+ErrorMessage.NOT_FOUND)
+            () -> new EntityNotFoundException(EntityName.ORDERS + "_" + ErrorMessage.NOT_FOUND)
         );
         return orderDetailRepository.findAllByOrders(orders)
             .stream()

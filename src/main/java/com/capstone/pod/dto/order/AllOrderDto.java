@@ -16,6 +16,8 @@ public class AllOrderDto {
     private double totalBill;
     private LocalDateTime createdDate;
     private Boolean isPaid;
+    private boolean canCancel;
+    private boolean canceled;
     private int countItem;
     private List<MyOrderDetailDto> orderDetailDtos;
 }
