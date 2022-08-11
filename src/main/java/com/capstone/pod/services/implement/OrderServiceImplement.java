@@ -649,12 +649,18 @@ public class OrderServiceImplement implements OrdersService {
 
     @Override
     public void cancelOrderDetailByFactory(CancelOrderDto dto) {
-       OrderDetail orderDetail =  orderDetailRepository.findById(dto.getOrderDetailId()).orElseThrow(()-> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
-       if(!orderDetail.getFactory().getId().equals(getCredential().getFactory().getId())) {
+       List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(ordersRepository.getById(dto.getOrderId()));
+       if(orderDetails.isEmpty()) throw  new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
+       if(!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
        }
-       orderDetail.setCanceled(true);
-       orderDetail.setReason(dto.getCancelReason());
-       orderDetailRepository.save(orderDetail);
+        for (int i = 0; i < orderDetails.size(); i++) {
+            List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
+            orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
+            orderDetails.get(i).setOrderStatuses(orderStatuses);
+            orderDetails.get(i).setCanceled(true);
+            orderDetails.get(i).setReason(dto.getCancelReason());
+        }
+       orderDetailRepository.saveAll(orderDetails);
     }
 }
