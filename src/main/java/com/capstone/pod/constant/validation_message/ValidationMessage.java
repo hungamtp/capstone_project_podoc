@@ -15,6 +15,7 @@ public final class ValidationMessage {
     public static final String LASTNAME_VALID_MESSAGE ="Last name must be filled";
     public static final String NAME_VALID_MESSAGE ="Name must be filled";
     public static final String PASSWORD_VALID_MESSAGE ="Password must be filled";
+    public static final String TRADE_DISCOUNT_VALID_MESSAGE ="Trade discount must be filled";
     public static final String STATUS_VALID_MESSAGE ="Status must be filled";
     public static final String POSITION_VALID_MESSAGE ="Position must be filled";
 

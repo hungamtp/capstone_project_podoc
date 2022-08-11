@@ -94,6 +94,7 @@ public class FactoryServiceImplement implements FactoryService {
         }
         Factory factory = Factory.builder()
                 .isCollaborating(true)
+                .tradeDiscount(factoryDto.getTradeDiscount())
                 .name(factoryDto.getName())
                 .location(factoryDto.getAddress())
                 .build();
