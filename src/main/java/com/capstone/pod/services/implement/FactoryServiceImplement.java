@@ -125,6 +125,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .material(priceByFactories.get(i).getMaterial())
                        .price(priceByFactories.get(i).getPrice())
                        .name(priceByFactories.get(i).getProduct().getName())
+                       .createDate(priceByFactories.get(i).getProduct().getCreateDate())
                        .isPublic(priceByFactories.get(i).getProduct().isPublic())
                        .isDeleted(priceByFactories.get(i).getProduct().isDeleted())
                        .productImages(priceByFactories.get(i).getProduct().getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
@@ -133,7 +134,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .build();
                productDtoList.add(productDto);
             }
-            List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().collect(Collectors.toList());
+            List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getCreateDate())).distinct().collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
                         .name(credential.getFactory()
