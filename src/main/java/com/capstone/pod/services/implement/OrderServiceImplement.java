@@ -240,7 +240,7 @@ public class OrderServiceImplement implements OrdersService {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
             () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
         orders.setCanceled(true);
-        if(orders.isPaid()){
+        if (orders.isPaid()) {
             // Refund
 
         }
@@ -583,8 +583,8 @@ public class OrderServiceImplement implements OrdersService {
     @Override
     public AdminDashboard getAdminDashboard(LocalDateTime startDate, LocalDateTime endDate) {
         List<CategorySoldCountProjection> categorySoldCountProjections = orderDetailRepository.countOrderByCategory();
-        Double income = ordersRepository.getInComeByAdmin(startDate, endDate) * 20 / 100;
-        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDateTime.now().withDayOfMonth(1), endDate) * 20 / 100;
+        Double income = ordersRepository.getInComeByAdmin(startDate, endDate);
+        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDateTime.now().withDayOfMonth(1), endDate);
 
         Long countZaloOrder = ordersRepository.countZaloPay();
         Long orderCount = ordersRepository.countByIsPaid(true);
