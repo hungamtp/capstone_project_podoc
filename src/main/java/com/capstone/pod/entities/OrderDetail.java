@@ -42,6 +42,9 @@ public class OrderDetail {
         return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.DONE))
             .collect(Collectors.toList()).size() != 0;
     }
+    public boolean isCancel() {
+        return canceled;
+    }
 
     public boolean isCanceled() {
         return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.CANCEL))
