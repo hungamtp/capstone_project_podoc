@@ -63,8 +63,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
             Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
             Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = detailDesignedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
-            Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), priceByFactoryJoin.get(PriceByFactory_.PRICE));
-            query.multiselect(criteriaBuilder.sum(income));
+            Join<PriceByFactory, Factory> factoryFactoryJoin = detailDesignedProductJoin.join(PriceByFactory_.FACTORY);
+            Expression<Number> incomeBefore = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), priceByFactoryJoin.get(PriceByFactory_.PRICE));
+            Expression<Number> incomeAfter = criteriaBuilder.prod(incomeBefore, factoryFactoryJoin.get(Factory_.TRADE_DISCOUNT));
+            query.multiselect(criteriaBuilder.sum(incomeAfter));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
             query.where(orderEqual, dateBetween);
