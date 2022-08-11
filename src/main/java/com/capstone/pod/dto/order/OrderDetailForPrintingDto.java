@@ -23,4 +23,5 @@ public class OrderDetailForPrintingDto {
     private List<OrderDetailsSupportDto> orderDetailsSupportDtos;
     private String productId;
     private String status;
+    private boolean isCanceled;
 }

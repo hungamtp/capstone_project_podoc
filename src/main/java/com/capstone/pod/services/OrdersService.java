@@ -5,6 +5,7 @@ import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.dashboard.AdminDashboard;
 import com.capstone.pod.dto.dashboard.DesignerDashboard;
 import com.capstone.pod.dto.dashboard.FactoryDashboard;
+import com.capstone.pod.dto.order.CancelOrderDto;
 import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
@@ -39,4 +40,6 @@ public interface OrdersService {
     void updateOrderDetailsStatus(List<String> orderDetailIds,String orderStatus);
 
     List<MyOrderDetailDto> getOderDetailByOrderId(String orderId);
+
+    void cancelOrderDetailByFactory(CancelOrderDto dto);
 }

@@ -43,7 +43,7 @@ public class OrderDetail {
             .collect(Collectors.toList()).size() != 0;
     }
 
-    public boolean isCancel() {
+    public boolean isCanceled() {
         return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.CANCEL))
             .collect(Collectors.toList()).size() != 0;
     }

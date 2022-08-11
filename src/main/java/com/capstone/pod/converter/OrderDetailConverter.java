@@ -2,9 +2,7 @@ package com.capstone.pod.converter;
 
 import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
-import com.capstone.pod.dto.auth.RegisterResponseDto;
 import com.capstone.pod.dto.order.MyOrderDetailDto;
-import com.capstone.pod.dto.order.OrderDetailDto;
 import com.capstone.pod.dto.order.OrderStateDto;
 import com.capstone.pod.entities.Color;
 import com.capstone.pod.entities.DesignedProduct;
@@ -15,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Component
@@ -50,7 +47,7 @@ public class OrderDetailConverter {
             .date(orderDetail.getOrders().getCreateDate())
             .isRated(orderDetail.isRate())
             .status(orderDetail.latestStatus())
-            .isCancel(orderDetail.isCancel())
+            .isCancel(orderDetail.isCanceled())
             .reason(orderDetail.getReason())
             .statuses(orderDetail.getOrderStatuses().stream().map(orderStatus -> modelMapper.map(orderStatus, OrderStateDto.class)).collect(Collectors.toList()))
             .build();

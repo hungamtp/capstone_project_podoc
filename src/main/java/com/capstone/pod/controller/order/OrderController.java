@@ -4,6 +4,7 @@ import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.common.ResponseDto;
+import com.capstone.pod.dto.order.CancelOrderDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.dto.utils.Utils;
@@ -199,6 +200,13 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public ResponseEntity getAllOrderDetailByOrderId(@PathVariable String orderId ) {
         return ResponseEntity.ok().body(ordersService.getOderDetailByOrderId(orderId));
+    }
+    @PutMapping("/cancel")
+    public ResponseEntity cancelOrder(@RequestBody @Validated CancelOrderDto dto ) {
+        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto<>();
+        ordersService.cancelOrderDetailByFactory(dto);
+        responseDto.setSuccessMessage(OrderSuccessMessage.CANCEL_ORDER_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
     }
 
     @PostMapping("/momo/callback")

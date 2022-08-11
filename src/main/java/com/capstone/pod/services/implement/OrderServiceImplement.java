@@ -16,10 +16,7 @@ import com.capstone.pod.dto.dashboard.AdminDashboard;
 import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
 import com.capstone.pod.dto.dashboard.DesignerDashboard;
 import com.capstone.pod.dto.dashboard.FactoryDashboard;
-import com.capstone.pod.dto.order.AllOrderDto;
-import com.capstone.pod.dto.order.MyOrderDetailDto;
-import com.capstone.pod.dto.order.OrderOwnDesignDto;
-import com.capstone.pod.dto.order.ShippingInfoDto;
+import com.capstone.pod.dto.order.*;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.enums.PaymentMethod;
 import com.capstone.pod.exceptions.*;
@@ -648,5 +645,16 @@ public class OrderServiceImplement implements OrdersService {
             .stream()
             .map(orderDetail -> orderDetailConverter.entityToMyOrderDetailDto(orderDetail))
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public void cancelOrderDetailByFactory(CancelOrderDto dto) {
+       OrderDetail orderDetail =  orderDetailRepository.findById(dto.getOrderDetailId()).orElseThrow(()-> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+       if(!orderDetail.getFactory().getId().equals(getCredential().getFactory().getId())) {
+           throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+       }
+       orderDetail.setCanceled(true);
+       orderDetail.setReason(dto.getCancelReason());
+       orderDetailRepository.save(orderDetail);
     }
 }

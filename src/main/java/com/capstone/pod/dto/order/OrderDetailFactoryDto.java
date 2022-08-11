@@ -2,8 +2,6 @@ package com.capstone.pod.dto.order;
 
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +19,5 @@ public class OrderDetailFactoryDto {
     private double price;
     private int quantity;
     private String status;
+    private boolean isCanceled;
 }
