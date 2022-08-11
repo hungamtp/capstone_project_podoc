@@ -2,13 +2,16 @@ package com.capstone.pod.converter;
 
 import com.capstone.pod.constant.common.EntityName;
 import com.capstone.pod.constant.common.ErrorMessage;
+import com.capstone.pod.dto.auth.RegisterResponseDto;
 import com.capstone.pod.dto.order.MyOrderDetailDto;
 import com.capstone.pod.dto.order.OrderDetailDto;
+import com.capstone.pod.dto.order.OrderStateDto;
 import com.capstone.pod.entities.Color;
 import com.capstone.pod.entities.DesignedProduct;
 import com.capstone.pod.entities.OrderDetail;
 import com.capstone.pod.repositories.ColorRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityNotFoundException;
@@ -20,6 +23,7 @@ import java.util.stream.Collectors;
 public class OrderDetailConverter {
 
     private final ColorRepository colorRepository;
+    private final ModelMapper modelMapper;
 
     public MyOrderDetailDto entityToMyOrderDetailDto(OrderDetail orderDetail) {
         DesignedProduct designedProduct = orderDetail.getDesignedProduct();
@@ -46,6 +50,9 @@ public class OrderDetailConverter {
             .date(orderDetail.getOrders().getCreateDate())
             .isRated(orderDetail.isRate())
             .status(orderDetail.latestStatus())
+            .isCancel(orderDetail.isCancel())
+            .reason(orderDetail.getReason())
+            .statuses(orderDetail.getOrderStatuses().stream().map(orderStatus -> modelMapper.map(orderStatus, OrderStateDto.class)).collect(Collectors.toList()))
             .build();
     }
 }

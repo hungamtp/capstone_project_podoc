@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Builder
@@ -23,6 +24,8 @@ public class OrderDetail {
     private int quantity;
     private String color;
     private String size;
+    private boolean canceled;
+    private String reason;
     private boolean isRate;
     @ManyToOne
     private Orders orders;
@@ -30,25 +33,26 @@ public class OrderDetail {
     private DesignedProduct designedProduct;
     @ManyToOne
     private Factory factory;
-    @OneToMany(mappedBy = "orderDetail",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderDetail", cascade = CascadeType.ALL)
     List<OrderStatus> orderStatuses;
     @OneToOne(mappedBy = "orderDetail")
     private PrintingInfo printingInfo;
 
-    public boolean isDone(){
-        for(var state : this.orderStatuses){
-           if( state.getName().equals(OrderState.DONE)){
-               return true;
-           }
-        }
-        return false;
+    public boolean isDone() {
+        return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.DONE))
+            .collect(Collectors.toList()).size() != 0;
     }
 
-    public String latestStatus(){
+    public boolean isCancel() {
+        return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.CANCEL))
+            .collect(Collectors.toList()).size() != 0;
+    }
+
+    public String latestStatus() {
         String result = "";
         LocalDateTime localDateTime = LocalDateTime.MIN;
-        for(var status : this.orderStatuses){
-            if(status.getCreateDate().isAfter(localDateTime)){
+        for (var status : this.orderStatuses) {
+            if (status.getCreateDate().isAfter(localDateTime)) {
                 localDateTime = status.getCreateDate();
                 result = status.getName();
             }

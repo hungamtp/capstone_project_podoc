@@ -16,13 +16,13 @@ import java.util.List;
 
 public interface OrdersService {
     PaymentResponse addOrder(ShippingInfoDto shippingInfoDto, int paymentMethod) throws Exception;
-    void deleteOrderHasnotPaid(String orderId) ;
+    void cancelOrder(String orderId) ;
 
-    void completeOrder(String paymentId);
+    void completeOrder(String paymentId ,String zp_trans_id);
 
     List<ShippingInfoDto> getMyShippingInfo();
 
-    PageDTO getAllOrderIsNotPaid(String email, Pageable pageable);
+    PageDTO getAllOrder(String email, Pageable pageable);
 
     PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception;
 

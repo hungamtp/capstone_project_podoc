@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -25,4 +26,7 @@ public class MyOrderDetailDto {
     private LocalDateTime date;
     private int quantity;
     private boolean isRated;
+    private boolean isCancel;
+    private String reason;
+    List<OrderStateDto> statuses;
 }

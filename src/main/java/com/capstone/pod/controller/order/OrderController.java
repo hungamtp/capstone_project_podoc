@@ -7,6 +7,7 @@ import com.capstone.pod.dto.common.ResponseDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.dto.utils.Utils;
+import com.capstone.pod.entities.Orders_;
 import com.capstone.pod.momo.MomoCallbackRequestBody;
 import com.capstone.pod.momo.models.PaymentResponse;
 import com.capstone.pod.momo.shared.utils.LogUtils;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +37,10 @@ import java.util.logging.Logger;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrdersService ordersService;
+
+    private Logger logger = Logger.getLogger(this.getClass().getName());
+    private String key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
+    private Mac HmacSHA256;
 
     @PostMapping("/{paymentMethod}")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
@@ -57,9 +63,9 @@ public class OrderController {
     }
     @DeleteMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> deleteOrderHasnotPaid(@RequestParam String orderId) {
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrder(@RequestParam String orderId) {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
-        ordersService.deleteOrderHasnotPaid(orderId);
+        ordersService.cancelOrder(orderId);
         responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
@@ -89,7 +95,7 @@ public class OrderController {
         // &apptransid=220713_695232
         // &pmcid=38
         // &bankcode=&status=1
-        ordersService.completeOrder(orderId);
+        ordersService.completeOrder(orderId , "");
         return ResponseEntity.ok().body("PAID_SUCCESS");
     }
 
@@ -98,8 +104,8 @@ public class OrderController {
     public ResponseEntity getAllMyOrder(HttpServletRequest request, @RequestParam int page, @RequestParam int size) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
-        Pageable pageable = PageRequest.of(page, size);
-        PageDTO pageDTO = ordersService.getAllOrderIsNotPaid(email, pageable);
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Orders_.CREATE_DATE));
+        PageDTO pageDTO = ordersService.getAllOrder(email, pageable);
         return ResponseEntity.ok().body(pageDTO);
     }
 
@@ -122,9 +128,6 @@ public class OrderController {
         return ResponseEntity.ok().body(ordersService.orderOwnDesign(orderOwnDesignDto, paymentMethod));
     }
 
-    private Logger logger = Logger.getLogger(this.getClass().getName());
-    private String key2 = "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz";
-    private Mac HmacSHA256;
 
 
     @PostMapping("/callback")
@@ -150,7 +153,7 @@ public class OrderController {
                 // thanh toán thành công
                 // merchant cập nhật trạng thái cho đơn hàng
                 JSONObject data = new JSONObject(dataStr);
-                ordersService.completeOrder(data.get("app_trans_id").toString());
+                ordersService.completeOrder(data.get("app_trans_id").toString() , data.get("zp_trans_id").toString());
                 logger.info("update order's status = success where app_trans_id = " + data.getString("app_trans_id"));
 
                 result.put("return_code", 1);
@@ -201,7 +204,7 @@ public class OrderController {
     @PostMapping("/momo/callback")
     public ResponseEntity noti(@RequestBody MomoCallbackRequestBody request ) {
         if(request.getResultCode() == 0){
-            ordersService.completeOrder(request.getOrderId());
+            ordersService.completeOrder(request.getOrderId() , request.getTransId().toString());
         }
         return ResponseEntity.ok().body("PAID_SUCCESS");
     }
