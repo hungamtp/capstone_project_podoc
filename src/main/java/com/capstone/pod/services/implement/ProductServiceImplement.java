@@ -278,7 +278,6 @@ public class ProductServiceImplement implements ProductService {
         List<PriceByFactory> priceByFactoriesInFactory = priceByFactoriesAll.stream().filter(priceByFactory -> priceByFactory.getFactory().getId().equals(factoryId)).collect(Collectors.toList());
         List<Product> productsAll = productRepository.findAll();
         List<Product> productsInFactory = priceByFactoriesInFactory.stream().map(priceByFactory -> priceByFactory.getProduct()).distinct().collect(Collectors.toList());
-
         List<Product> productsReturn = new ArrayList<>();
         boolean tmp = true;
         for (int i = 0; i < productsAll.size(); i++) {
