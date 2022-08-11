@@ -21,6 +21,9 @@ public interface OrdersRepository extends JpaRepository<Orders,String> , OrderRe
     void updatePaymentId(String orderId , String paymentId);
 
     Page<Orders> findAllByUser(Pageable pageable , User user);
+    Page<Orders> findAllByUserAndIsPaidAndCanceled(Pageable pageable , User user , Boolean isPaid , Boolean canceled);
+    Page<Orders> findAllByUserAndIsPaid(Pageable pageable , User user , Boolean isPaid);
+    Page<Orders> findAllByUserAndCanceled(Pageable pageable , User user , Boolean canceled);
 
     Long countByIsPaid(boolean isPaid);
 

@@ -23,7 +23,7 @@ public interface OrdersService {
 
     List<ShippingInfoDto> getMyShippingInfo();
 
-    PageDTO getAllOrder(String email, Pageable pageable);
+    PageDTO getAllOrder(String email, Pageable pageable , Boolean isPaid , Boolean cancel);
 
     PaymentResponse payOrder(int paymentMethod ,String orderId) throws Exception;
 
