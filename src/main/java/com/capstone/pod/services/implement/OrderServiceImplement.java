@@ -340,12 +340,27 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public PageDTO getAllOrder(String email, Pageable pageable) {
+    public PageDTO getAllOrder(String email, Pageable pageable , Boolean isPaid , Boolean cancel) {
         Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
             () -> new CredentialNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
         );
         User user = credential.getUser();
-        Page<Orders> ordersPage = ordersRepository.findAllByUser(pageable, user);
+        Page<Orders> ordersPage = null;
+
+        if(isPaid != null ){
+            if(cancel != null){
+                ordersPage = ordersRepository.findAllByUserAndIsPaidAndCanceled(pageable, user , isPaid , cancel);
+            }else{
+                ordersPage = ordersRepository.findAllByUserAndIsPaid(pageable, user , isPaid);
+            }
+        }
+        else{
+            if(cancel != null){
+                ordersPage = ordersRepository.findAllByUserAndCanceled(pageable, user  , cancel);
+            }else{
+                ordersPage = ordersRepository.findAllByUser(pageable, user);
+            }
+        }
         PageDTO pageDTO = new PageDTO();
         pageDTO.setPage(pageable.getPageNumber());
         pageDTO.setElements(Long.valueOf(ordersPage.getTotalElements()).intValue());
