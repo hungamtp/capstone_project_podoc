@@ -292,7 +292,7 @@ public class ProductServiceImplement implements ProductService {
             tmp = true;
         }
         if(!productName.isEmpty()) {
-            return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).filter(getProductFactoryDto -> getProductFactoryDto.getName().contains(productName)).collect(Collectors.toList());
+            return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).filter(getProductFactoryDto -> getProductFactoryDto.getName().toLowerCase().contains(productName.toLowerCase())).collect(Collectors.toList());
         }
         return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).collect(Collectors.toList());
         }
