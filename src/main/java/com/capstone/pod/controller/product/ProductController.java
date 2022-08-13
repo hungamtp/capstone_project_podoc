@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -146,9 +147,9 @@ public class ProductController {
     }
     @GetMapping("/product-for-factory")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
-    public ResponseEntity<ResponseDto> getProductFactoryNotHaveYet(@RequestParam String factoryId){
+    public ResponseEntity<ResponseDto> getProductFactoryNotHaveYet(@RequestParam String factoryId, @RequestParam @Nullable String productName){
         ResponseDto<List<GetProductFactoryDto>> responseDTO = new ResponseDto();
-        responseDTO.setData(productService.getAllProductForFactoryDoNotHaveYet(factoryId));
+        responseDTO.setData(productService.getAllProductForFactoryDoNotHaveYet(factoryId, productName));
         responseDTO.setSuccessMessage(ProductSuccessMessage.GET_PRODUCT_FOR_FACTORY_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }

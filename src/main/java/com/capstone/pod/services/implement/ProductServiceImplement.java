@@ -273,7 +273,7 @@ public class ProductServiceImplement implements ProductService {
     }
 
     @Override
-    public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(String factoryId) {
+    public List<GetProductFactoryDto> getAllProductForFactoryDoNotHaveYet(String factoryId, String productName) {
         List<PriceByFactory> priceByFactoriesAll = priceByFactoryRepository.findAll();
         List<PriceByFactory> priceByFactoriesInFactory = priceByFactoriesAll.stream().filter(priceByFactory -> priceByFactory.getFactory().getId().equals(factoryId)).collect(Collectors.toList());
         List<Product> productsAll = productRepository.findAll();
@@ -291,8 +291,11 @@ public class ProductServiceImplement implements ProductService {
             }
             tmp = true;
         }
+        if(productName!=null) {
+            return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).filter(getProductFactoryDto -> getProductFactoryDto.getName().equals(productName)).collect(Collectors.toList());
+        }
         return productsReturn.stream().map(product -> GetProductFactoryDto.builder().id(product.getId()).name(product.getName()).build()).collect(Collectors.toList());
-    }
+        }
 
     @Override
     public AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto) {
