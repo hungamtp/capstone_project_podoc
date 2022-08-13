@@ -1,14 +1,11 @@
 package com.capstone.pod.entities;
 
-import com.capstone.pod.dto.support.Auditable;
 import com.capstone.pod.dto.support.AuditableDateTime;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Comparator;
 
 @Entity
 @Builder
@@ -30,6 +27,4 @@ public class OrderStatus extends AuditableDateTime implements Comparable<OrderSt
     public int compareTo(@NotNull OrderStatus o) {
         return this.lastModifiedDate.isAfter(o.lastModifiedDate) ? -1 : 1;
     }
-
-
 }
