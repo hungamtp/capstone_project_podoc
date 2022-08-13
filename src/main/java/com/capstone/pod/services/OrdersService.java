@@ -19,7 +19,7 @@ public interface OrdersService {
     PaymentResponse addOrder(ShippingInfoDto shippingInfoDto, int paymentMethod) throws Exception;
     void cancelOrder(String orderId) ;
 
-    void completeOrder(String paymentId ,String zp_trans_id);
+    void completeOrder(String paymentId ,String appId);
 
     List<ShippingInfoDto> getMyShippingInfo();
 
