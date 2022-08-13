@@ -22,6 +22,7 @@ public class OrderDetailForPrintingDto {
     private List<BluePrintDto> bluePrintDtos;
     private List<OrderDetailsSupportDto> orderDetailsSupportDtos;
     private String productId;
-    private List<String> status;
+    private List<String> statuses;
+    private String status;
     private boolean isCanceled;
 }
