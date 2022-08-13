@@ -42,9 +42,9 @@ public class FactoryController {
     }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_FACTORY)
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getFactoryByCredentialId(@PathVariable(name = "id") String id) {
+    public ResponseEntity<ResponseDto> getFactoryByCredentialId(@PathVariable(name = "id") String id,@RequestParam String productName) {
         ResponseDto<FactoryByIdDto> responseDTO = new ResponseDto();
-        FactoryByIdDto factory = factoryService.getFactorybyCredentialId(id);
+        FactoryByIdDto factory = factoryService.getFactorybyCredentialId(id, productName);
         responseDTO.setData(factory);
         responseDTO.setSuccessMessage(UserSuccessMessage.GET_FACTORY_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);

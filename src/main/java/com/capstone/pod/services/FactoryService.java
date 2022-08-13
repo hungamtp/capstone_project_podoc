@@ -18,7 +18,7 @@ import java.util.List;
 public interface FactoryService {
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable);
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto);
-    public FactoryByIdDto getFactorybyCredentialId(String credentialId);
+    public FactoryByIdDto getFactorybyCredentialId(String credentialId, String productName);
     public UserDto updatePassword(UpdatePasswordDto user, String userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar, String userId);
     public void updateCollaborating(String factoryId, boolean isCollaborating);

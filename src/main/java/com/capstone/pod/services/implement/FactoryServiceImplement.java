@@ -115,7 +115,7 @@ public class FactoryServiceImplement implements FactoryService {
     }
 
     @Override
-    public FactoryByIdDto getFactorybyCredentialId(String credentialId) {
+    public FactoryByIdDto getFactorybyCredentialId(String credentialId, String productName) {
         Credential credential = credentialRepository.findById(credentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         if(credential.getFactory() != null){
             List<PriceByFactory>  priceByFactories = (List<PriceByFactory>) credential.getFactory().getPriceByFactories();
@@ -134,7 +134,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .build();
                productDtoList.add(productDto);
             }
-            List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().collect(Collectors.toList());
+            List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().filter(productDto -> productDto.getName().toLowerCase().contains(productName.toLowerCase())).collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
                         .name(credential.getFactory()
