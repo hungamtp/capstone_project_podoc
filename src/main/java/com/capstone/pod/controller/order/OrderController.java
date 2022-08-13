@@ -73,7 +73,7 @@ public class OrderController {
 
 
     @GetMapping("/complete")
-    public ResponseEntity completeOrder(@RequestParam String orderId) throws Exception {
+    public ResponseEntity completeOrder(@RequestParam String orderId , @RequestParam String appTransId) throws Exception {
         // response from momo
 
 //        ?partnerCode=MOMOQOYK20220626
@@ -96,7 +96,7 @@ public class OrderController {
         // &apptransid=220713_695232
         // &pmcid=38
         // &bankcode=&status=1
-        ordersService.completeOrder(orderId , "");
+        ordersService.completeOrder(orderId , appTransId);
         return ResponseEntity.ok().body("PAID_SUCCESS");
     }
 

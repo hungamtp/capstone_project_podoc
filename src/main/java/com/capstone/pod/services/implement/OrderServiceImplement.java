@@ -293,7 +293,7 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public void completeOrder(String paymentId, String zp_trans_id) {
+    public void completeOrder(String paymentId, String appTransId) {
         //set appTransId and update status of order
         Orders orders = ordersRepository.findByTransactionId(paymentId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
@@ -301,7 +301,7 @@ public class OrderServiceImplement implements OrdersService {
         if (orders.isPaid()) {
             throw new IllegalStateException(EntityName.ORDERS + ErrorMessage.HAS_PAID);
         }
-        orders.setAppTransId(zp_trans_id);
+        orders.setAppTransId(appTransId);
         orders.setPaid(true);
         ordersRepository.save(orders);
 
