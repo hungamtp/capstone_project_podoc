@@ -252,7 +252,7 @@ public class FactoryServiceImplement implements FactoryService {
                         .createDate(orderDetails.get(0).getOrders().getCreateDate().toString())
                         .productId(orderDetails.get(0).getDesignedProduct().getProduct().getId())
                         .bluePrintDtos(orderDetails.get(0).getPrintingInfo().getPrintingBluePrints().stream().map(bluePrint -> modelMapper.map(bluePrint, BluePrintDto.class)).collect(Collectors.toList()))
-                        .status(orderDetails.get(0).getOrderStatuses().stream().sorted().collect(Collectors.toList()).get(0).getName())
+                        .status(orderDetails.get(0).getOrderStatuses().stream().sorted().map(orderStatus -> orderStatus.getName()).collect(Collectors.toList()))
                         .build();
                 List<OrderDetailsSupportDto> orderDetailsSupportDtos = new ArrayList<>();
                 List<ImagePreviewDto> imagePreviewDtos = new ArrayList<>();
