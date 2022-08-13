@@ -244,5 +244,19 @@ public class ExceptionHandlers extends RuntimeException {
         return ResponseEntity.ok().body(new ArrayList<>());
     }
 
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<Object> catchSupperException(Exception exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage(exception.getMessage());
+        return ResponseEntity.badRequest().body(dto);
+    }
+    @ExceptionHandler(value = RefundException.class)
+    public ResponseEntity<Object> catchRefundException(RefundException exception) {
+        ResponseDto dto = new ResponseDto();
+        dto.setErrorMessage("REFUND_ERROR_TRY_AGAIN");
+        return ResponseEntity.badRequest().body(dto);
+    }
+
+
 
 }

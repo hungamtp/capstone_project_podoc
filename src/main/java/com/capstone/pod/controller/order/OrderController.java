@@ -27,6 +27,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -64,7 +65,7 @@ public class OrderController {
     }
     @DeleteMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrder(@RequestParam String orderId) {
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrder(@RequestParam String orderId) throws IOException {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
         ordersService.cancelOrder(orderId);
         responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);

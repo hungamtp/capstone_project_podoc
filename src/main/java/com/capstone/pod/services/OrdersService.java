@@ -12,12 +12,13 @@ import com.capstone.pod.dto.order.ShippingInfoDto;
 import com.capstone.pod.momo.models.PaymentResponse;
 import org.springframework.data.domain.Pageable;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface OrdersService {
     PaymentResponse addOrder(ShippingInfoDto shippingInfoDto, int paymentMethod) throws Exception;
-    void cancelOrder(String orderId) ;
+    void cancelOrder(String orderId) throws IOException;
 
     void completeOrder(String paymentId ,String appId);
 

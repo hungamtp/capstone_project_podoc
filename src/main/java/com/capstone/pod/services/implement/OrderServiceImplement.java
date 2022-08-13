@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -233,15 +234,27 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public void cancelOrder(String orderId) {
+    @Transactional
+    public void cancelOrder(String orderId) throws IOException {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
             () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
         orders.setCanceled(true);
-        if (orders.isPaid()) {
-            // Refund
 
+        try{
+            if (orders.isPaid()) {
+                if(orders.getTransactionId().contains("_")){
+                    // zalo pay transactionId has '_'
+                    zaloService.refund(Double.valueOf(orders.getPrice()).longValue() ,String.format("Refund order: %s" , orderId) ,orders.getAppTransId() );
+                }else{
+                    //momo transaction
+                }
+
+            }
+        }catch (Exception ex){
+            throw new RefundException(ex.getMessage());
         }
 
+        orders.setPaid(false);
         ordersRepository.save(orders);
 
         //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
