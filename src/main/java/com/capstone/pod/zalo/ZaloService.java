@@ -27,6 +27,7 @@ public class ZaloService {
         put("key1", "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL");
         put("key2", "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz");
         put("endpoint", "https://sb-openapi.zalopay.vn/v2/create");
+        put("refund_url", "https://sb-openapi.zalopay.vn/v2/refund");
     }};
 
     public static String getCurrentTimeString(String format) {
@@ -98,7 +99,7 @@ public class ZaloService {
     }
 
     public void refund(Long amount , String description , String transactionId) throws IOException {
-        String appid = config.get("appid");
+        String appid = config.get("app_id");
         Random rand = new Random();
         long timestamp = System.currentTimeMillis(); // miliseconds
         String uid = timestamp + "" + (111 + rand.nextInt(888)); // unique id

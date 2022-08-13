@@ -46,7 +46,7 @@ public class OrderDetailConverter {
             .provider(orderDetail.getFactory().getName())
             .date(orderDetail.getOrders().getCreateDate())
             .isRated(orderDetail.isRate())
-            .status(orderDetail.latestStatus())
+            .status(orderDetail.getOrders().isCanceled() ? "IS_CANCEL" : orderDetail.latestStatus())
             .isCancel(orderDetail.isCanceled())
             .reason(orderDetail.getReason())
             .statuses(orderDetail.getOrderStatuses().stream().map(orderStatus -> modelMapper.map(orderStatus, OrderStateDto.class)).collect(Collectors.toList()))
