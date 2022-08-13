@@ -31,8 +31,8 @@ services:
       - 9000:80
     environment:
       - PMA_HOST=mysqldb
-      - PMA_USER=root
-      - PMA_PASSWORD=123456789
+#      - PMA_USER=root
+#      - PMA_PASSWORD=123456789
     networks:
       - app_network
 networks:
