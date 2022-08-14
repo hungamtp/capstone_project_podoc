@@ -274,7 +274,8 @@ public class FactoryServiceImplement implements FactoryService {
                     }
                 }
                 orderDetailForPrintingDto.setCustomerName(orderDetails.get(0).getOrders().getCustomerName());
-                orderDetailForPrintingDto.setCancelReason(orderDetails.get(0).getReason());
+                orderDetailForPrintingDto.setCancelReasonByFactory(orderDetails.get(0).getReason());
+                orderDetailForPrintingDto.setCancelReasonByUser(orderDetails.get(0).getOrders().getCancelReason());
                 orderDetailForPrintingDto.setEmail(orderDetails.get(0).getOrders().getUser().getCredential().getEmail());
                 orderDetailForPrintingDto.setPhoneNumber(orderDetails.get(0).getOrders().getPhone());
                 orderDetailForPrintingDto.setAddress(orderDetails.get(0).getOrders().getAddress());
