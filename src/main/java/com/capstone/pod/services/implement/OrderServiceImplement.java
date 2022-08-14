@@ -239,17 +239,17 @@ public class OrderServiceImplement implements OrdersService {
             () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
         orders.setCanceled(true);
         orders.setCancelReason(dto.getCancelReason());
-        try{
+        try {
             if (orders.isPaid()) {
-                if(orders.getTransactionId().contains("_")){
+                if (orders.getTransactionId().contains("_")) {
                     // zalo pay transactionId has '_'
-                    zaloService.refund(Double.valueOf(orders.getPrice()).longValue() ,String.format("Refund order: %s" , dto.getOrderId()) ,orders.getAppTransId() );
-                }else{
+                    zaloService.refund(Double.valueOf(orders.getPrice()).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
+                } else {
                     //momo transaction
                 }
 
             }
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new RefundException(ex.getMessage());
         }
 
@@ -337,16 +337,17 @@ public class OrderServiceImplement implements OrdersService {
         cartDetailRepository.deleteAllInBatch(cartDetailList);
         cartRepository.delete(cart);
     }
-    private void addBackQuantityWhenCancelingOrderByUser(String orderId){
+
+    private void addBackQuantityWhenCancelingOrderByUser(String orderId) {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
-                () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
+            () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
         List<OrderDetail> orderDetails = orders.getOrderDetails();
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         for (int i = 0; i < orderDetails.size(); i++) {
             OrderDetail orderDetail = orderDetails.get(i);
             Optional<SizeColor> sizeColor = sizeColorRepository
-                    .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
             sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
             sizeColorByFactories.add(sizeColorByFactory.get());
@@ -369,24 +370,23 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
-    public PageDTO getAllOrder(String email, Pageable pageable , Boolean isPaid , Boolean cancel) {
+    public PageDTO getAllOrder(String email, Pageable pageable, Boolean isPaid, Boolean cancel) {
         Credential credential = credentialRepository.findCredentialByEmail(email).orElseThrow(
             () -> new CredentialNotFoundException(EntityName.CREDENTIAL + ErrorMessage.NOT_FOUND)
         );
         User user = credential.getUser();
         Page<Orders> ordersPage = null;
 
-        if(isPaid != null ){
-            if(cancel != null){
-                ordersPage = ordersRepository.findAllByUserAndIsPaidAndCanceled(pageable, user , isPaid , cancel);
-            }else{
-                ordersPage = ordersRepository.findAllByUserAndIsPaid(pageable, user , isPaid);
+        if (isPaid != null) {
+            if (cancel != null) {
+                ordersPage = ordersRepository.findAllByUserAndIsPaidAndCanceled(pageable, user, isPaid, cancel);
+            } else {
+                ordersPage = ordersRepository.findAllByUserAndIsPaid(pageable, user, isPaid);
             }
-        }
-        else{
-            if(cancel != null){
-                ordersPage = ordersRepository.findAllByUserAndCanceled(pageable, user  , cancel);
-            }else{
+        } else {
+            if (cancel != null) {
+                ordersPage = ordersRepository.findAllByUserAndCanceled(pageable, user, cancel);
+            } else {
                 ordersPage = ordersRepository.findAllByUser(pageable, user);
             }
         }
@@ -627,7 +627,7 @@ public class OrderServiceImplement implements OrdersService {
     @Override
     public AdminDashboard getAdminDashboard(LocalDateTime startDate, LocalDateTime endDate) {
         List<CategorySoldCountProjection> categorySoldCountProjections = orderDetailRepository.countOrderByCategory();
-        Double income = ordersRepository.getInComeByAdmin(startDate, endDate);
+        Double income= ordersRepository.getInComeByAdmin(startDate, endDate);
         Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDateTime.now().withDayOfMonth(1), endDate);
 
         Long countZaloOrder = ordersRepository.countZaloPay();
@@ -696,11 +696,11 @@ public class OrderServiceImplement implements OrdersService {
 
     @Override
     public void cancelOrderDetailByFactory(CancelOrderDto dto) {
-       List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(ordersRepository.getById(dto.getOrderId()));
-       if(orderDetails.isEmpty()) throw  new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
-       if(!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
-           throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
-       }
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(ordersRepository.getById(dto.getOrderId()));
+        if (orderDetails.isEmpty()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
+        if (!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
+            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        }
         for (int i = 0; i < orderDetails.size(); i++) {
             List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
             orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
@@ -708,15 +708,16 @@ public class OrderServiceImplement implements OrdersService {
             orderDetails.get(i).setCanceled(true);
             orderDetails.get(i).setReason(dto.getCancelReason());
         }
-       orderDetailRepository.saveAll(orderDetails);
+        orderDetailRepository.saveAll(orderDetails);
         addBackQuantityWhenCancelingOrderByFactory(orderDetails);
     }
-    private void addBackQuantityWhenCancelingOrderByFactory(List<OrderDetail> orderDetails){
+
+    private void addBackQuantityWhenCancelingOrderByFactory(List<OrderDetail> orderDetails) {
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         for (int i = 0; i < orderDetails.size(); i++) {
             OrderDetail orderDetail = orderDetails.get(i);
             Optional<SizeColor> sizeColor = sizeColorRepository
-                    .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
             sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
             sizeColorByFactories.add(sizeColorByFactory.get());
