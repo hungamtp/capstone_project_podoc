@@ -1,4 +1,4 @@
-package com.capstone.pod.repositories.result;
+package com.capstone.pod.repositories.impl.projection;
 
 import com.capstone.pod.entities.OrderDetail;
 import lombok.AllArgsConstructor;

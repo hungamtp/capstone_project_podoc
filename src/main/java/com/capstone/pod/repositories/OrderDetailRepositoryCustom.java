@@ -1,8 +1,7 @@
 package com.capstone.pod.repositories;
 
 import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
-import com.capstone.pod.entities.OrderDetail;
-import com.capstone.pod.repositories.result.AllOrderDetail;
+import com.capstone.pod.repositories.impl.projection.AllOrderDetail;
 
 import java.util.List;
 

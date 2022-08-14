@@ -20,6 +20,7 @@ public class DesignedProductReturnDto {
     private String description;
     private String productName;
     private String factoryName;
+    private String material;
     private String factoryId;
     private String productId;
     private boolean publish;
