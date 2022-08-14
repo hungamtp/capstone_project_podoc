@@ -3,7 +3,6 @@ package com.capstone.pod.services.implement;
 import com.capstone.pod.constant.common.CommonMessage;
 import com.capstone.pod.constant.credential.CredentialErrorMessage;
 import com.capstone.pod.constant.factory.FactoryErrorMessage;
-import com.capstone.pod.constant.order.OrderState;
 import com.capstone.pod.constant.product.ProductErrorMessage;
 import com.capstone.pod.constant.role.RoleErrorMessage;
 import com.capstone.pod.constant.role.RoleName;
@@ -172,7 +171,7 @@ public class FactoryServiceImplement implements FactoryService {
       Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
       List<OrderDetail> orderDetails= orderDetailRepository.findAllByFactoryId(factoryId);
         for (int i = 0; i < orderDetails.size(); i++) {
-            if(!orderDetails.get(i).getOrderStatuses().get(0).getName().equals(OrderState.CANCEL) && orderDetails.get(i).getOrderStatuses().size()!=6){
+            if(!orderDetails.get(i).isCancel() && orderDetails.get(i).getOrderStatuses().size()!=6){
                 throw new PermissionException(FactoryErrorMessage.FACTORY_IS_HAVING_ORDER_IN_DELIVERY_FOUND);
             }
         }
