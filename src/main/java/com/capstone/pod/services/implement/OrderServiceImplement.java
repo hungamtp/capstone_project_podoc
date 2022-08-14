@@ -195,6 +195,8 @@ public class OrderServiceImplement implements OrdersService {
         order.setTransactionId("");
         ordersRepository.save(order);
         printingInfoRepository.saveAll(printingInfos);
+        cartRepository.delete(cart);
+        cartDetailRepository.deleteAllInBatch(cartDetailList);
         // create payment info
         PaymentResponse paymentResponse = null;
         String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
@@ -321,21 +323,16 @@ public class OrderServiceImplement implements OrdersService {
 
         //remove cart detail
         //minus quantity
-        Cart cart = cartRepository.findCartByUser(getCredential().getUser());
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
-        List<CartDetail> cartDetailList = cart.getCartDetails();
-        for (int i = 0; i < cartDetailList.size(); i++) {
-            Optional<OrderDetail> orderDetailOptional = orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndColorAndSize(orders.getId(), cartDetailList.get(i).getDesignedProduct().getId(), cartDetailList.get(i).getColor(), cartDetailList.get(i).getSize());
-            OrderDetail orderDetail = orderDetailOptional.get();
+        for (int i = 0; i < orders.getOrderDetails().size(); i++) {
+            OrderDetail orderDetail = orders.getOrderDetails().get(i);
             Optional<SizeColor> sizeColor = sizeColorRepository
                 .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
             Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
-            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() - cartDetailList.get(i).getQuantity());
+            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() - orders.getOrderDetails().get(i).getQuantity());
             sizeColorByFactories.add(sizeColorByFactory.get());
         }
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
-        cartDetailRepository.deleteAllInBatch(cartDetailList);
-        cartRepository.delete(cart);
     }
     private void addBackQuantityWhenCancelingOrderByUser(String orderId){
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
