@@ -113,7 +113,7 @@ public class FactoryServiceImplement implements FactoryService {
 
     @Override
     public AddFactoryResponse updateFactory(String credentialId,UpdateFactoryDto factoryDto) {
-         Credential credential = getPermittedCredential(credentialId);
+         Credential credential = credentialRepository.findById(credentialId).orElseThrow(() ->new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
          if(credential.getFactory()!=null) {
              credential.getFactory().setName(factoryDto.getName());
              credential.getFactory().setTradeDiscount(factoryDto.getTradeDiscount());
