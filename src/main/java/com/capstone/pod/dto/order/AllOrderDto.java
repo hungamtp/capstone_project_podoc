@@ -2,7 +2,6 @@ package com.capstone.pod.dto.order;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import java.util.List;
 @Getter
 public class AllOrderDto {
     private String orderId;
+    private String cancelReasonByUser;
     private double totalBill;
     private LocalDateTime createdDate;
     private Boolean isPaid;

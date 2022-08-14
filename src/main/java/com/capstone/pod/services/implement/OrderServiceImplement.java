@@ -377,7 +377,7 @@ public class OrderServiceImplement implements OrdersService {
         List<AllOrderDto> orderDtos = ordersPage.stream().map(orders -> {
             List<OrderDetail> orderDetails = orders.getOrderDetails();
             return AllOrderDto.builder()
-                .orderId(orders.getId())
+                .orderId(orders.getId()).cancelReasonByUser(orders.getCancelReason())
                 .countItem(orderDetails.stream().mapToInt(OrderDetail::getQuantity).sum())
                 .isPaid(orders.isPaid())
                 .totalBill(orders.getPrice())

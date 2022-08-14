@@ -243,7 +243,6 @@ public class FactoryServiceImplement implements FactoryService {
     @Override
     public OrderDetailForPrintingDto getAllOrderDetailsForPrintingByOrderDetailsId(String orderId, String designId, String credentialId) {
         Optional<Credential> credential = credentialRepository.findById(credentialId);
-
         if(credential.isPresent()) {
             List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersIdAndDesignedProductIdAndFactoryId(orderId, designId, credential.get().getFactory().getId());
             if (!orderDetails.isEmpty()) {
