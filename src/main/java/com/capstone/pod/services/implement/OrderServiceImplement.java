@@ -692,6 +692,7 @@ public class OrderServiceImplement implements OrdersService {
     }
 
     @Override
+    @Transactional
     public void cancelOrderDetailByFactory(CancelOrderDto dto) {
         Credential credential = getCredential();
 
@@ -727,6 +728,10 @@ public class OrderServiceImplement implements OrdersService {
             }
         } catch (Exception ex) {
             throw new RefundException(ex.getMessage());
+        }
+        if(orderDetails.size() == orders.getOrderDetails().size()){
+            orders.setPaid(false);
+            ordersRepository.save(orders);
         }
         orderDetailRepository.saveAll(orderDetails);
         addBackQuantityWhenCancelingOrderByFactory(orderDetails);
