@@ -410,6 +410,9 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
     `create_date` DATETIME NULL DEFAULT NULL,
     `last_modified_date` DATETIME NULL DEFAULT NULL,
     `address` VARCHAR(255) NULL DEFAULT NULL,
+    `app_trans_id` VARCHAR(255) NULL DEFAULT NULL,
+    `cancel_reason` VARCHAR(255) NULL DEFAULT NULL,
+    `canceled` BIT(1) NOT NULL,
     `customer_name` VARCHAR(255) NULL DEFAULT NULL,
     `is_paid` BIT(1) NOT NULL,
     `phone` VARCHAR(255) NULL DEFAULT NULL,
@@ -431,9 +434,11 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`order_detail` (
     `id` VARCHAR(36) NOT NULL,
+    `canceled` BIT(1) NOT NULL,
     `color` VARCHAR(255) NULL DEFAULT NULL,
     `is_rate` BIT(1) NOT NULL,
     `quantity` INT NOT NULL,
+    `reason` VARCHAR(255) NULL DEFAULT NULL,
     `size` VARCHAR(255) NULL DEFAULT NULL,
     `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
     `factory_id` VARCHAR(36) NULL DEFAULT NULL,
