@@ -234,16 +234,16 @@ public class OrderServiceImplement implements OrdersService {
 
     @Override
     @Transactional
-    public void cancelOrder(String orderId) throws IOException {
-        Orders orders = ordersRepository.findById(orderId).orElseThrow(
+    public void cancelOrder(CancelOrderDto dto) throws IOException {
+        Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
             () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
         orders.setCanceled(true);
-
+        orders.setCancelReason(dto.getCancelReason());
         try{
             if (orders.isPaid()) {
                 if(orders.getTransactionId().contains("_")){
                     // zalo pay transactionId has '_'
-                    zaloService.refund(Double.valueOf(orders.getPrice()).longValue() ,String.format("Refund order: %s" , orderId) ,orders.getAppTransId() );
+                    zaloService.refund(Double.valueOf(orders.getPrice()).longValue() ,String.format("Refund order: %s" , dto.getOrderId()) ,orders.getAppTransId() );
                 }else{
                     //momo transaction
                 }

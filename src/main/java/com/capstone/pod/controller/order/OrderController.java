@@ -65,9 +65,9 @@ public class OrderController {
     }
     @DeleteMapping
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrder(@RequestParam String orderId) throws IOException {
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrder(@RequestBody CancelOrderDto dto) throws IOException {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
-        ordersService.cancelOrder(orderId);
+        ordersService.cancelOrder(dto);
         responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
@@ -205,7 +205,7 @@ public class OrderController {
     }
     @PutMapping("/cancel")
     @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
-    public ResponseEntity cancelOrder(@RequestBody @Validated CancelOrderDto dto ) {
+    public ResponseEntity cancelOrderByFactory(@RequestBody @Validated CancelOrderDto dto ) {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto<>();
         ordersService.cancelOrderDetailByFactory(dto);
         responseDto.setSuccessMessage(OrderSuccessMessage.CANCEL_ORDER_SUCCESS);

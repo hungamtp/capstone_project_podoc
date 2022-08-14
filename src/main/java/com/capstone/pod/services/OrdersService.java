@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface OrdersService {
     PaymentResponse addOrder(ShippingInfoDto shippingInfoDto, int paymentMethod) throws Exception;
-    void cancelOrder(String orderId) throws IOException;
+    void cancelOrder(CancelOrderDto dto) throws IOException;
 
     void completeOrder(String paymentId ,String appId);
 

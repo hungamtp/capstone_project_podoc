@@ -8,7 +8,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Builder
@@ -30,6 +29,7 @@ public class Orders extends AuditableDateTime {
     private String appTransId;
     private boolean isPaid;
     private boolean canceled;
+    private String cancelReason;
     @ManyToOne
     User user;
 
