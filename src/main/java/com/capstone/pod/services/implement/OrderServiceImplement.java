@@ -25,7 +25,7 @@ import com.capstone.pod.momo.enums.RequestType;
 import com.capstone.pod.momo.models.PaymentResponse;
 import com.capstone.pod.momo.processor.CreateOrderMoMo;
 import com.capstone.pod.repositories.*;
-import com.capstone.pod.repositories.result.AllOrderDetail;
+import com.capstone.pod.repositories.impl.projection.AllOrderDetail;
 import com.capstone.pod.services.OrdersService;
 import com.capstone.pod.zalo.ZaloService;
 import lombok.RequiredArgsConstructor;

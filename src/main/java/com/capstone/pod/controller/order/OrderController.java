@@ -107,7 +107,7 @@ public class OrderController {
         , @RequestParam(required = false) Boolean isPaid , @RequestParam(required = false) Boolean cancel) {
         String jwt = request.getHeader("Authorization");
         String email = Utils.getEmailFromJwt(jwt.replace("Bearer ", ""));
-        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Orders_.CREATE_DATE));
+        Pageable pageable = PageRequest.of(page, size).withSort(Sort.by(Orders_.CREATE_DATE).descending());
         PageDTO pageDTO = ordersService.getAllOrder(email, pageable , isPaid , cancel);
         return ResponseEntity.ok().body(pageDTO);
     }
