@@ -204,6 +204,7 @@ public class ProductServiceImplement implements ProductService {
                 FactoryProductDetailDto.builder()
                     .id(factory.getId())
                     .name(factory.getName())
+                        .isCollaborating(factory.isCollaborating())
                     .location(factory.getLocation())
                     .rate(factoryRateProjection.getRates() == null ? 0 : Double.valueOf(factoryRateProjection.getRates()).floatValue())
                     .rateCount(factoryRateProjection.getCount() == null ? 0 : factoryRateProjection.getCount())
@@ -220,7 +221,8 @@ public class ProductServiceImplement implements ProductService {
                         .stream().distinct().map(sizeColor -> sizeColor.getSizeColor().getColor().getImageColor())
                         .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList()))
                     .build();
-            factories.add(factoryProductDetailDTO);
+            if(factoryProductDetailDTO.isCollaborating()){
+            factories.add(factoryProductDetailDTO);}
         }
         return ProductDetailDto.builder()
             .id(product.getId())

@@ -12,6 +12,7 @@ import java.util.List;
 public class FactoryProductDetailDto {
     private String id;
     private String name;
+    private boolean isCollaborating;
     private String location;
     private String material;
     private Double price;
