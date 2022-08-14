@@ -693,7 +693,10 @@ public class OrderServiceImplement implements OrdersService {
 
     @Override
     public void cancelOrderDetailByFactory(CancelOrderDto dto) {
-        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(ordersRepository.getById(dto.getOrderId()));
+        Credential credential = getCredential();
+
+        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersAndFactory(ordersRepository.getById(dto.getOrderId()), credential.getFactory());
+
         if (orderDetails.isEmpty()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
         if (!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
@@ -704,6 +707,26 @@ public class OrderServiceImplement implements OrdersService {
             orderDetails.get(i).setOrderStatuses(orderStatuses);
             orderDetails.get(i).setCanceled(true);
             orderDetails.get(i).setReason(dto.getCancelReason());
+        }
+        Orders orders = orderDetails.get(0).getOrders();
+        String cancelReason = orderDetails.get(0).getReason();
+
+        try {
+            if (orders.isPaid()) {
+                if (orders.getTransactionId().contains("_")) {
+                    Double amountRefund = orderDetails.stream()
+                        .mapToDouble(orderDetail ->
+                            orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
+                                .getPriceByFactory().getPrice())).sum();
+                    // zalo pay transactionId has '_'
+                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s ,\n Reason %s", dto.getOrderId() , cancelReason), orders.getAppTransId());
+                } else {
+                    //momo transaction
+                }
+
+            }
+        } catch (Exception ex) {
+            throw new RefundException(ex.getMessage());
         }
         orderDetailRepository.saveAll(orderDetails);
         addBackQuantityWhenCancelingOrderByFactory(orderDetails);
