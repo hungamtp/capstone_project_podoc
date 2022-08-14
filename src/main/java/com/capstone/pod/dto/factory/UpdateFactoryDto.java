@@ -14,8 +14,6 @@ import javax.validation.constraints.Size;
 public class UpdateFactoryDto {
     @NotBlank(message = ValidationMessage.NAME_VALID_MESSAGE)
     private String name;
-    @NotBlank(message = ValidationMessage.PASSWORD_VALID_MESSAGE)
-    private String password;
     @NotNull(message = ValidationMessage.TRADE_DISCOUNT_VALID_MESSAGE)
     private double tradeDiscount;
     @NotBlank(message = ValidationMessage.ADDRESS_VALID_MESSAGE)

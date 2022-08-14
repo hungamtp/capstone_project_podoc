@@ -116,7 +116,6 @@ public class FactoryServiceImplement implements FactoryService {
          Credential credential = getPermittedCredential(credentialId);
          if(credential.getFactory()!=null) {
              credential.getFactory().setName(factoryDto.getName());
-             credential.setPassword(passwordEncoder.encode(factoryDto.getPassword()));
              credential.getFactory().setTradeDiscount(factoryDto.getTradeDiscount());
              credential.setAddress(factoryDto.getAddress());
              credential.setPhone(factoryDto.getPhone());
