@@ -3,7 +3,7 @@ package com.capstone.pod.repositories.impl;
 import com.capstone.pod.dto.dashboard.CategorySoldCountProjection;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.repositories.OrderDetailRepositoryCustom;
-import com.capstone.pod.repositories.result.AllOrderDetail;
+import com.capstone.pod.repositories.impl.projection.AllOrderDetail;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

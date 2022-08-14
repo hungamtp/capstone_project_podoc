@@ -24,6 +24,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         root.join(DesignedProduct_.DESIGN_COLORS, JoinType.LEFT);
         Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
         Join<DesignedProduct, Product> productJoin = root.join(DesignedProduct_.PRODUCT, JoinType.LEFT);
+        Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = root.join(DesignedProduct_.PRICE_BY_FACTORY, JoinType.LEFT);
+        Join<PriceByFactory, Factory> factoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY, JoinType.LEFT);
         root.join(DesignedProduct_.ORDER_DETAILS, JoinType.INNER);
         root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
         query.groupBy(root.get(DesignedProduct_.ID));
@@ -33,7 +35,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         Predicate publishTrue = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
         Predicate productIsDelete = criteriaBuilder.isFalse(productJoin.get(Product_.IS_DELETED));
         Predicate isPublicTrue = criteriaBuilder.isTrue(productJoin.get(Product_.IS_PUBLIC));
-        query.orderBy(orderList).where(publishTrue , isPublicTrue , productIsDelete);
+        Predicate isCollaborating = criteriaBuilder.isTrue(factoryJoin.get(Factory_.IS_COLLABORATING));
+        query.orderBy(orderList).where(publishTrue, isPublicTrue, productIsDelete, isCollaborating);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
 
@@ -46,6 +49,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         Join<DesignedProduct, Rating> ratingJoin = root.join(DesignedProduct_.RATINGS, JoinType.LEFT);
         root.join(DesignedProduct_.ORDER_DETAILS, JoinType.INNER);
         root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
+        Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = root.join(DesignedProduct_.PRICE_BY_FACTORY, JoinType.LEFT);
+        Join<PriceByFactory, Factory> factoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY, JoinType.LEFT);
         Join<DesignedProduct, Product> productJoin = root.join(DesignedProduct_.PRODUCT, JoinType.LEFT);
         query.groupBy(root.get(DesignedProduct_.ID));
         query.select(root);
@@ -55,7 +60,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         Predicate productIdEqual = criteriaBuilder.equal(productJoin.get(Product_.ID), productId);
         Predicate productIsDelete = criteriaBuilder.isFalse(productJoin.get(Product_.IS_DELETED));
         Predicate isPublicTrue = criteriaBuilder.isTrue(productJoin.get(Product_.IS_PUBLIC));
-        query.orderBy(orderList).where(publishTrue, productIdEqual , productIsDelete , isPublicTrue);
+        Predicate isCollaborating = criteriaBuilder.isTrue(factoryJoin.get(Factory_.IS_COLLABORATING));
+        query.orderBy(orderList).where(publishTrue, productIdEqual, productIsDelete, isPublicTrue, isCollaborating);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
 
@@ -70,6 +76,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         root.join(DesignedProduct_.ORDER_DETAILS, JoinType.INNER);
         root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
         Join<DesignedProduct, OrderDetail> orderDetailJoin = root.join(DesignedProduct_.ORDER_DETAILS, JoinType.LEFT);
+        Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = root.join(DesignedProduct_.PRICE_BY_FACTORY, JoinType.LEFT);
+        Join<PriceByFactory, Factory> factoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY, JoinType.LEFT);
         query.groupBy(root.get(DesignedProduct_.ID));
         query.select(root);
         List<Order> orderList = new ArrayList();
@@ -77,7 +85,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         Predicate productIsDelete = criteriaBuilder.isFalse(productJoin.get(Product_.IS_DELETED));
         Predicate publish = criteriaBuilder.isTrue(root.get(DesignedProduct_.PUBLISH));
         Predicate isPublicTrue = criteriaBuilder.isTrue(productJoin.get(Product_.IS_PUBLIC));
-        query.orderBy(orderList).where(productIsDelete , isPublicTrue , publish);
+        Predicate isCollaborating = criteriaBuilder.isTrue(factoryJoin.get(Factory_.IS_COLLABORATING));
+        query.orderBy(orderList).where(productIsDelete, isPublicTrue, publish, isCollaborating);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
 
@@ -92,6 +101,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         root.join(DesignedProduct_.DESIGNED_PRODUCT_TAGS, JoinType.LEFT);
         Join<DesignedProduct, Product> productJoin = root.join(DesignedProduct_.PRODUCT, JoinType.LEFT);
         Join<DesignedProduct, OrderDetail> orderDetailJoin = root.join(DesignedProduct_.ORDER_DETAILS, JoinType.LEFT);
+        Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = root.join(DesignedProduct_.PRICE_BY_FACTORY, JoinType.LEFT);
+        Join<PriceByFactory, Factory> factoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY, JoinType.LEFT);
         query.groupBy(root.get(DesignedProduct_.ID));
         query.select(root);
         List<Order> orderList = new ArrayList();
@@ -100,7 +111,8 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         orderList.add(criteriaBuilder.desc(criteriaBuilder.sum(orderDetailJoin.get(OrderDetail_.QUANTITY))));
         Predicate productIsDelete = criteriaBuilder.isFalse(productJoin.get(Product_.IS_DELETED));
         Predicate isPublicTrue = criteriaBuilder.isTrue(productJoin.get(Product_.IS_PUBLIC));
-        query.orderBy(orderList).where(productIdEqual , publishTrue , productIsDelete , isPublicTrue);
+        Predicate isCollaborating = criteriaBuilder.isTrue(factoryJoin.get(Factory_.IS_COLLABORATING));
+        query.orderBy(orderList).where(productIdEqual, publishTrue, productIsDelete, isPublicTrue , isCollaborating);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
 }

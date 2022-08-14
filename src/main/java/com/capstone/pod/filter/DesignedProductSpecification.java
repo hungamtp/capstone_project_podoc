@@ -14,6 +14,12 @@ public class DesignedProductSpecification implements Specification<DesignedProdu
 
     @Override
     public Predicate toPredicate(Root<DesignedProduct> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+        if(criteria.getKey().equalsIgnoreCase("isCollaborating")){
+            Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = root.join(DesignedProduct_.PRICE_BY_FACTORY, JoinType.LEFT);
+            Join<PriceByFactory, Factory> factoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY, JoinType.LEFT);
+            return builder.isTrue(factoryJoin.get(Factory_.IS_COLLABORATING));
+        }
+
         if(criteria.getKey().equalsIgnoreCase("category")){
             Join<Product , DesignedProduct> productJoin = root.join(DesignedProduct_.PRODUCT);
            return  builder.equal(productJoin.join(Product_.CATEGORY).get(Category_.ID) , criteria.getValue());
