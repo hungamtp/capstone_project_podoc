@@ -255,6 +255,8 @@ public class OrderServiceImplement implements OrdersService {
 
         orders.setPaid(false);
         ordersRepository.save(orders);
+        //add back quantity when user cancel order
+        addBackQuantityWhenCancelingOrderByUser(orders.getId());
 
         //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
 //        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
@@ -335,6 +337,23 @@ public class OrderServiceImplement implements OrdersService {
         cartDetailRepository.deleteAllInBatch(cartDetailList);
         cartRepository.delete(cart);
     }
+    private void addBackQuantityWhenCancelingOrderByUser(String orderId){
+        Orders orders = ordersRepository.findById(orderId).orElseThrow(
+                () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
+        );
+        List<OrderDetail> orderDetails = orders.getOrderDetails();
+        List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
+        for (int i = 0; i < orderDetails.size(); i++) {
+            OrderDetail orderDetail = orderDetails.get(i);
+            Optional<SizeColor> sizeColor = sizeColorRepository
+                    .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+            Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
+            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
+            sizeColorByFactories.add(sizeColorByFactory.get());
+        }
+        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
+    }
+
 
     @Override
     public List<ShippingInfoDto> getMyShippingInfo() {
@@ -690,5 +709,18 @@ public class OrderServiceImplement implements OrdersService {
             orderDetails.get(i).setReason(dto.getCancelReason());
         }
        orderDetailRepository.saveAll(orderDetails);
+        addBackQuantityWhenCancelingOrderByFactory(orderDetails);
+    }
+    private void addBackQuantityWhenCancelingOrderByFactory(List<OrderDetail> orderDetails){
+        List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
+        for (int i = 0; i < orderDetails.size(); i++) {
+            OrderDetail orderDetail = orderDetails.get(i);
+            Optional<SizeColor> sizeColor = sizeColorRepository
+                    .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+            Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
+            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
+            sizeColorByFactories.add(sizeColorByFactory.get());
+        }
+        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
 }
