@@ -5,9 +5,9 @@ import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.http.ResponseDto;
+import com.capstone.pod.dto.utils.Utils;
 import com.capstone.pod.entities.DesignedProduct_;
 import com.capstone.pod.services.DesignedProductService;
-import com.capstone.pod.dto.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
@@ -114,7 +114,7 @@ public class DesignedProductController {
     public ResponseEntity<ResponseDto> viewAllDesign(@RequestParam Integer pageNumber, @RequestParam Integer pageSize, @RequestParam @Nullable String search) {
         ResponseDto<PageDTO> responseDto = new ResponseDto();
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        search = StringUtils.isEmpty(search) ? "publish:true,isDeleted:false" : search.concat(", publish:true,isDeleted:false");
+        search = StringUtils.isEmpty(search) ? "publish:true,isDeleted:false,isCollaborating:true" : search.concat(", publish:true,isDeleted:false,isCollaborating:true");
         Specification spec = Utils.buildDesignedProductSpecifications(search);
         responseDto.setData(designedProductService.viewAllDesign(spec,pageable));
         responseDto.setSuccessMessage(DesignedProductSuccessMessage.VIEW_ALL_DESIGN_SUCCESS);
