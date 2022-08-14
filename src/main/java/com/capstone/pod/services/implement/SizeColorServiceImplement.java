@@ -10,10 +10,7 @@ import com.capstone.pod.entities.Color;
 import com.capstone.pod.entities.Product;
 import com.capstone.pod.entities.Size;
 import com.capstone.pod.entities.SizeColor;
-import com.capstone.pod.exceptions.ColorNotFoundException;
-import com.capstone.pod.exceptions.ProductNotFoundException;
-import com.capstone.pod.exceptions.SizeExistedException;
-import com.capstone.pod.exceptions.SizeNotFoundException;
+import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.ColorRepository;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.repositories.SizeColorRepository;
@@ -108,6 +105,13 @@ public class SizeColorServiceImplement implements SizeColorService {
        color.setImageColor(colorDto.getImageColor());
        color.setName(colorDto.getName());
        return modelMapper.map(colorRepository.save(color),ColorDto.class);
+    }
+
+    @Override
+    public void deleteColor(String colorId) {
+        Color color = colorRepository.findById(colorId).orElseThrow(() -> new ColorNotFoundException(SizeColorErrorMessage.COLOR_NOT_FOUND_EXCEPTION));
+        if(!color.getSizeColors().isEmpty()) throw new PermissionException(SizeColorErrorMessage.COLOR_EXISTED_IN_CONSTRAINT_EXCEPTION);
+        colorRepository.delete(color);
     }
 
     @Override

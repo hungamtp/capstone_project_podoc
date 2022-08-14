@@ -17,6 +17,7 @@ public interface SizeColorService {
     public Page<ColorDto> getAllColor(Pageable pageable);
     public ColorDto addColor(ColorDto colorDto);
     public ColorDto updateColor(ColorDto colorDto);
+    public void deleteColor(String colorId);
     public SizeDto updateSize(SizeDto sizeDto);
 
 }
