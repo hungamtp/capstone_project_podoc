@@ -245,7 +245,12 @@ public class OrderServiceImplement implements OrdersService {
             if (orders.isPaid()) {
                 if (orders.getTransactionId().contains("_")) {
                     // zalo pay transactionId has '_'
-                    zaloService.refund(Double.valueOf(orders.getPrice()).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
+                    List<OrderDetail> orderDetails = orders.getOrderDetails();
+                    Double amountRefund = orderDetails.stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList())
+                        .stream().mapToDouble(orderDetail ->
+                            orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
+                                .getPriceByFactory().getPrice())).sum();
+                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
                 } else {
                     //momo transaction
                 }
@@ -720,7 +725,7 @@ public class OrderServiceImplement implements OrdersService {
                             orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
                                 .getPriceByFactory().getPrice())).sum();
                     // zalo pay transactionId has '_'
-                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s ,\n Reason %s", dto.getOrderId() , cancelReason), orders.getAppTransId());
+                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s ,\n Reason %s", dto.getOrderId(), cancelReason), orders.getAppTransId());
                 } else {
                     //momo transaction
                 }
