@@ -138,6 +138,7 @@ public class FactoryServiceImplement implements FactoryService {
             List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().filter(productDto -> productDto.getName().toLowerCase().contains(productName.toLowerCase())).collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
+                        .tradeDiscount(credential.getFactory().getTradeDiscount())
                         .name(credential.getFactory()
                         .getName()).location(credential.getFactory()
                         .getLocation()).phone(credential.getPhone())
@@ -171,7 +172,7 @@ public class FactoryServiceImplement implements FactoryService {
       Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
       List<OrderDetail> orderDetails= orderDetailRepository.findAllByFactoryId(factoryId);
         for (int i = 0; i < orderDetails.size(); i++) {
-            if(!orderDetails.get(i).getOrderStatuses().get(0).equals(OrderState.CANCEL) || !orderDetails.get(i).getOrderStatuses().get(0).equals(OrderState.DONE)){
+            if(!orderDetails.get(i).getOrderStatuses().get(0).getName().equals(OrderState.CANCEL) && orderDetails.get(i).getOrderStatuses().size()!=6){
                 throw new PermissionException(FactoryErrorMessage.FACTORY_IS_HAVING_ORDER_IN_DELIVERY_FOUND);
             }
         }
