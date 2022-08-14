@@ -219,13 +219,15 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .image(designColor.getColor().getImageColor())
                 .name(designColor.getColor().getName()).build())
             .collect(Collectors.toSet());
+        PriceByFactory priceByFactory = designedProduct.getPriceByFactory();
+        Factory factory = priceByFactory.getFactory();
         designedProductReturnDto.setColorsObj(colors);
-
-        designedProductReturnDto.setFactoryName(designedProduct.getPriceByFactory().getFactory().getName());
-        designedProductReturnDto.setFactoryId(designedProduct.getPriceByFactory().getFactory().getId());
+        designedProductReturnDto.setMaterial(priceByFactory.getMaterial());
+        designedProductReturnDto.setFactoryName(factory.getName());
+        designedProductReturnDto.setFactoryId(factory.getId());
         designedProductReturnDto.setProductId(designedProduct.getProduct().getId());
         designedProductReturnDto.setProductName(designedProduct.getProduct().getName());
-        designedProductReturnDto.setPriceFromFactory(designedProduct.getPriceByFactory().getPrice());
+        designedProductReturnDto.setPriceFromFactory(priceByFactory.getPrice());
         return designedProductReturnDto;
     }
 
@@ -270,6 +272,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
             .id(designedProduct.getId())
             .name(designedProduct.getName())
+            .factory(designedProduct.getPriceByFactory().getFactory().getName())
             .designedPrice(designedProduct.getDesignedPrice())
             .publish(designedProduct.isPublish()).isProductOfDesignDeleted(designedProduct.getProduct().isDeleted())
             .soldCount(designedProduct.getOrderDetails().stream()
