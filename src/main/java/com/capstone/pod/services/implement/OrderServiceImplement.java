@@ -627,8 +627,8 @@ public class OrderServiceImplement implements OrdersService {
     @Override
     public AdminDashboard getAdminDashboard(LocalDateTime startDate, LocalDateTime endDate) {
         List<CategorySoldCountProjection> categorySoldCountProjections = orderDetailRepository.countOrderByCategory();
-        Double income= ordersRepository.getInComeByAdmin(startDate, endDate);
-        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDateTime.now().withDayOfMonth(1), endDate);
+        Double income = ordersRepository.getInComeByAdmin(startDate, endDate) / 100;
+        Double incomeCurrentMonth = ordersRepository.getInComeByAdmin(LocalDateTime.now().withDayOfMonth(1), endDate) / 100;
 
         Long countZaloOrder = ordersRepository.countZaloPay();
         Long orderCount = ordersRepository.countByIsPaid(true);
