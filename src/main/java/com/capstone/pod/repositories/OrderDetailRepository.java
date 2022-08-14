@@ -16,6 +16,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail,String>
     List<OrderDetail> findAllByFactoryId(String factoryId);
     List<OrderDetail> findAllByFactory(Factory factory);
     Optional<OrderDetail> findAllByOrdersIdAndDesignedProductIdAndColorAndSize(String orderId, String designId,String color, String size);
-    List<OrderDetail> findAllByOrders(Orders orders);
+    List<OrderDetail> findAllByOrdersAndFactory(Orders orders ,Factory factory);
+    List<OrderDetail> findAllByOrders(Orders orders );
     List<OrderDetail> findAllByOrdersIdAndDesignedProductIdAndFactoryId(String orderId, String designId, String factoryId);
 }
