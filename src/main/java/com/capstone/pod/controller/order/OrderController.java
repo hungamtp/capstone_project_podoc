@@ -63,9 +63,9 @@ public class OrderController {
         responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
-    @DeleteMapping
+    @PutMapping("cancel-by-user")
     @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrder(@RequestBody CancelOrderDto dto) throws IOException {
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrderByUser(@RequestBody CancelOrderDto dto) throws IOException {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
         ordersService.cancelOrder(dto);
         responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);

@@ -7,6 +7,7 @@ public final class ValidationMessage {
     public static final String PLACEHOLER_TOP_VALID_MESSAGE ="Placeholder top must be filled";
     public static final String COLOR_VALID_MESSAGE ="Color must be filled";
     public static final String CANCEL_REASON_VALID_MESSAGE ="Cancel reason must be filled";
+    public static final String CANCEL_REASON_SIZE_VALID_MESSAGE ="Cancel reason must be greater or equal 10 characters";
     public static final String PHONE_NOT_EMPTY_VALID_MESSAGE ="Phone must be filled";
     public static final String EMAIL_VALID_MESSAGE ="Email is incorrect";
     public static final String EMAIL_VALID_MESSAGE_WHEN_LOGIN ="Wrong email address, please try again";
