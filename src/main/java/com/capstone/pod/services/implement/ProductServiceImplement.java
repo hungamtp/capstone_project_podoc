@@ -132,7 +132,7 @@ public class ProductServiceImplement implements ProductService {
                 .numberOfColor(Long.valueOf(sizeColorByFactories.stream().map(SizeColorByFactory::getSizeColor).distinct().collect(Collectors.toList()).stream().map(SizeColor::getColor).distinct().count()).intValue())
                 .numberOfSize(Long.valueOf(sizeColorByFactories.stream().map(SizeColorByFactory::getSizeColor).distinct().collect(Collectors.toList()).stream().map(SizeColor::getSize).distinct().count()).intValue())
                 .priceFrom(priceList.size() == 0 ? 0 : priceList.stream().min(Comparator.comparingDouble(PriceByFactory::getPrice)).get().getPrice())
-                .numberOfFactory(product.getPriceByFactories().size())
+                .numberOfFactory(product.getPriceByFactories().stream().filter(priceByFactory -> priceByFactory.getFactory().isCollaborating()).collect(Collectors.toList()).size())
                 .build();
             productDto.setProductImages(product.getProductImages().stream().map(img -> ProductImagesDto.builder().image(img.getImage()).build()).collect(Collectors.toList()));
             productDto.setTags(product.getProductTags().stream().map(tag -> ProductTagDto.builder().tag(TagDto.builder().name(tag.getTag().getName()).build()).build()).collect(Collectors.toList()));
