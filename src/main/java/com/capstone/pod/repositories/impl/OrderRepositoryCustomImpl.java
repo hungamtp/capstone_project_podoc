@@ -3,9 +3,11 @@ package com.capstone.pod.repositories.impl;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.repositories.OrderRepositoryCustom;
 import com.capstone.pod.repositories.impl.projection.FactoryRateProjection;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
@@ -63,15 +65,17 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
             Join<OrderDetail, DesignedProduct> detailDesignedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
             Join<DesignedProduct, PriceByFactory> priceByFactoryJoin = detailDesignedProductJoin.join(DesignedProduct_.PRICE_BY_FACTORY);
-            Join<PriceByFactory, Factory> factoryFactoryJoin = detailDesignedProductJoin.join(PriceByFactory_.FACTORY);
+            Join<PriceByFactory, Factory> factoryJoin = priceByFactoryJoin.join(PriceByFactory_.FACTORY);
             Expression<Number> incomeBefore = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), priceByFactoryJoin.get(PriceByFactory_.PRICE));
-            Expression<Number> incomeAfter = criteriaBuilder.prod(incomeBefore, factoryFactoryJoin.get(Factory_.TRADE_DISCOUNT));
-            query.multiselect(criteriaBuilder.sum(incomeAfter));
+            Expression<Number> afterCommission = criteriaBuilder.prod(factoryJoin.get(Factory_.TRADE_DISCOUNT), incomeBefore);
+            query.multiselect(criteriaBuilder.sum(afterCommission));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
             query.where(orderEqual, dateBetween);
             return entityManager.createQuery(query).getSingleResult();
         } catch (IllegalArgumentException e) {
+            return 0d;
+        } catch (NoResultException e) {
             return 0d;
         }
     }
