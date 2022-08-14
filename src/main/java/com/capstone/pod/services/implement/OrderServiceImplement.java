@@ -426,10 +426,7 @@ public class OrderServiceImplement implements OrdersService {
         String orderInfo = String.format("Total : %f  , Phone : %s", orders.getPrice(), orders.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Double amount = orders.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList())
-            .stream().mapToDouble(orderDetail ->
-                orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
-                    .getPriceByFactory().getPrice())).sum();
+        Double amount = orders.getPrice();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
