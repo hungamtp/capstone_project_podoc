@@ -9,6 +9,7 @@ public final class UserSuccessMessage {
     public final static String DELETE_USER_SUCCESS = "Delete user successfully";
     public final static String UPDATE_USER_SUCCESS = "Update user successfully";
     public final static String ADD_USER_SUCCESS = "Add user successfully";
+    public final static String UPDATE_FACTORY_SUCCESS = "Update factory successfully";
 
     public final static String ADD_ADMIN_SUCCESS = "Add admin successfully";
     public final static String ADD_FATORY_SUCCESS = "Add factory successfully";

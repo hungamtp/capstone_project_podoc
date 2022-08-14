@@ -59,6 +59,16 @@ public class FactoryController {
         responseDTO.setSuccessMessage(UserSuccessMessage.ADD_FATORY_SUCCESS);
         return ResponseEntity.ok().body(responseDTO);
     }
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    @PutMapping
+    public ResponseEntity<ResponseDto> update(@Validated @RequestBody UpdateFactoryDto factoryDto,@RequestParam String credentialId)
+    {
+        ResponseDto<AddFactoryResponse> responseDTO = new ResponseDto();
+        AddFactoryResponse addFactory = factoryService.updateFactory(credentialId, factoryDto);
+        responseDTO.setData(addFactory);
+        responseDTO.setSuccessMessage(UserSuccessMessage.UPDATE_FACTORY_SUCCESS);
+        return ResponseEntity.ok().body(responseDTO);
+    }
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN_AND_USER)
     @PostMapping("avatar/{id}")
     public ResponseEntity<ResponseDto> updateAvatar(@Validated @RequestBody UpdateAvatarDto avatar, @PathVariable(name = "id") String id) {

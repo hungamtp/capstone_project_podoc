@@ -1,9 +1,6 @@
 package com.capstone.pod.services;
 
-import com.capstone.pod.dto.factory.AddFactoryDto;
-import com.capstone.pod.dto.factory.AddFactoryResponse;
-import com.capstone.pod.dto.factory.FactoryByIdDto;
-import com.capstone.pod.dto.factory.FactoryPageResponseDto;
+import com.capstone.pod.dto.factory.*;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
 import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
@@ -18,6 +15,7 @@ import java.util.List;
 public interface FactoryService {
     public Page<FactoryPageResponseDto> getAllFactories(Pageable pageable);
     public AddFactoryResponse addFactory(AddFactoryDto factoryDto);
+    public AddFactoryResponse updateFactory(String credentialId, UpdateFactoryDto factoryDto);
     public FactoryByIdDto getFactorybyCredentialId(String credentialId, String productName);
     public UserDto updatePassword(UpdatePasswordDto user, String userId);
     public UserDto updateAvatar(UpdateAvatarDto avatar, String userId);

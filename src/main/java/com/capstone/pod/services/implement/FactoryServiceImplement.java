@@ -9,10 +9,7 @@ import com.capstone.pod.constant.role.RoleName;
 import com.capstone.pod.constant.sizecolor.SizeColorErrorMessage;
 import com.capstone.pod.constant.user.UserErrorMessage;
 import com.capstone.pod.dto.blueprint.BluePrintDto;
-import com.capstone.pod.dto.factory.AddFactoryDto;
-import com.capstone.pod.dto.factory.AddFactoryResponse;
-import com.capstone.pod.dto.factory.FactoryByIdDto;
-import com.capstone.pod.dto.factory.FactoryPageResponseDto;
+import com.capstone.pod.dto.factory.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.order.OrderDetailFactoryDto;
 import com.capstone.pod.dto.order.OrderDetailForPrintingDto;
@@ -112,6 +109,22 @@ public class FactoryServiceImplement implements FactoryService {
         Credential credentialInrepo = credentialRepository.save(credential);
         AddFactoryResponse addFactoryDto = modelMapper.map(credentialInrepo, AddFactoryResponse.class);
         return addFactoryDto;
+    }
+
+    @Override
+    public AddFactoryResponse updateFactory(String credentialId,UpdateFactoryDto factoryDto) {
+         Credential credential = getPermittedCredential(credentialId);
+         if(credential.getFactory()!=null) {
+             credential.getFactory().setName(factoryDto.getName());
+             credential.setPassword(passwordEncoder.encode(factoryDto.getPassword()));
+             credential.getFactory().setTradeDiscount(factoryDto.getTradeDiscount());
+             credential.setAddress(factoryDto.getAddress());
+             credential.setPhone(factoryDto.getPhone());
+             Credential credentialInrepo = credentialRepository.save(credential);
+             AddFactoryResponse updateFactoryDto = modelMapper.map(credentialInrepo, AddFactoryResponse.class);
+             return updateFactoryDto;
+         }
+         return null;
     }
 
     @Override
