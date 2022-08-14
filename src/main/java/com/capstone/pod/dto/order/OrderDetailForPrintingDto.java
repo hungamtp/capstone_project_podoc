@@ -25,4 +25,5 @@ public class OrderDetailForPrintingDto {
     private List<String> statuses;
     private String status;
     private boolean isCanceled;
+    private String cancelReason;
 }
