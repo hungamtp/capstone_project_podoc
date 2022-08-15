@@ -302,6 +302,14 @@ public class ProductServiceImplement implements ProductService {
     @Override
     public AddProductBluePrintDto addProductBluePrint(String productId, AddProductBluePrintDto addProductBluePrintDto) {
         Product product = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
+        boolean check = false;
+        for (int i = 0; i < product.getSizeProduct().size(); i++) {
+            if("L".equalsIgnoreCase(product.getSizeProduct().get(i).getSize())){
+                check = true;
+            }
+        }
+        if(!check) throw new PermissionException(ProductErrorMessage.PRODUCT_NOT_HAVE_SIZE_L);
+
         List<ProductBluePrint> productBluePrintList = productBluePrintRepository.getAllByProductId(productId);
         for (int i = 0; i < productBluePrintList.size(); i++) {
             if (productBluePrintList.get(i).getPosition().equals(addProductBluePrintDto.getPosition())) {
