@@ -28,6 +28,7 @@ public class Orders extends AuditableDateTime {
     private String customerName;
     private String appTransId;
     private boolean isPaid;
+    private boolean refunded;
     private boolean canceled;
     private String cancelReason;
     @ManyToOne
