@@ -19,5 +19,6 @@ public class OrderDetailFactoryDto {
     private double price;
     private int quantity;
     private String status;
-    private boolean isCanceled;
+    private boolean isCanceledOrderDetails;
+    private boolean isCanceledOrder;
 }
