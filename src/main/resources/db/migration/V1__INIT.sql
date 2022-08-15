@@ -415,6 +415,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`orders` (
     `canceled` BIT(1) NOT NULL,
     `customer_name` VARCHAR(255) NULL DEFAULT NULL,
     `is_paid` BIT(1) NOT NULL,
+    `refunded` BIT(1) NOT NULL,
     `phone` VARCHAR(255) NULL DEFAULT NULL,
     `price` DOUBLE NOT NULL,
     `transaction_id` VARCHAR(255) NULL DEFAULT NULL,
