@@ -192,6 +192,7 @@ public class OrderServiceImplement implements OrdersService {
         order.setPhone(shippingInfo.getPhoneNumber());
         order.setCustomerName(shippingInfo.getName());
         order.setPaid(false);
+        order.setRefunded(false);
         order.setTransactionId("");
         ordersRepository.save(order);
         printingInfoRepository.saveAll(printingInfos);
@@ -242,7 +243,7 @@ public class OrderServiceImplement implements OrdersService {
         orders.setCanceled(true);
         orders.setCancelReason(dto.getCancelReason());
         try {
-            if (orders.isPaid()) {
+            if (orders.isPaid() && !orders.isRefunded()) {
                 if (orders.getTransactionId().contains("_")) {
                     // zalo pay transactionId has '_'
                     List<OrderDetail> orderDetails = orders.getOrderDetails();
@@ -260,7 +261,7 @@ public class OrderServiceImplement implements OrdersService {
             throw new RefundException(ex.getMessage());
         }
 
-        orders.setPaid(false);
+        orders.setRefunded(true);
         ordersRepository.save(orders);
         //add back quantity when user cancel order
         addBackQuantityWhenCancelingOrderByUser(orders.getId());
