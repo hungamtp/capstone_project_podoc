@@ -701,9 +701,7 @@ public class OrderServiceImplement implements OrdersService {
     @Transactional
     public void cancelOrderDetailByFactory(CancelOrderDto dto) {
         Credential credential = getCredential();
-
         List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersAndFactory(ordersRepository.getById(dto.getOrderId()), credential.getFactory());
-
         if (orderDetails.isEmpty()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
         if (!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
             throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
@@ -735,10 +733,10 @@ public class OrderServiceImplement implements OrdersService {
         } catch (Exception ex) {
             throw new RefundException(ex.getMessage());
         }
-        if(orderDetails.size() == orders.getOrderDetails().size()){
-            orders.setPaid(false);
-            ordersRepository.save(orders);
-        }
+//        if(orderDetails.size() == orders.getOrderDetails().size()){
+//            orders.setPaid(false);
+//            ordersRepository.save(orders);
+//        }
         orderDetailRepository.saveAll(orderDetails);
         addBackQuantityWhenCancelingOrderByFactory(orderDetails);
     }
