@@ -178,14 +178,14 @@ public class OrderServiceImplement implements OrdersService {
             if (sizeColorByFactory.getQuantity() < cartDetailList.get(i).getQuantity()) {
                 throw new QuantityNotEnoughException(ProductErrorMessage.QUANTITY_BY_FACTORY_NOT_ENOUGH);
             }
-            sizeColorByFactories.add(sizeColorByFactory);
+//            sizeColorByFactories.add(sizeColorByFactory);
             orderDetails.add(orderDetail);
             totalPrice += cartDetailList.get(i).getQuantity() * (cartDetailList.get(i).getDesignedProduct().getPriceByFactory().getPrice() + cartDetailList.get(i).getDesignedProduct().getDesignedPrice());
         }
         if (totalPrice < 1000 || totalPrice > 50000000)
             throw new PermissionException(ValidationMessage.PRICE_TOTAL_SHOULD_VALID);
 
-        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
+//        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
         order.setOrderDetails(orderDetails);
         order.setPrice(totalPrice);
         order.setAddress(shippingInfo.getEmailAddress());
