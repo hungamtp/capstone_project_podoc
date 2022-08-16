@@ -239,7 +239,7 @@ public class FactoryServiceImplement implements FactoryService {
         if(credential.isPresent()){
             if(credential.get().getFactory()!=null){
                 List<OrderDetail> orderDetailList= orderDetailRepository.findAllByFactoryId(credential.get().getFactory().getId());
-                List<OrderDetailFactoryDto> orderDetailFactoryDtos = orderDetailList.stream().filter(orderDetail ->orderDetail.getOrders().isPaid()==true).map(orderDetail -> OrderDetailFactoryDto.builder()
+                List<OrderDetailFactoryDto> orderDetailFactoryDtos = orderDetailList.stream().filter(orderDetail ->orderDetail.getOrders().isPaid()==true).sorted(Comparator.comparing(orderDetail -> orderDetail.getOrders().getCreateDate())).map(orderDetail -> OrderDetailFactoryDto.builder()
                        .id(orderDetail.getId())
                         .isCanceledOrderDetails(orderDetail.isCancel())
                         .isCanceledOrder(orderDetail.getOrders().isCanceled())
