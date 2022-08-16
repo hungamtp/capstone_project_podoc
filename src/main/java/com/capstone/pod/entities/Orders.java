@@ -39,10 +39,9 @@ public class Orders extends AuditableDateTime {
 
     // Order can be cancel that has PENDING , CANCEL only
     public boolean canCancel() {
-        return this.canceled ? true : this.orderDetails
-            .stream().flatMap(orderDetails -> orderDetails.getOrderStatuses().stream()).collect(Collectors.toList())
-            .stream().filter(orderStatus -> !orderStatus.getName().equals(OrderState.PENDING)).collect(Collectors.toList())
-            .stream().filter(orderStatus -> !orderStatus.getName().equals(OrderState.CANCEL)).collect(Collectors.toList())
+        return this.canceled ? false : this.orderDetails.stream().map(orderDetail -> orderDetail.latestStatus()).collect(Collectors.toList())
+            .stream().filter(status -> !status.equals(OrderState.PENDING)).collect(Collectors.toList())
+            .stream().filter(status -> !status.equals(OrderState.CANCEL)).collect(Collectors.toList())
             .size() == 0;
     }
 }
