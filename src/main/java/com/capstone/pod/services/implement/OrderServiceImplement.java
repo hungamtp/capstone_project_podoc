@@ -240,6 +240,9 @@ public class OrderServiceImplement implements OrdersService {
     public void cancelOrder(CancelOrderDto dto) throws IOException {
         Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
             () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+        if(!orders.canCancel()){
+            throw new IllegalStateException("CAN NOT CANCEL THIS ORDER ");
+        }
         orders.setCanceled(true);
         orders.setCancelReason(dto.getCancelReason());
         try {
