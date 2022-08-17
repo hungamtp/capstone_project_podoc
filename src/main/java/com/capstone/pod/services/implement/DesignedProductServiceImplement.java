@@ -323,6 +323,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
             .name(designedProduct.getName())
             .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
+            .rateCount(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).size())
             .publish(designedProduct.isPublish())
             .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
             .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
