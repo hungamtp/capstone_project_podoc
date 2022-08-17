@@ -146,7 +146,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .build();
                productDtoList.add(productDto);
             }
-            List<ProductDto> productDtos = productDtoList.stream().sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().filter(productDto -> productDto.getName().toLowerCase().contains(productName.toLowerCase())).collect(Collectors.toList());
+            List<ProductDto> productDtos = productDtoList.stream().filter(productDto -> !productDto.isDeleted()).sorted(Comparator.comparing(productDto -> productDto.getId())).distinct().filter(productDto -> productDto.getName().toLowerCase().contains(productName.toLowerCase())).collect(Collectors.toList());
         FactoryByIdDto factory = FactoryByIdDto.builder().id(credential.getFactory().getId())
                         .email(credential.getEmail())
                         .tradeDiscount(credential.getFactory().getTradeDiscount())
