@@ -616,8 +616,8 @@ public class OrderServiceImplement implements OrdersService {
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         User user = credential.getUser();
-        Double income = ordersRepository.getInComeByUserId(user.getId(), startDate, endDate);
-        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate);
+        Double income = ordersRepository.getInComeByUserId(user.getId(), startDate, endDate) * 0.8;
+        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate)* 0.8;
         long designCount = designedProductRepository.countAllByUser(user);
         long designSoldCount = ordersRepository.countSoldByUserId(user.getId(), startDate, endDate);
         long designSoldCountCurrentMonth = ordersRepository.countSoldByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate);
