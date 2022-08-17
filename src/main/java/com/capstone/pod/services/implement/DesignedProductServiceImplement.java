@@ -325,7 +325,15 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .rating(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(rating -> rating.getRatingStar()).collect(Collectors.averagingDouble(num -> Double.parseDouble(num + ""))))
             .publish(designedProduct.isPublish())
             .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
-            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
+            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream()
+                .filter(orderDetail -> orderDetail.getOrders().isPaid()
+                    && !orderDetail.getOrders().isRefunded()
+                    && !orderDetail.getOrders().isCanceled()
+                    && !orderDetail.isCancel()
+                )
+                .collect(Collectors.toList())
+                .stream()
+                .mapToInt(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos, page, designedProductPage.getTotalElements());
