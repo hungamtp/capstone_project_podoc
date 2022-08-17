@@ -41,7 +41,7 @@ public class Orders extends AuditableDateTime implements Comparable<Orders>{
     // Order can be cancel that has PENDING , CANCEL only
     public boolean canCancel() {
         if (this.orderDetails.stream().map(orderDetail -> orderDetail.latestStatus()).collect(Collectors.toList())
-            .stream().filter(status -> !status.equals(OrderState.CANCEL)).collect(Collectors.toList())
+            .stream().filter(status -> status.equals(OrderState.CANCEL)).collect(Collectors.toList())
             .size() == orderDetails.size()) {
             return false;
         }
