@@ -348,7 +348,7 @@ public class OrderServiceImplement implements OrdersService {
         Orders orders = ordersRepository.findById(orderId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.ORDERS + ErrorMessage.NOT_FOUND)
         );
-        List<OrderDetail> orderDetails = orders.getOrderDetails();
+        List<OrderDetail> orderDetails = orders.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList());
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         for (int i = 0; i < orderDetails.size(); i++) {
             OrderDetail orderDetail = orderDetails.get(i);
@@ -751,11 +751,11 @@ public class OrderServiceImplement implements OrdersService {
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         for (int i = 0; i < orderDetails.size(); i++) {
             OrderDetail orderDetail = orderDetails.get(i);
-            Optional<SizeColor> sizeColor = sizeColorRepository
-                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
-            Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
-            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
-            sizeColorByFactories.add(sizeColorByFactory.get());
+                Optional<SizeColor> sizeColor = sizeColorRepository
+                        .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+                Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
+                sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
+                sizeColorByFactories.add(sizeColorByFactory.get());
         }
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
