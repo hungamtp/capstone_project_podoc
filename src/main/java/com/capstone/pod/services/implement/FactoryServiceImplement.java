@@ -181,14 +181,17 @@ public class FactoryServiceImplement implements FactoryService {
     @Override
     public void updateCollaborating(String factoryId, boolean isCollaborating) {
       Factory factory =  factoryRepository.findById(factoryId).orElseThrow(() -> new FactoryNotFoundException(FactoryErrorMessage.FACTORY_NOT_FOUND));
-      List<OrderDetail> orderDetails= orderDetailRepository.findAllByFactoryId(factoryId);
-        for (int i = 0; i < orderDetails.size(); i++) {
-            if(!orderDetails.get(i).isCancel() && orderDetails.get(i).getOrderStatuses().size()!=6){
-                throw new PermissionException(FactoryErrorMessage.FACTORY_IS_HAVING_ORDER_IN_DELIVERY_FOUND);
-            }
-        }
-      factory.setCollaborating(isCollaborating);
-      factoryRepository.save(factory);
+      if(!isCollaborating){
+          List<OrderDetail> orderDetails= orderDetailRepository.findAllByFactoryId(factoryId);
+          for (int i = 0; i < orderDetails.size(); i++) {
+              if(!orderDetails.get(i).isCancel() && orderDetails.get(i).getOrderStatuses().size()!=6){
+                  throw new PermissionException(FactoryErrorMessage.FACTORY_IS_HAVING_ORDER_IN_DELIVERY_FOUND);
+              }
+          }
+      }
+        factory.setCollaborating(isCollaborating);
+        factoryRepository.save(factory);
+
     }
 
     @Override
