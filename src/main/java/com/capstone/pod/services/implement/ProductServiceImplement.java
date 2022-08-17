@@ -68,6 +68,14 @@ public class ProductServiceImplement implements ProductService {
     public ProductReturnDto updateProduct(UpdateProductDto productDto, String productId) {
         Product productInRepo = productRepository.findById(productId).orElseThrow(() -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
         if (productInRepo.isDeleted()) throw new ProductNotFoundException(ProductErrorMessage.PRODUCT_DELETED);
+        List<Product> products = productRepository.findAll();
+        if(!productDto.getName().equals(productInRepo.getName())){
+            for (int i = 0; i < products.size(); i++) {
+                if(products.get(i).getName().equals(productDto.getName())){
+                    throw new ProductNameExistException(ProductErrorMessage.PRODUCT_NAME_EXISTED);
+                }
+            }
+        }
         Category category = categoryRepository.findByName(productDto.getCategoryName()).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_NAME_NOT_FOUND));
         productImagesRepository.deleteAllInBatch(productInRepo.getProductImages());
         List<ProductImages> imagesList = new ArrayList<>();

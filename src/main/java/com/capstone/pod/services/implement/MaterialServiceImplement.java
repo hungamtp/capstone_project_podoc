@@ -34,8 +34,11 @@ public class MaterialServiceImplement implements MaterialService {
     public MaterialDto editMaterial(MaterialDto dto) {
         Material material= materialRepository.findById(dto.getId()).orElseThrow(() -> new MaterialException(MaterialErrorMessage.MATERIAL_NOT_EXISTED_EXCEPTION));
         List<Material> materials = materialRepository.findAll();
-        for (int i = 0; i < materials.size(); i++) {
-            if(materials.get(i).getName().equals(dto.getName())) throw new MaterialException(MaterialErrorMessage.MATERIAL_NAME_EXISTED_EXCEPTION);
+        if(!dto.getName().equals(material.getName())) {
+            for (int i = 0; i < materials.size(); i++) {
+                if (materials.get(i).getName().equals(dto.getName()))
+                    throw new MaterialException(MaterialErrorMessage.MATERIAL_NAME_EXISTED_EXCEPTION);
+            }
         }
         material.setName(dto.getName());
         return modelMapper.map(materialRepository.save(material),MaterialDto.class);
