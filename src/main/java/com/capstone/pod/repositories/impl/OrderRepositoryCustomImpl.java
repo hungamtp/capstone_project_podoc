@@ -48,8 +48,11 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
             Predicate designerEqual = criteriaBuilder.equal(userJoin.get(User_.ID), userId);
+            Predicate paidOrder = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate notCanceled = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
+            Predicate factoryNotCanceled = criteriaBuilder.isFalse(root.get(OrderDetail_.CANCELED));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
-            query.where(orderEqual, designerEqual, dateBetween);
+            query.where(orderEqual, designerEqual, dateBetween, paidOrder, notCanceled, factoryNotCanceled);
             return entityManager.createQuery(query).getSingleResult();
         } catch (IllegalArgumentException e) {
             return 0l;
@@ -70,8 +73,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             Expression<Number> afterCommission = criteriaBuilder.prod(factoryJoin.get(Factory_.TRADE_DISCOUNT), incomeBefore);
             query.multiselect(criteriaBuilder.sum(afterCommission));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate notCanceled = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
+            Predicate factoryNotCanceled = criteriaBuilder.isFalse(root.get(OrderDetail_.CANCELED));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
-            query.where(orderEqual, dateBetween);
+            query.where(orderEqual, dateBetween, notCanceled, factoryNotCanceled);
             return entityManager.createQuery(query).getSingleResult();
         } catch (IllegalArgumentException e) {
             return 0d;
@@ -93,9 +98,11 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 , criteriaBuilder.sum(priceByFactoryJoin.get(PriceByFactory_.PRICE), detailDesignedProductJoin.get(DesignedProduct_.DESIGNED_PRICE)));
             query.multiselect(criteriaBuilder.sum(income));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate notCanceled = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
+            Predicate factoryNotCanceled = criteriaBuilder.isFalse(root.get(OrderDetail_.CANCELED));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
             Predicate factoryEqual = criteriaBuilder.equal(factoryFactoryJoin.get(Factory_.ID), factoryId);
-            query.where(orderEqual, dateBetween, factoryEqual);
+            query.where(orderEqual, dateBetween, factoryEqual, notCanceled, factoryNotCanceled);
             return entityManager.createQuery(query).getSingleResult();
         } catch (Exception e) {
             return Double.valueOf(0);
@@ -110,8 +117,10 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
             query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate notCanceled = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
+            Predicate factoryNotCanceled = criteriaBuilder.isFalse(root.get(OrderDetail_.CANCELED));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
-            query.where(orderEqual, dateBetween);
+            query.where(orderEqual, dateBetween, notCanceled, factoryNotCanceled);
             return entityManager.createQuery(query).getSingleResult();
         } catch (IllegalArgumentException e) {
             return 0L;
