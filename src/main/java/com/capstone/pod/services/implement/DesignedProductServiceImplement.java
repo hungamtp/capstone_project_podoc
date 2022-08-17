@@ -192,8 +192,8 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                     .rotate(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getRotate())
                     .scales(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getScales())
                     .src(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getSrc())
-                        .textColor(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTextColor())
-                        .font(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getFont())
+                    .textColor(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getTextColor())
+                    .font(dto.getBluePrintDtos().get(i).getDesignInfos().get(j).getFont())
                     .build();
                 bluePrint.getDesignInfos().add(designInfo);
             }
@@ -211,7 +211,8 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         if (!isPermittedUser(designId)) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
         DesignedProduct designedProduct = designedProductRepository.findById(designId)
             .orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
-        if(designedProduct.getProduct().isDeleted()) new DesignedProductNotExistException(DesignedProductErrorMessage.PRODUCT_DELETE_DESIGNED_PRODUCT_NOT_EXIST);
+        if (designedProduct.getProduct().isDeleted())
+            new DesignedProductNotExistException(DesignedProductErrorMessage.PRODUCT_DELETE_DESIGNED_PRODUCT_NOT_EXIST);
         DesignedProductReturnDto designedProductReturnDto = modelMapper.map(designedProduct, DesignedProductReturnDto.class);
         Set<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
@@ -268,7 +269,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
         Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
-        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId( page, credential.getUser().getId());
+        Page<DesignedProduct> designedProductPage = designedProductRepository.findAllByUserId(page, credential.getUser().getId());
         List<ViewMyDesignDto> viewMyDesignDtos = designedProductPage.stream().map(designedProduct -> ViewMyDesignDto.builder()
             .id(designedProduct.getId())
             .name(designedProduct.getName())
@@ -276,8 +277,13 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .designedPrice(designedProduct.getDesignedPrice())
             .publish(designedProduct.isPublish()).isProductOfDesignDeleted(designedProduct.getProduct().isDeleted())
             .soldCount(designedProduct.getOrderDetails().stream()
-                .filter(orderDetail -> orderDetail.getOrders().isPaid())
-                .collect(Collectors.toList()).stream()
+                .filter(orderDetail -> orderDetail.getOrders().isPaid()
+                    && !orderDetail.getOrders().isRefunded()
+                    && !orderDetail.getOrders().isCanceled()
+                    && !orderDetail.isCancel()
+                )
+                .collect(Collectors.toList())
+                .stream()
                 .mapToLong(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
@@ -326,7 +332,15 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .rateCount(ratingRepository.findAllByDesignedProductId(designedProduct.getId()).size())
             .publish(designedProduct.isPublish())
             .tagName(designedProductTagRepository.findAllByDesignedProductId(designedProduct.getId()).stream().map(designedProductTag -> designedProductTag.getTag().getName()).collect(Collectors.toList()))
-            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream().mapToInt(OrderDetail::getQuantity).sum())
+            .sold(orderDetailRepository.findAllByDesignedProductId(designedProduct.getId()).stream()
+                .filter(orderDetail -> orderDetail.getOrders().isPaid()
+                    && !orderDetail.getOrders().isRefunded()
+                    && !orderDetail.getOrders().isCanceled()
+                    && !orderDetail.isCancel()
+                )
+                .collect(Collectors.toList())
+                .stream()
+                .mapToInt(OrderDetail::getQuantity).sum())
             .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos, page, designedProductPage.getTotalElements());
@@ -369,7 +383,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         for (int i = 0; i < sizeColorDto.size(); i++) {
             for (int j = i + 1; j < sizeColorDto.size(); j++) {
                 SizeColorDesignedAndFactorySellDto temp = null;
-                if(SizeUtils.sizes.get(sizeColorDto.get(i).getSize()) != null && SizeUtils.sizes.get(sizeColorDto.get(j).getSize()) != null) {
+                if (SizeUtils.sizes.get(sizeColorDto.get(i).getSize()) != null && SizeUtils.sizes.get(sizeColorDto.get(j).getSize()) != null) {
                     if (SizeUtils.sizes.get(sizeColorDto.get(i).getSize()) > SizeUtils.sizes.get(sizeColorDto.get(j).getSize())) {
                         temp = new SizeColorDesignedAndFactorySellDto(sizeColorDto.get(i).getColor(), sizeColorDto.get(i).getSize());
                         sizeColorDto.get(i).setColor(sizeColorDto.get(j).getColor());
