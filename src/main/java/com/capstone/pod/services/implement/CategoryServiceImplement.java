@@ -57,6 +57,14 @@ public class CategoryServiceImplement implements CategoryService {
     @Override
     public CategoryDto updateCategory(UpdateCategoryDto categoryDto,String categoryId) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new CategoryNotFoundException(CategoryErrorMessage.CATEGORY_ID_NOT_FOUND));
+        List<Category> categories = categoryRepository.findAll();
+        if(!categoryDto.getName().equals(category.getName())){
+            for (int i = 0; i < categories.size(); i++) {
+                if(categories.get(i).getName().equals(categoryDto.getName())){
+                    throw new CategoryExistedException(CategoryErrorMessage.CATEGORY_EXISTED_EXCEPTION);
+                }
+            }
+        }
         category.setImage(categoryDto.getImage());
         category.setName(categoryDto.getName());
         return modelMapper.map(categoryRepository.save(category),CategoryDto.class);
