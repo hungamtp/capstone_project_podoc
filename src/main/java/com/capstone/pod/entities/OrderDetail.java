@@ -39,7 +39,7 @@ public class OrderDetail {
     private PrintingInfo printingInfo;
 
     public boolean isDone() {
-        return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.DONE))
+        return this.orderStatuses.stream().filter(orderStatus -> orderStatus.getName().equals(OrderState.DONE))
             .collect(Collectors.toList()).size() != 0;
     }
     public boolean isCancel() {
@@ -47,7 +47,7 @@ public class OrderDetail {
     }
 
     public boolean isCanceled() {
-        return this.orderStatuses.stream().filter(orderStatus -> orderStatus.equals(OrderState.CANCEL))
+        return this.orderStatuses.stream().filter(orderStatus -> orderStatus.getName().equals(OrderState.CANCEL))
             .collect(Collectors.toList()).size() != 0;
     }
 
