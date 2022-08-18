@@ -21,4 +21,5 @@ public class OrderDetailFactoryDto {
     private String status;
     private boolean isCanceledOrderDetails;
     private boolean isCanceledOrder;
+    private String createDate;
 }

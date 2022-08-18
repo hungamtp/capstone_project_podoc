@@ -249,6 +249,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .orderId(orderDetail.getOrders().getId())
                        .designId(orderDetail.getDesignedProduct().getId())
                        .productName(orderDetail.getDesignedProduct().getProduct().getName())
+                       .createDate(orderDetail.getOrders().getCreateDate().toString())
                        .designName(orderDetail.getDesignedProduct().getName())
                        .designedImage(orderDetail.getDesignedProduct().getImagePreviews().stream().collect(Collectors.toList()).get(0).getImage())
                        .color(orderDetail.getColor())
