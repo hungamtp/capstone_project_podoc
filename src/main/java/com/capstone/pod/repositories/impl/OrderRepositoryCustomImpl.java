@@ -119,10 +119,11 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
             Join<OrderDetail, Orders> ordersJoin = root.join(OrderDetail_.ORDERS);
             query.multiselect(criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)));
             Predicate orderEqual = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+            Predicate cancel = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
             Predicate notCanceled = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
             Predicate factoryNotCanceled = criteriaBuilder.isFalse(root.get(OrderDetail_.CANCELED));
             Predicate dateBetween = criteriaBuilder.between(ordersJoin.get(Orders_.CREATE_DATE), startDate.minusDays(1), endDate);
-            query.where(orderEqual, dateBetween, notCanceled, factoryNotCanceled);
+            query.where(orderEqual, dateBetween, notCanceled, factoryNotCanceled , cancel);
             return entityManager.createQuery(query).getSingleResult();
         } catch (IllegalArgumentException e) {
             return 0L;

@@ -19,7 +19,7 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public AllOrderDetail  findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
+    public AllOrderDetail findAllOrderDetailIsPaidTrueOrderDetail(int page, int size, String userId) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<OrderDetail> query = criteriaBuilder.createQuery(OrderDetail.class);
         Root<OrderDetail> root = query.from(OrderDetail.class);
@@ -43,18 +43,19 @@ public class OrderDetailRepositoryCustomImpl implements OrderDetailRepositoryCus
         Join<OrderDetail, DesignedProduct> designedProductJoin = root.join(OrderDetail_.DESIGNED_PRODUCT);
         Join<DesignedProduct, Product> productJoin = designedProductJoin.join(DesignedProduct_.PRODUCT);
         Join<Product, Category> categoryJoin = productJoin.join(Product_.CATEGORY);
-//        Expression<Number> income = criteriaBuilder.prod(root.get(OrderDetail_.QUANTITY), designedProductJoin.get(DesignedProduct_.DESIGNED_PRICE));
-//        query.multiselect(criteriaBuilder.sum(income));
         query.multiselect(
             categoryJoin.get(Category_.ID),
             categoryJoin.get(Category_.NAME),
             categoryJoin.get(Category_.IMAGE),
             criteriaBuilder.sum(root.get(OrderDetail_.QUANTITY)).alias("count"));
         Predicate orderIsPaidTrue = criteriaBuilder.isTrue(ordersJoin.get(Orders_.IS_PAID));
+        Predicate refund = criteriaBuilder.isFalse(ordersJoin.get(Orders_.REFUNDED));
+        Predicate cancel = criteriaBuilder.isFalse(ordersJoin.get(Orders_.CANCELED));
+        Predicate factoryCancel = criteriaBuilder.isFalse(root.get(OrderDetail_.CANCELED));
         query.groupBy(categoryJoin.get(Category_.ID));
         List<Order> orders = new ArrayList<>();
         orders.add(criteriaBuilder.asc(ordersJoin.get(Orders_.CREATE_DATE)));
-        query.where(orderIsPaidTrue);
+        query.where(orderIsPaidTrue, cancel, factoryCancel, refund);
         return entityManager.createQuery(query).getResultList();
     }
 
