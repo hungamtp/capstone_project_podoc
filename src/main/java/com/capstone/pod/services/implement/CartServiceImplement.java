@@ -97,7 +97,7 @@ public class CartServiceImplement implements CartService {
             );
         Credential credential = getCredential();
 
-        if(!designedProduct.getUser().getId().equals(credential.getUser().getId())){
+        if (!designedProduct.getUser().getId().equals(credential.getUser().getId())) {
             if (!designedProduct.isPublish())
                 throw new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND);
         }
@@ -118,21 +118,21 @@ public class CartServiceImplement implements CartService {
             CartDetail savedCartDetail = cartDetail.get();
             savedCartDetail.setQuantity(savedCartDetail.getQuantity() + addToCartDto.getQuantity());
             cartDetailRepository.save(savedCartDetail);
-           return CartDetailDto
-               .builder()
-               .id(cartDetail.get().getId())
-               .cartId(cartDetail.get().getCart().getId())
-               .designedProductId(cartDetail.get().getDesignedProduct().getId())
-               .designedProductName(cartDetail.get().getDesignedProduct().getName())
-               .color(cartDetail.get().getColor())
-               .size(cartDetail.get().getSize())
-               .publish(true)
-               .designedImage(imagePreview.size() != 0 ? imagePreview.get(0).getImage() : "")
-               .price(Double.valueOf(cartDetail.get().getDesignedProduct().getDesignedPrice() + cartDetail.get().getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
-               .quantity(savedCartDetail.getQuantity())
-               .build();
+            return CartDetailDto
+                .builder()
+                .id(cartDetail.get().getId())
+                .cartId(cartDetail.get().getCart().getId())
+                .designedProductId(cartDetail.get().getDesignedProduct().getId())
+                .designedProductName(cartDetail.get().getDesignedProduct().getName())
+                .color(cartDetail.get().getColor())
+                .size(cartDetail.get().getSize())
+                .publish(true)
+                .designedImage(imagePreview.size() != 0 ? imagePreview.get(0).getImage() : "")
+                .price(Double.valueOf(cartDetail.get().getDesignedProduct().getDesignedPrice() + cartDetail.get().getDesignedProduct().getPriceByFactory().getPrice()).floatValue())
+                .quantity(savedCartDetail.getQuantity())
+                .build();
         } else {
-        CartDetail savedCartDetail = cartDetailRepository.save(
+            CartDetail savedCartDetail = cartDetailRepository.save(
                 CartDetail.builder()
                     .cart(cart)
                     .size(addToCartDto.getSize())
@@ -165,6 +165,10 @@ public class CartServiceImplement implements CartService {
         DesignedProduct designedProduct = designedProductRepository.findById(designedProductId).orElseThrow(
             () -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
         );
+
+        if (!designedProduct.isPublish()) {
+            throw new IllegalStateException(EntityName.DESIGNED_PRODUCT + String.format("_ID:%s_", designedProductId) + ErrorMessage.PRIVATE);
+        }
         SizeColor sizeColor = sizeColorRepository.findSizeColorByColorAndSizeAndProduct(color, size, designedProduct.getProduct()).orElseThrow(
             () -> new EntityNotFoundException(EntityName.SIZE_COLOR + ErrorMessage.NOT_FOUND)
         );
