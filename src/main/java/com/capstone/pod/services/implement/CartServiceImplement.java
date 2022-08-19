@@ -166,9 +166,6 @@ public class CartServiceImplement implements CartService {
             () -> new EntityNotFoundException(EntityName.DESIGNED_PRODUCT + ErrorMessage.NOT_FOUND)
         );
 
-        if (!designedProduct.isPublish()) {
-            throw new IllegalStateException(EntityName.DESIGNED_PRODUCT + String.format("_ID:%s_", designedProductId) + ErrorMessage.PRIVATE);
-        }
         SizeColor sizeColor = sizeColorRepository.findSizeColorByColorAndSizeAndProduct(color, size, designedProduct.getProduct()).orElseThrow(
             () -> new EntityNotFoundException(EntityName.SIZE_COLOR + ErrorMessage.NOT_FOUND)
         );
@@ -178,7 +175,13 @@ public class CartServiceImplement implements CartService {
             .orElseThrow(
                 () -> new SizeColorFactoryNotFoundException(EntityName.SIZE_COLOR_FACTORY + ErrorMessage.NOT_FOUND)
             );
-
+        //return -1 if design is private
+        if (!designedProduct.isPublish()) {
+            Credential credential = getCredential();
+            if(!designedProduct.getUser().getId().equals(credential.getUser().getId())){
+                return -1;
+            }
+        }
         return sizeColorByFactory.getQuantity() < quantity ? sizeColorByFactory.getQuantity() : 0;
     }
 
