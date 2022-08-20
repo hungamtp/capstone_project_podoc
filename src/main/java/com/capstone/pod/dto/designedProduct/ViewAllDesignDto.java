@@ -19,6 +19,6 @@ public class ViewAllDesignDto {
     private List<ImagePreviewDto> imagePreviews;
     private double rating;
     private int sold;
-    private int ratingCount;
+    private int rateCount;
     private List<String> tagName;
 }

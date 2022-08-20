@@ -12,6 +12,7 @@ public class SizeUtils {
         put("M" , 2);
         put("L" , 3);
         put("XL" , 4);
+        put("2XL" , 5);
         put("2Xl" , 5);
         put("XXL" , 6);
         put("3XL" , 7);
