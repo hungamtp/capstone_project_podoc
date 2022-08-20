@@ -17,6 +17,8 @@ import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
+import com.capstone.pod.filter.DesignedProductSpecification;
+import com.capstone.pod.filter.SearchCriteria;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
 import com.capstone.pod.utils.SizeUtils;
@@ -297,7 +299,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         List<ViewAllDesignDto> viewAllDesignDtos = designedProductPage.stream().map(designedProduct -> {
             return ViewAllDesignDto.builder()
                 .id(designedProduct.getId())
-                .ratingCount(designedProduct.getRatings().size())
+                .rateCount(designedProduct.getRatings().size())
                 .price(designedProduct.getDesignedPrice() + designedProduct.getPriceByFactory().getPrice())
                 .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))
                 .name(designedProduct.getName())
