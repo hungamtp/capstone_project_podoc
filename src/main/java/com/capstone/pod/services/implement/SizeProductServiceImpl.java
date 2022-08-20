@@ -12,6 +12,7 @@ import com.capstone.pod.exceptions.ProductNotFoundException;
 import com.capstone.pod.repositories.ProductRepository;
 import com.capstone.pod.repositories.SizeProductRepository;
 import com.capstone.pod.services.SizeProductService;
+import com.capstone.pod.utils.SizeUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class SizeProductServiceImpl implements SizeProductService {
         Product product = productRepository.findById(addSizeProductDto.getProductId()).orElseThrow(
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
 
-        Optional<SizeProduct> sizeProduct = sizeProductRepository.findByProductAndSize(product,addSizeProductDto.getSize());
+        Optional<SizeProduct> sizeProduct = sizeProductRepository.findByProductAndSize(product, addSizeProductDto.getSize());
 
         if (sizeProduct.isPresent()) {
             throw new IllegalStateException(EntityName.SIZE_PRODUCT + "_" + ErrorMessage.EXIST);
@@ -75,6 +76,17 @@ public class SizeProductServiceImpl implements SizeProductService {
             () -> new ProductNotFoundException(ProductErrorMessage.PRODUCT_NOT_EXIST));
 
         List<SizeProduct> sizeProducts = sizeProductRepository.findALlByProduct(product);
+
+        for (int i = 0; i < sizeProducts.size(); i++) {
+            for (int j = i + 1; j < sizeProducts.size(); j++) {
+                if (SizeUtils.sizes.get(sizeProducts.get(i).getSize()) != null && SizeUtils.sizes.get(sizeProducts.get(j).getSize()) != null)
+                    if (SizeUtils.sizes.get(sizeProducts.get(i).getSize()) > SizeUtils.sizes.get(sizeProducts.get(j).getSize())) {
+                        var sizeTemp = sizeProducts.get(i);
+                        sizeProducts.set(i, sizeProducts.get(j));
+                        sizeProducts.set(j, sizeTemp);
+                    }
+            }
+        }
 
         return sizeProducts.stream().map(sizeProduct -> {
             return SizeProductDto.builder()
