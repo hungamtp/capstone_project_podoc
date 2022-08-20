@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`user` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`category` (
     `id` VARCHAR(36) NOT NULL,
-    `image` VARCHAR(255) NULL DEFAULT NULL,
+    `image` VARCHAR(3000) NULL DEFAULT NULL,
     `is_deleted` BIT(1) NOT NULL,
     `name` VARCHAR(255) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`credential` (
     `last_modified_date` DATE NULL DEFAULT NULL,
     `address` VARCHAR(255) NULL DEFAULT NULL,
     `email` VARCHAR(255) NULL DEFAULT NULL,
-    `image` VARCHAR(255) NULL DEFAULT NULL,
+    `image` VARCHAR(3000) NULL DEFAULT NULL,
     `is_mail_verified` BIT(1) NOT NULL,
     `password` VARCHAR(255) NULL DEFAULT NULL,
     `phone` VARCHAR(255) NULL DEFAULT NULL,
@@ -375,7 +375,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`flyway_schema_history` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`image_preview` (
     `id` VARCHAR(36) NOT NULL,
     `color` VARCHAR(255) NULL DEFAULT NULL,
-    `image` VARCHAR(255) NULL DEFAULT NULL,
+    `image` VARCHAR(3000) NULL DEFAULT NULL,
     `position` VARCHAR(255) NULL DEFAULT NULL,
     `designed_product_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -569,7 +569,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`printing_design_info` (
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`printing_image_preview` (
     `id` VARCHAR(36) NOT NULL,
     `color` VARCHAR(255) NULL DEFAULT NULL,
-    `image` VARCHAR(255) NULL DEFAULT NULL,
+    `image` VARCHAR(3000) NULL DEFAULT NULL,
     `position` VARCHAR(255) NULL DEFAULT NULL,
     `printing_info_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -631,7 +631,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_blue_print` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `capstone_pod`.`product_images` (
     `id` VARCHAR(36) NOT NULL,
-    `image` VARCHAR(255) NULL DEFAULT NULL,
+    `image` VARCHAR(3000) NULL DEFAULT NULL,
     `product_id` VARCHAR(36) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
     INDEX `FKi8jnqq05sk5nkma3pfp3ylqrt` (`product_id` ASC) VISIBLE,
