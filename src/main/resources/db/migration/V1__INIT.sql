@@ -296,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `capstone_pod`.`design_info` (
     `name` VARCHAR(255) NULL DEFAULT NULL,
     `rotate` DOUBLE NOT NULL,
     `scales` DOUBLE NOT NULL,
-    `src` VARCHAR(255) NULL DEFAULT NULL,
+    `src` VARCHAR(3000) NULL DEFAULT NULL,
     `text_color` VARCHAR(255) NULL DEFAULT NULL,
     `top_position` DOUBLE NOT NULL,
     `types` VARCHAR(255) NULL DEFAULT NULL,
