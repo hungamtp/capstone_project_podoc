@@ -232,6 +232,10 @@ public class OrderServiceImplement implements OrdersService {
 
         }
 
+        if(paymentResponse.getMessage().equals("[System] Hệ thống đang có lỗi, vui lòng quay lại sau.")){
+            throw new IllegalStateException("ZALO_SYSTEM_ERROR");
+        }
+
         return paymentResponse;
     }
 
