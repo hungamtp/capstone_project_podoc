@@ -204,8 +204,8 @@ public class OrderController {
         return ResponseEntity.ok().body(ordersService.getOderDetailByOrderId(orderId));
     }
     @PutMapping("/cancel")
-    @PreAuthorize(RolePreAuthorize.ROLE_FACTORY)
-    public ResponseEntity cancelOrderByFactory(@RequestBody @Validated CancelOrderDto dto ) {
+    @PreAuthorize(RolePreAuthorize.ROLE_USER_AND_FACTORY)
+    public ResponseEntity cancelOrderDetails(@RequestBody @Validated CancelOrderDto dto ) {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto<>();
         ordersService.cancelOrderDetailByFactory(dto);
         responseDto.setSuccessMessage(OrderSuccessMessage.CANCEL_ORDER_SUCCESS);
