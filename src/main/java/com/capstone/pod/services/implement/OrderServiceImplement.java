@@ -38,7 +38,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -52,10 +51,6 @@ public class OrderServiceImplement implements OrdersService {
     private final CartDetailRepository cartDetailRepository;
     private final OrdersRepository ordersRepository;
     private final PrintingInfoRepository printingInfoRepository;
-    private final PrintingDesignInfoRepository printingDesignInfoRepository;
-    private final PrintingPlaceHolderRepository printingPlaceHolderRepository;
-    private final PrintingBluePrintRepository printingBluePrintRepository;
-    private final PrintingImageRepository printingImageRepository;
 
     private final ShippingInfoRepository shippingInfoRepository;
     private final SizeColorByFactoryRepository sizeColorByFactoryRepository;
@@ -65,8 +60,8 @@ public class OrderServiceImplement implements OrdersService {
     private final ZaloService zaloService;
     private final OrderDetailConverter orderDetailConverter;
     private final DesignedProductRepository designedProductRepository;
+    private final OrderStatusRepository orderStatusRepository;
 
-    private final ColorRepository colorRepository;
 
 
     private Credential getCredential() {
@@ -235,39 +230,39 @@ public class OrderServiceImplement implements OrdersService {
         return paymentResponse;
     }
 
-    @Override
-    @Transactional
-    public void cancelOrder(CancelOrderDto dto) throws IOException {
-        Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
-            () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
-        if(!orders.canCancel()){
-            throw new IllegalStateException("CAN NOT CANCEL THIS ORDER ");
-        }
-        orders.setCanceled(true);
-        orders.setCancelReason(dto.getCancelReason());
-        try {
-            if (orders.isPaid() && !orders.isRefunded()) {
-                if (orders.getTransactionId().contains("_")) {
-                    // zalo pay transactionId has '_'
-                    List<OrderDetail> orderDetails = orders.getOrderDetails();
-                    Double amountRefund = orderDetails.stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList())
-                        .stream().mapToDouble(orderDetail ->
-                            orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
-                                .getPriceByFactory().getPrice())).sum();
-                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
-                } else {
-                    //momo transaction
-                }
-
-            }
-        } catch (Exception ex) {
-            throw new RefundException(ex.getMessage());
-        }
-
-        orders.setRefunded(true);
-        ordersRepository.save(orders);
-        //add back quantity when user cancel order
-        addBackQuantityWhenCancelingOrderByUser(orders.getId());
+//    @Override
+//    @Transactional
+//    public void cancelOrder(CancelOrderDto dto) throws IOException {
+//        Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
+//            () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+//        if(!orders.canCancel()){
+//            throw new IllegalStateException("CAN NOT CANCEL THIS ORDER ");
+//        }
+//        orders.setCanceled(true);
+//        orders.setCancelReason(dto.getCancelReason());
+//        try {
+//            if (orders.isPaid() && !orders.isRefunded()) {
+//                if (orders.getTransactionId().contains("_")) {
+//                    // zalo pay transactionId has '_'
+//                    List<OrderDetail> orderDetails = orders.getOrderDetails();
+//                    Double amountRefund = orderDetails.stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList())
+//                        .stream().mapToDouble(orderDetail ->
+//                            orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
+//                                .getPriceByFactory().getPrice())).sum();
+//                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
+//                } else {
+//                    //momo transaction
+//                }
+//
+//            }
+//        } catch (Exception ex) {
+//            throw new RefundException(ex.getMessage());
+//        }
+//
+//        orders.setRefunded(true);
+//        ordersRepository.save(orders);
+//        //add back quantity when user cancel order
+//        addBackQuantityWhenCancelingOrderByUser(orders.getId());
 
         //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
 //        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
@@ -301,7 +296,7 @@ public class OrderServiceImplement implements OrdersService {
 //        printingImageRepository.deleteAllInBatch(printingImagePreviews);
 //        printingInfoRepository.deleteAllInBatch(printingInfos);
 //        ordersRepository.delete(orders);
-    }
+//    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     void setPaymentIdForOrder(String orderId, String paymentId) {
@@ -705,20 +700,53 @@ public class OrderServiceImplement implements OrdersService {
 
     @Override
     @Transactional
-    public void cancelOrderDetailByFactory(CancelOrderDto dto) {
+    public void cancelOrderDetail(CancelOrderDto dto) {
         Credential credential = getCredential();
-        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrdersAndFactory(ordersRepository.getById(dto.getOrderId()), credential.getFactory());
+
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (int i = 0; i < dto.getOrderDetailIds().size() ; i++) {
+            OrderDetail orderDetail = orderDetailRepository.findById(dto.getOrderDetailIds().get(i)).orElseThrow( () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+            orderDetails.add(orderDetail);
+        }
         if (orderDetails.isEmpty()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
-        if (!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
-            throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+        boolean isUser = true;
+        if(credential.getFactory()!=null) {
+            if (!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
+                throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+            }
+            isUser = false;
         }
-        for (int i = 0; i < orderDetails.size(); i++) {
-            List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
-            orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
-            orderDetails.get(i).setOrderStatuses(orderStatuses);
-            orderDetails.get(i).setCanceled(true);
-            orderDetails.get(i).setReason(dto.getCancelReason());
+        else{
+            for (int i = 0; i < orderDetails.size(); i++) {
+                if(!orderDetails.get(i).getOrders().getUser().getId().equals(credential.getUser().getId())){
+                    throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+                }
+            }
         }
+        if(isUser){
+            for (int i = 0; i < orderDetails.size(); i++) {
+                List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
+                if(orderStatuses.size()>1){
+                    throw new PermissionException(OrderErrorMessage.ORDER_CANCEL_ERROR_EXCEPTION);
+                }
+                else {
+                    orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
+                    orderDetails.get(i).setOrderStatuses(orderStatuses);
+                    orderDetails.get(i).setCanceled(true);
+                    orderDetails.get(i).setReason(dto.getCancelReason());
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < orderDetails.size(); i++) {
+                List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
+                orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
+                orderDetails.get(i).setOrderStatuses(orderStatuses);
+                orderDetails.get(i).setCanceled(true);
+                orderDetails.get(i).setReason(dto.getCancelReason());
+            }
+        }
+
         Orders orders = orderDetails.get(0).getOrders();
         String cancelReason = orderDetails.get(0).getReason();
 
@@ -730,7 +758,7 @@ public class OrderServiceImplement implements OrdersService {
                             orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
                                 .getPriceByFactory().getPrice())).sum();
                     // zalo pay transactionId has '_'
-                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s ,\n Reason %s", dto.getOrderId(), cancelReason), orders.getAppTransId());
+                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s ,\n Reason %s", orderDetails.get(0).getOrders().getId(), cancelReason), orders.getAppTransId());
                 } else {
                     //momo transaction
                 }

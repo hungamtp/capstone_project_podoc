@@ -27,7 +27,6 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -63,14 +62,14 @@ public class OrderController {
         responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
-    @PutMapping("cancel-by-user")
-    @PreAuthorize(RolePreAuthorize.ROLE_USER)
-    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrderByUser(@RequestBody CancelOrderDto dto) throws IOException {
-        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
-        ordersService.cancelOrder(dto);
-        responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
-        return ResponseEntity.ok().body(responseDto);
-    }
+//    @PutMapping("cancel-by-user")
+//    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+//    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrderByUser(@RequestBody CancelOrderDto dto) throws IOException {
+//        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
+//        ordersService.cancelOrder(dto);
+//        responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
+//        return ResponseEntity.ok().body(responseDto);
+//    }
 
 
     @GetMapping("/complete")
@@ -207,7 +206,7 @@ public class OrderController {
     @PreAuthorize(RolePreAuthorize.ROLE_USER_AND_FACTORY)
     public ResponseEntity cancelOrderDetails(@RequestBody @Validated CancelOrderDto dto ) {
         com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto<>();
-        ordersService.cancelOrderDetailByFactory(dto);
+        ordersService.cancelOrderDetail(dto);
         responseDto.setSuccessMessage(OrderSuccessMessage.CANCEL_ORDER_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
