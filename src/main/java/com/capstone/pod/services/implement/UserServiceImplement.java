@@ -75,18 +75,24 @@ public class UserServiceImplement implements UserService {
     @Override
     public Page<UserDto> getAllUserByName(int pageNum, int pageSize, String name) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String)authentication.getCredentials();
         Page<Credential> credentials = credentialRepository.findAllByUserFirstNameContains(pageable, name);
         List<UserDto> listUserDto = credentials.stream()
-                .map(user -> modelMapper.map(user, UserDto.class)).collect(Collectors.toList());
-        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,credentials.getTotalElements());
+                .map(user -> modelMapper.map(user, UserDto.class)).filter(userDto -> userDto.getId()!=currentCredentialId).collect(Collectors.toList());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
         return pageUserDTO;
     }
 
     @Override
     public Page<UserDto> getAllByRoleName(int pageNum, int pageSize, String roleName) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String)authentication.getCredentials();
         Page<Credential> credentials = credentialRepository.findAllByRoleName(pageable, roleName);
-        Page<UserDto> pageUserDTO = credentials.map(user -> modelMapper.map(user, UserDto.class));
+        List<UserDto> listUserDto = credentials.stream()
+                .map(user -> modelMapper.map(user, UserDto.class)).filter(userDto -> userDto.getId()!=currentCredentialId).collect(Collectors.toList());
+        Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
         return pageUserDTO;
     }
 
@@ -99,8 +105,10 @@ public class UserServiceImplement implements UserService {
     @Override
     public Page<UserDto> findByEmail(Pageable pageable ,String email) {
         Page<Credential> credentials = credentialRepository.findCredentialByEmailContainsIgnoreCaseAndUserFirstNameContains(pageable, email,"");
-        List<UserDto> list = credentials.stream().map(credential -> modelMapper.map(credential, UserDto.class)).collect(Collectors.toList());
-        Page<UserDto> userDtoPages = new PageImpl<>(list,pageable,credentials.getTotalElements());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentCredentialId = (String)authentication.getCredentials();
+        List<UserDto> list = credentials.stream().map(credential -> modelMapper.map(credential, UserDto.class)).filter(userDto -> userDto.getId()!=currentCredentialId).collect(Collectors.toList());
+        Page<UserDto> userDtoPages = new PageImpl<>(list,pageable,list.size());
         return userDtoPages;
     }
 
