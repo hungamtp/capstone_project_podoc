@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -234,39 +235,39 @@ public class OrderServiceImplement implements OrdersService {
         return paymentResponse;
     }
 
-//    @Override
-//    @Transactional
-//    public void cancelOrder(CancelOrderDto dto) throws IOException {
-//        Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
-//            () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
-//        if(!orders.canCancel()){
-//            throw new IllegalStateException("CAN NOT CANCEL THIS ORDER ");
-//        }
-//        orders.setCanceled(true);
-//        orders.setCancelReason(dto.getCancelReason());
-//        try {
-//            if (orders.isPaid() && !orders.isRefunded()) {
-//                if (orders.getTransactionId().contains("_")) {
-//                    // zalo pay transactionId has '_'
-//                    List<OrderDetail> orderDetails = orders.getOrderDetails();
-//                    Double amountRefund = orderDetails.stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList())
-//                        .stream().mapToDouble(orderDetail ->
-//                            orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
-//                                .getPriceByFactory().getPrice())).sum();
-//                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
-//                } else {
-//                    //momo transaction
-//                }
-//
-//            }
-//        } catch (Exception ex) {
-//            throw new RefundException(ex.getMessage());
-//        }
-//
-//        orders.setRefunded(true);
-//        ordersRepository.save(orders);
-//        //add back quantity when user cancel order
-//        addBackQuantityWhenCancelingOrderByUser(orders.getId());
+    @Override
+    @Transactional
+    public void cancelOrder(CancelOrderByUserDto dto) throws IOException {
+        Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
+            () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+        if(!orders.canCancel()){
+            throw new IllegalStateException("CAN NOT CANCEL THIS ORDER ");
+        }
+        orders.setCanceled(true);
+        orders.setCancelReason(dto.getCancelReason());
+        try {
+            if (orders.isPaid() && !orders.isRefunded()) {
+                if (orders.getTransactionId().contains("_")) {
+                    // zalo pay transactionId has '_'
+                    List<OrderDetail> orderDetails = orders.getOrderDetails();
+                    Double amountRefund = orderDetails.stream().filter(orderDetail -> !orderDetail.isCancel()).collect(Collectors.toList())
+                        .stream().mapToDouble(orderDetail ->
+                            orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct()
+                                .getPriceByFactory().getPrice())).sum();
+                    zaloService.refund(Double.valueOf(amountRefund).longValue(), String.format("Refund order: %s", dto.getOrderId()), orders.getAppTransId());
+                } else {
+                    //momo transaction
+                }
+
+            }
+        } catch (Exception ex) {
+            throw new RefundException(ex.getMessage());
+        }
+
+        orders.setRefunded(true);
+        ordersRepository.save(orders);
+        //add back quantity when user cancel order
+        addBackQuantityWhenCancelingOrderByUser(orders.getId());
 
         //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
 //        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
@@ -300,7 +301,7 @@ public class OrderServiceImplement implements OrdersService {
 //        printingImageRepository.deleteAllInBatch(printingImagePreviews);
 //        printingInfoRepository.deleteAllInBatch(printingInfos);
 //        ordersRepository.delete(orders);
-//    }
+    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     void setPaymentIdForOrder(String orderId, String paymentId) {

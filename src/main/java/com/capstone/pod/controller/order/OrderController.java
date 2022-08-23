@@ -4,6 +4,7 @@ import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.common.ResponseDto;
+import com.capstone.pod.dto.order.CancelOrderByUserDto;
 import com.capstone.pod.dto.order.CancelOrderDto;
 import com.capstone.pod.dto.order.OrderOwnDesignDto;
 import com.capstone.pod.dto.order.ShippingInfoDto;
@@ -27,6 +28,7 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
@@ -62,14 +64,14 @@ public class OrderController {
         responseDto.setSuccessMessage(OrderSuccessMessage.GET_SHIPPING_INFO_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
-//    @PutMapping("cancel-by-user")
-//    @PreAuthorize(RolePreAuthorize.ROLE_USER)
-//    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrderByUser(@RequestBody CancelOrderDto dto) throws IOException {
-//        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
-//        ordersService.cancelOrder(dto);
-//        responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
-//        return ResponseEntity.ok().body(responseDto);
-//    }
+    @PutMapping("cancel-by-user")
+    @PreAuthorize(RolePreAuthorize.ROLE_USER)
+    public ResponseEntity<com.capstone.pod.dto.http.ResponseDto> cancelOrderByUser(@RequestBody CancelOrderByUserDto dto) throws IOException {
+        com.capstone.pod.dto.http.ResponseDto responseDto = new com.capstone.pod.dto.http.ResponseDto();
+        ordersService.cancelOrder(dto);
+        responseDto.setSuccessMessage(OrderSuccessMessage.DELETE_ORDER_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
 
 
     @GetMapping("/complete")
