@@ -90,8 +90,7 @@ public class UserServiceImplement implements UserService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String)authentication.getCredentials();
         Page<Credential> credentials = credentialRepository.findAllByRoleName(pageable, roleName);
-        List<UserDto> listUserDto = credentials.stream()
-                .map(user -> modelMapper.map(user, UserDto.class)).filter(userDto -> userDto.getId()!=currentCredentialId).collect(Collectors.toList());
+        List<UserDto> listUserDto = credentials.stream().map(user -> modelMapper.map(user, UserDto.class)).filter(userDto -> userDto.getId() != currentCredentialId).collect(Collectors.toList());
         Page<UserDto> pageUserDTO = new PageImpl<>(listUserDto,pageable,listUserDto.size());
         return pageUserDTO;
     }
