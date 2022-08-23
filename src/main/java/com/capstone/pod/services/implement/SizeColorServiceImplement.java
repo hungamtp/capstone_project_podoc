@@ -124,4 +124,11 @@ public class SizeColorServiceImplement implements SizeColorService {
         size.setName(sizeDto.getName());
         return modelMapper.map(sizeRepository.save(size),SizeDto.class);
     }
+
+    @Override
+    public void deleteSize(String sizeId) {
+        Size size = sizeRepository.findById(sizeId).orElseThrow(() -> new ColorNotFoundException(SizeColorErrorMessage.SIZE_NOT_FOUND_EXCEPTION));
+        if(!size.getSizeColors().isEmpty()) throw new PermissionException(SizeColorErrorMessage.SIZE_EXISTED_IN_CONSTRAINT_EXCEPTION);
+        sizeRepository.delete(size);
+    }
 }

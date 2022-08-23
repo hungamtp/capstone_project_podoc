@@ -75,6 +75,14 @@ public class SizeColorController {
         responseDto.setSuccessMessage(SizeColorSuccessMessage.DELETE_COLOR_SUCCESS);
         return ResponseEntity.ok().body(responseDto);
     }
+    @DeleteMapping("/size/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
+    public ResponseEntity<ResponseDto> deleteSize(@PathVariable(name = "id") String sizeId){
+        ResponseDto<ColorDto> responseDto = new ResponseDto();
+        sizeColorService.deleteSize(sizeId);
+        responseDto.setSuccessMessage(SizeColorSuccessMessage.DELETE_SIZE_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
     @PutMapping("/size")
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> updateSize(@RequestBody SizeDto dto){

@@ -19,5 +19,6 @@ public interface SizeColorService {
     public ColorDto updateColor(ColorDto colorDto);
     public void deleteColor(String colorId);
     public SizeDto updateSize(SizeDto sizeDto);
+    public void deleteSize(String sizeDto);
 
 }
