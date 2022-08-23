@@ -734,6 +734,7 @@ public class OrderServiceImplement implements OrdersService {
                     throw new PermissionException(OrderErrorMessage.ORDER_CANCEL_ERROR_EXCEPTION);
                 }
                 else {
+                    if(orderDetails.get(i).isCancel()) throw new OrderStatusNotFoundException(OrderErrorMessage.ORDER_HAS_BEEN_CANCEL_EXCEPTION);
                     orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                     orderDetails.get(i).setOrderStatuses(orderStatuses);
                     orderDetails.get(i).setCanceled(true);
@@ -743,6 +744,7 @@ public class OrderServiceImplement implements OrdersService {
         }
         else {
             for (int i = 0; i < orderDetails.size(); i++) {
+                if(orderDetails.get(i).isCancel()) throw new OrderStatusNotFoundException(OrderErrorMessage.ORDER_HAS_BEEN_CANCEL_EXCEPTION);
                 List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
                 orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                 orderDetails.get(i).setOrderStatuses(orderStatuses);
