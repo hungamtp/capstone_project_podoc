@@ -37,6 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -63,8 +64,7 @@ public class OrderServiceImplement implements OrdersService {
     private final DesignedProductRepository designedProductRepository;
     private final OrderStatusRepository orderStatusRepository;
 
-
-
+    private final EntityManager entityManager;
     private Credential getCredential() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
@@ -228,7 +228,7 @@ public class OrderServiceImplement implements OrdersService {
 
         }
 
-        if(paymentResponse.getMessage().equals("[System] Hệ thống đang có lỗi, vui lòng quay lại sau.")){
+        if (paymentResponse.getMessage().equals("[System] Hệ thống đang có lỗi, vui lòng quay lại sau.")) {
             throw new IllegalStateException("ZALO_SYSTEM_ERROR");
         }
 
@@ -240,7 +240,7 @@ public class OrderServiceImplement implements OrdersService {
     public void cancelOrder(CancelOrderByUserDto dto) throws IOException {
         Orders orders = ordersRepository.findById(dto.getOrderId()).orElseThrow(
             () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
-        if(!orders.canCancel()){
+        if (!orders.canCancel()) {
             throw new IllegalStateException("CAN NOT CANCEL THIS ORDER ");
         }
         orders.setCanceled(true);
@@ -617,7 +617,7 @@ public class OrderServiceImplement implements OrdersService {
         Credential credential = credentialRepository.findById(currentCredentialId.toString()).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
         User user = credential.getUser();
         Double income = ordersRepository.getInComeByUserId(user.getId(), startDate, endDate) * 0.8;
-        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate)* 0.8;
+        Double incomeCurrentMonth = ordersRepository.getInComeByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate) * 0.8;
         long designCount = designedProductRepository.countAllByUser(user);
         long designSoldCount = ordersRepository.countSoldByUserId(user.getId(), startDate, endDate);
         long designSoldCountCurrentMonth = ordersRepository.countSoldByUserId(user.getId(), LocalDateTime.now().withDayOfMonth(1), endDate);
@@ -709,43 +709,42 @@ public class OrderServiceImplement implements OrdersService {
         Credential credential = getCredential();
 
         List<OrderDetail> orderDetails = new ArrayList<>();
-        for (int i = 0; i < dto.getOrderDetailIds().size() ; i++) {
-            OrderDetail orderDetail = orderDetailRepository.findById(dto.getOrderDetailIds().get(i)).orElseThrow( () -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
+        for (int i = 0; i < dto.getOrderDetailIds().size(); i++) {
+            OrderDetail orderDetail = orderDetailRepository.findById(dto.getOrderDetailIds().get(i)).orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION));
             orderDetails.add(orderDetail);
         }
         if (orderDetails.isEmpty()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_NOT_FOUND_EXCEPTION);
         boolean isUser = true;
-        if(credential.getFactory()!=null) {
+        if (credential.getFactory() != null) {
             if (!orderDetails.get(0).getFactory().getId().equals(getCredential().getFactory().getId())) {
                 throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
             }
             isUser = false;
-        }
-        else{
+        } else {
             for (int i = 0; i < orderDetails.size(); i++) {
-                if(!orderDetails.get(i).getOrders().getUser().getId().equals(credential.getUser().getId())){
+                if (!orderDetails.get(i).getOrders().getUser().getId().equals(credential.getUser().getId())) {
                     throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
                 }
             }
         }
-        if(isUser){
+        if (isUser) {
             for (int i = 0; i < orderDetails.size(); i++) {
                 List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
-                if(orderStatuses.size()>1){
+                if (orderStatuses.size() > 1) {
                     throw new PermissionException(OrderErrorMessage.ORDER_CANCEL_ERROR_EXCEPTION);
-                }
-                else {
-                    if(orderDetails.get(i).isCancel()) throw new OrderStatusNotFoundException(OrderErrorMessage.ORDER_HAS_BEEN_CANCEL_EXCEPTION);
+                } else {
+                    if (orderDetails.get(i).isCancel())
+                        throw new OrderStatusNotFoundException(OrderErrorMessage.ORDER_HAS_BEEN_CANCEL_EXCEPTION);
                     orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                     orderDetails.get(i).setOrderStatuses(orderStatuses);
                     orderDetails.get(i).setCanceled(true);
                     orderDetails.get(i).setReason(dto.getCancelReason());
                 }
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < orderDetails.size(); i++) {
-                if(orderDetails.get(i).isCancel()) throw new OrderStatusNotFoundException(OrderErrorMessage.ORDER_HAS_BEEN_CANCEL_EXCEPTION);
+                if (orderDetails.get(i).isCancel())
+                    throw new OrderStatusNotFoundException(OrderErrorMessage.ORDER_HAS_BEEN_CANCEL_EXCEPTION);
                 List<OrderStatus> orderStatuses = orderDetails.get(i).getOrderStatuses();
                 orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                 orderDetails.get(i).setOrderStatuses(orderStatuses);
@@ -774,11 +773,21 @@ public class OrderServiceImplement implements OrdersService {
         } catch (Exception ex) {
             throw new RefundException(ex.getMessage());
         }
-//        if(orderDetails.size() == orders.getOrderDetails().size()){
-//            orders.setPaid(false);
-//            ordersRepository.save(orders);
-//        }
         orderDetailRepository.saveAll(orderDetails);
+        entityManager.flush();
+        // if all orderDetail is canceled so set orders is canceled
+        Orders orderAfterUpdate = ordersRepository.findById(orderDetails.get(0).getOrders().getId()).orElseThrow(
+            () -> new EntityNotFoundException(EntityName.ORDERS + "_" + ErrorMessage.NOT_FOUND)
+        );
+
+        long amountOfCanceledOrderDetails = orderAfterUpdate.getOrderDetails()
+            .stream()
+            .filter(orderDetail -> orderDetail.latestStatus().equals(OrderState.CANCEL))
+            .count();
+        if (amountOfCanceledOrderDetails == orderAfterUpdate.getOrderDetails().size()) {
+            ordersRepository.setOrderIsCanceled(orderAfterUpdate.getId());
+        }
+
         addBackQuantityWhenCancelingOrderByFactory(orderDetails);
     }
 
@@ -786,11 +795,11 @@ public class OrderServiceImplement implements OrdersService {
         List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         for (int i = 0; i < orderDetails.size(); i++) {
             OrderDetail orderDetail = orderDetails.get(i);
-                Optional<SizeColor> sizeColor = sizeColorRepository
-                        .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
-                Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
-                sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
-                sizeColorByFactories.add(sizeColorByFactory.get());
+            Optional<SizeColor> sizeColor = sizeColorRepository
+                .findByColorNameAndSizeNameAndProductId(orderDetail.getColor(), orderDetail.getSize(), orderDetail.getDesignedProduct().getProduct().getId());
+            Optional<SizeColorByFactory> sizeColorByFactory = sizeColorByFactoryRepository.findByFactoryAndSizeColor(orderDetail.getDesignedProduct().getPriceByFactory().getFactory(), sizeColor.get());
+            sizeColorByFactory.get().setQuantity(sizeColorByFactory.get().getQuantity() + orderDetails.get(i).getQuantity());
+            sizeColorByFactories.add(sizeColorByFactory.get());
         }
         sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
     }
