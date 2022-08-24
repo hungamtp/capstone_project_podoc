@@ -738,7 +738,7 @@ public class OrderServiceImplement implements OrdersService {
                     orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                     orderDetails.get(i).setOrderStatuses(orderStatuses);
                     orderDetails.get(i).setCanceled(true);
-                    orderDetails.get(i).setReason(dto.getCancelReason());
+                    orderDetails.get(i).setReasonbyUser(dto.getCancelReason());
                 }
             }
         } else {
@@ -749,13 +749,12 @@ public class OrderServiceImplement implements OrdersService {
                 orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                 orderDetails.get(i).setOrderStatuses(orderStatuses);
                 orderDetails.get(i).setCanceled(true);
-                orderDetails.get(i).setReason(dto.getCancelReason());
+                orderDetails.get(i).setReasonByFactory(dto.getCancelReason());
             }
         }
 
         Orders orders = orderDetails.get(0).getOrders();
-        String cancelReason = orderDetails.get(0).getReason();
-
+        String cancelReason = orderDetails.get(0).getReasonbyUser()!=null ? orderDetails.get(0).getReasonbyUser():orderDetails.get(0).getReasonByFactory() ;
         try {
             if (orders.isPaid()) {
                 if (orders.getTransactionId().contains("_")) {
