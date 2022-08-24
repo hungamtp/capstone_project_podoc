@@ -27,7 +27,7 @@ public class OrderDetailConverter {
         Color color = colorRepository.findByName(orderDetail.getColor()).orElseThrow(
             () -> new EntityNotFoundException(EntityName.COLOR + "_" + ErrorMessage.NOT_FOUND)
         );
-        var imagePreviews = designedProduct.getImagePreviews()
+        var imagePreviews = orderDetail.getPrintingInfo().getPreviewImages()
             .stream()
             .filter(imagePreview -> imagePreview.getPosition().equalsIgnoreCase("front"))
             .filter(imagePreview -> imagePreview.getColor().equalsIgnoreCase(color.getImageColor()))
