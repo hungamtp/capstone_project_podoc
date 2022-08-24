@@ -48,7 +48,8 @@ public class OrderDetailConverter {
             .isRated(orderDetail.isRate())
             .status(orderDetail.getOrders().isCanceled() ? "IS_CANCEL" : orderDetail.latestStatus())
             .isCancel(orderDetail.isCanceled())
-            .reason(orderDetail.getReason())
+            .reasonByUser(orderDetail.getReasonbyUser())
+            .reasonByFactory(orderDetail.getReasonByFactory())
             .statuses(orderDetail.getOrderStatuses().stream().map(orderStatus -> modelMapper.map(orderStatus, OrderStateDto.class)).collect(Collectors.toList()))
             .build();
     }

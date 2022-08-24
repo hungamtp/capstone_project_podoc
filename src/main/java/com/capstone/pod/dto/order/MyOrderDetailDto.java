@@ -2,7 +2,6 @@ package com.capstone.pod.dto.order;
 
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -27,6 +26,7 @@ public class MyOrderDetailDto {
     private int quantity;
     private boolean isRated;
     private boolean isCancel;
-    private String reason;
+    private String reasonByUser;
+    private String reasonByFactory;
     List<OrderStateDto> statuses;
 }
