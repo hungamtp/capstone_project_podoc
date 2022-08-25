@@ -293,6 +293,8 @@ public class FactoryServiceImplement implements FactoryService {
                                     .isRate(orderDetails.get(i).isRate())
                             .size(orderDetails.get(i).getSize())
                             .quantity(orderDetails.get(i).getQuantity())
+                            .createdDate(orderDetails.get(i).getOrders().getCreateDate().toLocalDate())
+                            .status(orderDetails.get(i).latestStatus())
                             .build());
                     for (int j = 0; j < orderDetails.get(i).getPrintingInfo().getPreviewImages().size(); j++) {
                         imagePreviewDtos.add(ImagePreviewDto.builder()
