@@ -138,7 +138,6 @@ public class OrderServiceImplement implements OrdersService {
         String phone = currentCredential.getPhone();
         String customerName = currentCredential.getUser().getLastName() + " " + currentCredential.getUser().getFirstName();
         Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
-        List<SizeColorByFactory> sizeColorByFactories = new ArrayList<>();
         List<OrderDetail> orderDetails = new ArrayList<>();
         List<PrintingInfo> printingInfos = new ArrayList<>();
         for (int i = 0; i < cartDetailList.size(); i++) {
