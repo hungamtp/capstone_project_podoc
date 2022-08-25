@@ -245,6 +245,10 @@ public class OrderServiceImplement implements OrdersService {
         }
         orders.setCanceled(true);
         orders.setCancelReason(dto.getCancelReason());
+        for (int i = 0; i < orders.getOrderDetails().size(); i++) {
+            orders.getOrderDetails().get(i).setReasonByUser(dto.getCancelReason());
+            orders.getOrderDetails().get(i).setCanceled(true);
+        }
         try {
             if (orders.isPaid() && !orders.isRefunded()) {
                 if (orders.getTransactionId().contains("_")) {
