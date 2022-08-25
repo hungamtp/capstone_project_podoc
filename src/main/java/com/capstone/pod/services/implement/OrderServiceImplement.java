@@ -738,7 +738,7 @@ public class OrderServiceImplement implements OrdersService {
                     orderStatuses.add(OrderStatus.builder().name(OrderState.CANCEL).orderDetail(orderDetails.get(i)).build());
                     orderDetails.get(i).setOrderStatuses(orderStatuses);
                     orderDetails.get(i).setCanceled(true);
-                    orderDetails.get(i).setReasonbyUser(dto.getCancelReason());
+                    orderDetails.get(i).setReasonByUser(dto.getCancelReason());
                 }
             }
         } else {
@@ -754,7 +754,7 @@ public class OrderServiceImplement implements OrdersService {
         }
 
         Orders orders = orderDetails.get(0).getOrders();
-        String cancelReason = orderDetails.get(0).getReasonbyUser()!=null ? orderDetails.get(0).getReasonbyUser():orderDetails.get(0).getReasonByFactory() ;
+        String cancelReason = orderDetails.get(0).getReasonByUser()!=null ? orderDetails.get(0).getReasonByUser():orderDetails.get(0).getReasonByFactory() ;
         try {
             if (orders.isPaid()) {
                 if (orders.getTransactionId().contains("_")) {
