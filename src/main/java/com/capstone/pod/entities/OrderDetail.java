@@ -25,7 +25,7 @@ public class OrderDetail {
     private String color;
     private String size;
     private boolean canceled;
-    private String reasonbyUser;
+    private String reasonByUser;
     private String reasonByFactory;
     private boolean isRate;
     @ManyToOne

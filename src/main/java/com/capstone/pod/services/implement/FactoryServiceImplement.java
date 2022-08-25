@@ -282,9 +282,15 @@ public class FactoryServiceImplement implements FactoryService {
                 List<ImagePreviewDto> imagePreviewDtos = new ArrayList<>();
 
                 for (int i = 0; i < orderDetails.size(); i++) {
-                    orderDetailsSupportDtos.add(OrderDetailsSupportDto.builder().orderDetailsId(orderDetails.get(i).getId())
+                    orderDetailsSupportDtos.add(OrderDetailsSupportDto.builder()
+                            .orderDetailsId(orderDetails.get(i).getId())
                             .color(orderDetails.get(i).getColor())
                             .colorImage(colorRepository.findByName(orderDetails.get(i).getColor()).get().getImageColor())
+                                    .reasonByUser(orderDetails.get(i).getReasonByUser())
+                                    .reasonByFactory(orderDetails.get(i).getReasonByFactory())
+                                    .size(orderDetails.get(i).getSize())
+                                    .canceled(orderDetails.get(i).isCanceled())
+                                    .isRate(orderDetails.get(i).isRate())
                             .size(orderDetails.get(i).getSize())
                             .quantity(orderDetails.get(i).getQuantity())
                             .build());
@@ -298,7 +304,7 @@ public class FactoryServiceImplement implements FactoryService {
                 }
                 orderDetailForPrintingDto.setCustomerName(orderDetails.get(0).getOrders().getCustomerName());
                 orderDetailForPrintingDto.setCancelReasonByFactory(orderDetails.get(0).getReasonByFactory());
-                orderDetailForPrintingDto.setCancelReasonByUser(orderDetails.get(0).getReasonbyUser());
+                orderDetailForPrintingDto.setCancelReasonByUser(orderDetails.get(0).getReasonByUser());
                 orderDetailForPrintingDto.setCanceled(orderDetails.get(0).getOrders().isCanceled());
                 orderDetailForPrintingDto.setEmail(orderDetails.get(0).getOrders().getUser().getCredential().getEmail());
                 orderDetailForPrintingDto.setPhoneNumber(orderDetails.get(0).getOrders().getPhone());

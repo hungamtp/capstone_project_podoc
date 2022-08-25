@@ -13,4 +13,8 @@ public class OrderDetailsSupportDto {
     private String colorImage;
     private String size;
     private int quantity;
+    private boolean canceled;
+    private String reasonByUser;
+    private String reasonByFactory;
+    private boolean isRate;
 }
