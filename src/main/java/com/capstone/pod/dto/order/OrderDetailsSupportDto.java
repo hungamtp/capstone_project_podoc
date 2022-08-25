@@ -3,6 +3,7 @@ package com.capstone.pod.dto.order;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
@@ -21,5 +22,5 @@ public class OrderDetailsSupportDto {
     private boolean isRate;
     private String status;
     private double price;
-    private LocalDate createdDate;
+    private LocalDateTime createdDate;
 }
