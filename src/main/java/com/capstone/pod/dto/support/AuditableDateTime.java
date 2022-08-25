@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AuditableDateTime {
-    @JsonFormat(timezone = "Vietnam/Hanoi")
+    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     @CreatedDate
     protected LocalDateTime createDate;
-    @JsonFormat(timezone = "Vietnam/Hanoi")
+    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     @LastModifiedDate
     protected LocalDateTime lastModifiedDate;
 }
