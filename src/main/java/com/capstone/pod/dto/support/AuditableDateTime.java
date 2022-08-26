@@ -1,6 +1,5 @@
 package com.capstone.pod.dto.support;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,10 +16,8 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AuditableDateTime {
-    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     @CreatedDate
     protected LocalDateTime createDate;
-    @JsonFormat(timezone = "Asia/Ho_Chi_Minh")
     @LastModifiedDate
     protected LocalDateTime lastModifiedDate;
 }
