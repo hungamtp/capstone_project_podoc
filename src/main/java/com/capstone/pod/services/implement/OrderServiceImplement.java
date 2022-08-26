@@ -64,6 +64,7 @@ public class OrderServiceImplement implements OrdersService {
     private final OrderStatusRepository orderStatusRepository;
 
     private final EntityManager entityManager;
+
     private Credential getCredential() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentCredentialId = (String) authentication.getCredentials();
@@ -195,7 +196,10 @@ public class OrderServiceImplement implements OrdersService {
         String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Double amount = order.getPrice();
+        Double amount = order.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCanceled()).collect(Collectors.toList())
+            .stream()
+            .mapToDouble(orderDetail -> orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct().getPriceByFactory().getPrice()))
+            .sum();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
@@ -269,7 +273,7 @@ public class OrderServiceImplement implements OrdersService {
 //        //add back quantity when user cancel order
 //        addBackQuantityWhenCancelingOrderByUser(orders.getId());
 
-        //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
+    //        if(!getCredential().getUser().getId().equals(orders.getUser().getId())) throw new PermissionException(CommonMessage.PERMISSION_EXCEPTION);
 //        if(orders.isPaid()) throw new OrderNotFoundException(OrderErrorMessage.ORDER_PAID_EXCEPTION);
 //        List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrders(orders);
 //        List<PrintingInfo> printingInfos = new ArrayList<>();
@@ -430,7 +434,10 @@ public class OrderServiceImplement implements OrdersService {
         String orderInfo = String.format("Total : %f  , Phone : %s", orders.getPrice(), orders.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Double amount = orders.getPrice();
+        Double amount = orders.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCanceled()).collect(Collectors.toList())
+            .stream()
+            .mapToDouble(orderDetail -> orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct().getPriceByFactory().getPrice()))
+            .sum();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
@@ -578,7 +585,10 @@ public class OrderServiceImplement implements OrdersService {
         String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Double amount = order.getPrice();
+        Double amount = order.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCanceled()).collect(Collectors.toList())
+            .stream()
+            .mapToDouble(orderDetail -> orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct().getPriceByFactory().getPrice()))
+            .sum();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
@@ -666,7 +676,14 @@ public class OrderServiceImplement implements OrdersService {
             .filter(orderDetail -> orderDetail.getOrders().isPaid())
             .filter(orderDetail -> !orderDetail.getOrders().isRefunded())
             .filter(orderDetail -> orderDetail.isDone()).count();
-        long isInProcess = orderDetails.size() - isDone;
+
+        long isInProcess = orderDetails.stream()
+            .filter(orderDetail -> orderDetail.getOrders().isPaid())
+            .filter(orderDetail -> !orderDetail.getOrders().isRefunded())
+            .filter(orderDetail -> !orderDetail.isDone())
+            .filter(orderDetail -> !orderDetail.isCanceled())
+            .count();
+
         return FactoryDashboard.builder()
             .income(income)
             .incomeCurrentMonth(incomeCurrentMonth)
@@ -754,7 +771,7 @@ public class OrderServiceImplement implements OrdersService {
         }
 
         Orders orders = orderDetails.get(0).getOrders();
-        String cancelReason = orderDetails.get(0).getReasonByUser()!=null ? orderDetails.get(0).getReasonByUser():orderDetails.get(0).getReasonByFactory() ;
+        String cancelReason = orderDetails.get(0).getReasonByUser() != null ? orderDetails.get(0).getReasonByUser() : orderDetails.get(0).getReasonByFactory();
         try {
             if (orders.isPaid()) {
                 if (orders.getTransactionId().contains("_")) {
