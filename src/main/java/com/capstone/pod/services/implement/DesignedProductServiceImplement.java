@@ -358,15 +358,24 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .name(designColor.getColor().getName()).build()).distinct()
             .collect(Collectors.toList());
 
-//        List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
-//        Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
-//        for (int i = 0; i < sizeColors.size(); i++) {
-//            for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
-//                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
-//            }
-//        }
+        List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
+        Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
+        for (int i = 0; i < sizeColors.size(); i++) {
+            for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
+                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
+            }
+        }
         List<SizeColorByFactory> sizeColorList = designedProduct.getPriceByFactory().getFactory().getSizeColorByFactories();
-        List<SizeColor> sizeColorFactoryHave = sizeColorList.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
+        List<SizeColorByFactory> sizeColorByFactoryToList = sizeColorByFactories.stream().collect(Collectors.toList());
+        List<SizeColorByFactory> sizeColorByFactoryList = new ArrayList<>();
+        for (int i = 0; i < sizeColorByFactoryToList.size(); i++) {
+            for (int j = 0; j < sizeColorList.size(); j++) {
+                if(sizeColorByFactoryToList.get(i).getSizeColor().equals(sizeColorList.get(j))){
+                    sizeColorByFactoryList.add(sizeColorByFactoryToList.get(i));
+                }
+            }
+        }
+        List<SizeColor> sizeColorFactoryHave = sizeColorByFactoryList.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
 
         List<SizeColor> sizeColorInDesign = new ArrayList<>();
         for (int i = 0; i < colors.size(); i++) {
