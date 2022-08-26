@@ -71,25 +71,24 @@ public class OrderServiceImplement implements OrdersService {
         return credential;
     }
 
-    private PrintingInfo saveDesignForPrinting(Cart cart, OrderDetail orderDetail) {
+    private PrintingInfo saveDesignForPrinting(CartDetail detail, OrderDetail orderDetail) {
         PrintingInfo printingInfo = PrintingInfo.builder().build();
-        for (int i = 0; i < cart.getCartDetails().size(); i++) {
             printingInfo.setOrderDetail(orderDetail);
             List<PrintingImagePreview> printingImagePreviews = new ArrayList<>();
-            for (int j = 0; j < cart.getCartDetails().get(i).getDesignedProduct().getImagePreviews().size(); j++) {
-                ImagePreview imagePreview = cart.getCartDetails().get(i).getDesignedProduct().getImagePreviews().get(j);
+            for (int j = 0; j < detail.getDesignedProduct().getImagePreviews().size(); j++) {
+                ImagePreview imagePreview = detail.getDesignedProduct().getImagePreviews().get(j);
                 PrintingImagePreview printingImagePreview = PrintingImagePreview.builder().image(imagePreview.getImage()).color(imagePreview.getColor()).position(imagePreview.getPosition()).printingInfo(printingInfo).build();
                 printingImagePreviews.add(printingImagePreview);
             }
             List<PrintingBluePrint> printingBluePrints = new ArrayList<>();
-            for (int j = 0; j < cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().size(); j++) {
-                Placeholder placeholder = cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getPlaceholder();
+            for (int j = 0; j < detail.getDesignedProduct().getBluePrints().size(); j++) {
+                Placeholder placeholder = detail.getDesignedProduct().getBluePrints().get(j).getPlaceholder();
                 List<PrintingDesignInfo> printingDesignInfos = new ArrayList<>();
-                PrintingBluePrint printingBluePrint = PrintingBluePrint.builder().frameImage(cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getFrameImage()).position(cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getPosition()).printingInfo(printingInfo).printingDesignInfos(printingDesignInfos).build();
+                PrintingBluePrint printingBluePrint = PrintingBluePrint.builder().frameImage(detail.getDesignedProduct().getBluePrints().get(j).getFrameImage()).position(detail.getDesignedProduct().getBluePrints().get(j).getPosition()).printingInfo(printingInfo).printingDesignInfos(printingDesignInfos).build();
                 PrintingPlaceholder printingPlaceholder = PrintingPlaceholder.builder().printingBluePrint(printingBluePrint).top(placeholder.getTop()).width(placeholder.getWidth()).height(placeholder.getHeight()).widthRate(placeholder.getWidthRate()).heightRate(placeholder.getHeightRate()).build();
                 printingBluePrint.setPrintingPlaceholder(printingPlaceholder);
-                for (int k = 0; k < cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getDesignInfos().size(); k++) {
-                    DesignInfo designInfo = cart.getCartDetails().get(i).getDesignedProduct().getBluePrints().get(j).getDesignInfos().get(k);
+                for (int k = 0; k < detail.getDesignedProduct().getBluePrints().get(j).getDesignInfos().size(); k++) {
+                    DesignInfo designInfo = detail.getDesignedProduct().getBluePrints().get(j).getDesignInfos().get(k);
                     PrintingDesignInfo printingDesignInfo = PrintingDesignInfo.builder().printingBluePrint(printingBluePrint).name(designInfo.getName()).types(designInfo.getTypes()).height(designInfo.getHeight()).width(designInfo.getWidth()).leftPosition(designInfo.getLeftPosition()).topPosition(designInfo.getTopPosition()).rotate(designInfo.getRotate()).scales(designInfo.getScales()).font(designInfo.getFont()).textColor(designInfo.getTextColor()).src(designInfo.getSrc()).build();
                     printingDesignInfos.add(printingDesignInfo);
                 }
@@ -98,7 +97,6 @@ public class OrderServiceImplement implements OrdersService {
 
             printingInfo.setPrintingBluePrints(printingBluePrints);
             printingInfo.setPreviewImages(printingImagePreviews);
-        }
         return printingInfo;
     }
 
@@ -160,7 +158,7 @@ public class OrderServiceImplement implements OrdersService {
                 .designedProduct(cartDetailList.get(i).getDesignedProduct())
                 .build();
             //save design for printing if there's any edit to the design will have no effect
-            printingInfos.add(saveDesignForPrinting(cart, orderDetail));
+            printingInfos.add(saveDesignForPrinting(cartDetailList.get(i), orderDetail));
             orderStatus.setOrderDetail(orderDetail);
             int finalI = i;
             SizeColor sizeColor = sizeColorRepository
