@@ -668,7 +668,14 @@ public class OrderServiceImplement implements OrdersService {
             .filter(orderDetail -> orderDetail.getOrders().isPaid())
             .filter(orderDetail -> !orderDetail.getOrders().isRefunded())
             .filter(orderDetail -> orderDetail.isDone()).count();
-        long isInProcess = orderDetails.size() - isDone;
+
+        long isInProcess = orderDetails.stream()
+            .filter(orderDetail -> orderDetail.getOrders().isPaid())
+            .filter(orderDetail -> !orderDetail.getOrders().isRefunded())
+            .filter(orderDetail -> !orderDetail.isDone())
+            .filter(orderDetail -> !orderDetail.isCanceled())
+            .count();
+
         return FactoryDashboard.builder()
             .income(income)
             .incomeCurrentMonth(incomeCurrentMonth)
