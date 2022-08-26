@@ -142,7 +142,9 @@ public class FactoryServiceImplement implements FactoryService {
                        .isDeleted(priceByFactories.get(i).getProduct().isDeleted())
                        .productImages(priceByFactories.get(i).getProduct().getProductImages().stream().map(productImages -> ProductImagesDto.builder().image(productImages.getImage()).build()).collect(Collectors.toList()))
                        .categoryName(priceByFactories.get(i).getProduct().getCategory().getName())
-                       .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(priceByFactories.get(i).getProduct().getId()).stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(credential.getFactory().getId())).map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build()).collect(Collectors.toSet()))
+                       .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(priceByFactories.get(i).getProduct().getId()).stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(credential.getFactory().getId()))
+                               .map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build())
+                               .sorted().collect(Collectors.toCollection(LinkedHashSet::new)))
                        .build();
                productDtoList.add(productDto);
             }

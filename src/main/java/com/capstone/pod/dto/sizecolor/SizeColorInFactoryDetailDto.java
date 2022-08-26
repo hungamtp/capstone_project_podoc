@@ -1,6 +1,7 @@
 package com.capstone.pod.dto.sizecolor;
 
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 @Builder
 @Getter
@@ -8,8 +9,12 @@ import lombok.*;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class SizeColorInFactoryDetailDto {
+public class SizeColorInFactoryDetailDto implements Comparable<SizeColorInFactoryDetailDto> {
     int quantity;
     String size;
     String colorImage;
+    @Override
+    public int compareTo(@NotNull SizeColorInFactoryDetailDto o) {
+        return this.colorImage.equals(o.getColorImage())?1:-1;
+    }
 }
