@@ -1,7 +1,6 @@
 package com.capstone.pod.security;
 
 import com.capstone.pod.auth.ApplicationUserService;
-import com.capstone.pod.jwt.AccountVerifier;
 import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.jwt.TokenVerifier;
 import com.capstone.pod.repositories.CredentialRepository;
@@ -39,7 +38,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new AccountVerifier(credentialRepository),UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(new AccountVerifier(credentialRepository),UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
                         "/product/**",
