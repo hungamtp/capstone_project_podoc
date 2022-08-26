@@ -1,10 +1,13 @@
 package com.capstone.pod.security;
 
 import com.capstone.pod.auth.ApplicationUserService;
+import com.capstone.pod.jwt.AccountVerifier;
 import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.jwt.TokenVerifier;
+import com.capstone.pod.repositories.CredentialRepository;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,12 +31,15 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationUserService applicationUserService;
+    @Autowired
+    private  CredentialRepository credentialRepository;
     private JwtConfig jwtConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
                 and().addFilterBefore(new TokenVerifier(jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new AccountVerifier(credentialRepository),UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/register",
                         "/auth/login",
                         "/product/**",
