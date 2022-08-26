@@ -359,23 +359,17 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .collect(Collectors.toList());
 
         List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
+        List<SizeColorByFactory> sizeColorList = designedProduct.getPriceByFactory().getFactory().getSizeColorByFactories();
+
+
         Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
         for (int i = 0; i < sizeColors.size(); i++) {
             for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
-                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
+                if(designedProduct.getPriceByFactory().getFactory().equals(sizeColors.get(i).getSizeColorByFactories().get(j).getFactory())){
+                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));}
             }
         }
-        List<SizeColorByFactory> sizeColorList = designedProduct.getPriceByFactory().getFactory().getSizeColorByFactories();
-        List<SizeColorByFactory> sizeColorByFactoryToList = sizeColorByFactories.stream().collect(Collectors.toList());
-        List<SizeColorByFactory> sizeColorByFactoryList = new ArrayList<>();
-        for (int i = 0; i < sizeColorByFactoryToList.size(); i++) {
-            for (int j = 0; j < sizeColorList.size(); j++) {
-                if(sizeColorByFactoryToList.get(i).getSizeColor().equals(sizeColorList.get(j))){
-                    sizeColorByFactoryList.add(sizeColorByFactoryToList.get(i));
-                }
-            }
-        }
-        List<SizeColor> sizeColorFactoryHave = sizeColorByFactoryList.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
+        List<SizeColor> sizeColorFactoryHave = sizeColorByFactories.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
 
         List<SizeColor> sizeColorInDesign = new ArrayList<>();
         for (int i = 0; i < colors.size(); i++) {
