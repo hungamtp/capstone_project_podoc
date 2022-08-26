@@ -17,8 +17,6 @@ import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
-import com.capstone.pod.filter.DesignedProductSpecification;
-import com.capstone.pod.filter.SearchCriteria;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
 import com.capstone.pod.utils.SizeUtils;
@@ -360,14 +358,15 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .name(designColor.getColor().getName()).build()).distinct()
             .collect(Collectors.toList());
 
-        List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
-        Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
-        for (int i = 0; i < sizeColors.size(); i++) {
-            for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
-                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
-            }
-        }
-        List<SizeColor> sizeColorFactoryHave = sizeColorByFactories.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
+//        List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
+//        Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
+//        for (int i = 0; i < sizeColors.size(); i++) {
+//            for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
+//                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
+//            }
+//        }
+        List<SizeColorByFactory> sizeColorList = designedProduct.getPriceByFactory().getFactory().getSizeColorByFactories();
+        List<SizeColor> sizeColorFactoryHave = sizeColorList.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
 
         List<SizeColor> sizeColorInDesign = new ArrayList<>();
         for (int i = 0; i < colors.size(); i++) {
