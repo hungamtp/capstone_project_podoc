@@ -198,7 +198,10 @@ public class OrderServiceImplement implements OrdersService {
         String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Double amount = order.getPrice();
+        Double amount = order.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCanceled()).collect(Collectors.toList())
+            .stream()
+            .mapToDouble(orderDetail -> orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct().getPriceByFactory().getPrice()))
+            .sum();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
@@ -584,7 +587,10 @@ public class OrderServiceImplement implements OrdersService {
         String orderInfo = String.format("Total : %f  , Phone : %s", order.getPrice(), order.getPhone());
         String requestId = String.valueOf(System.currentTimeMillis());
         String orderId = String.valueOf(System.currentTimeMillis());
-        Double amount = order.getPrice();
+        Double amount = order.getOrderDetails().stream().filter(orderDetail -> !orderDetail.isCanceled()).collect(Collectors.toList())
+            .stream()
+            .mapToDouble(orderDetail -> orderDetail.getQuantity() * (orderDetail.getDesignedProduct().getDesignedPrice() + orderDetail.getDesignedProduct().getPriceByFactory().getPrice()))
+            .sum();
         Environment environment = Environment.selectEnv("dev");
         String returnURL = environment.getMomoEndpoint().getRedirectUrl();
         String notifyURL = environment.getMomoEndpoint().getNotiUrl();
