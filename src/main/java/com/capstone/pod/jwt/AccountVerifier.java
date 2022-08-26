@@ -23,9 +23,15 @@ public class AccountVerifier extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication!=null){
         String currentCredentialId = (String) authentication.getCredentials();
-        Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
-        if(!credential.getUser().getStatus().equals("ACTIVE")) throw new PermissionException(UserErrorMessage.USER_UNAVAILABLE);
+        if(currentCredentialId!=null) {
+            Credential credential = credentialRepository.findById(currentCredentialId).orElseThrow(() -> new CredentialNotFoundException(CredentialErrorMessage.CREDENTIAL_NOT_FOUND_EXCEPTION));
+            if (credential != null) {
+                if (!credential.getUser().getStatus().equals("ACTIVE"))
+                    throw new PermissionException(UserErrorMessage.USER_UNAVAILABLE);
+            }
+        }}
         filterChain.doFilter(request, response);
     }
 }
