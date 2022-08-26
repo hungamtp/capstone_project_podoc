@@ -359,8 +359,6 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .collect(Collectors.toList());
 
         List<SizeColor> sizeColors = designedProduct.getProduct().getSizeColors();
-        List<SizeColorByFactory> sizeColorList = designedProduct.getPriceByFactory().getFactory().getSizeColorByFactories();
-
 
         Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
         for (int i = 0; i < sizeColors.size(); i++) {

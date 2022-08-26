@@ -4,7 +4,6 @@ import com.capstone.pod.dto.sizecolor.SizeColorInFactoryDetailDto;
 import lombok.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -21,5 +20,5 @@ public class ProductDto {
     private boolean isDeleted;
     private List<ProductImagesDto> productImages;
     private String categoryName;
-    private Set<SizeColorInFactoryDetailDto> sizeColors;
+    private List<SizeColorInFactoryDetailDto> sizeColors;
 }
