@@ -15,6 +15,6 @@ public class SizeColorInFactoryDetailDto implements Comparable<SizeColorInFactor
     String colorImage;
     @Override
     public int compareTo(@NotNull SizeColorInFactoryDetailDto o) {
-        return this.colorImage.equals(o.getColorImage()) ? 1: -1;
+        return this.colorImage.equals(o.getColorImage()) ? 0: 1;
     }
 }
