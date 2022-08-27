@@ -10,16 +10,19 @@ import com.capstone.pod.dto.auth.LoginResponseDto;
 import com.capstone.pod.dto.auth.RegisterDto;
 import com.capstone.pod.dto.auth.RegisterResponseDto;
 import com.capstone.pod.dto.credential.CredentialDto;
+import com.capstone.pod.dto.utils.Utils;
 import com.capstone.pod.entities.Credential;
 import com.capstone.pod.entities.Role;
 import com.capstone.pod.entities.User;
-import com.capstone.pod.exceptions.*;
+import com.capstone.pod.exceptions.EmailExistException;
+import com.capstone.pod.exceptions.EmailNotFoundException;
+import com.capstone.pod.exceptions.RoleNotFoundException;
+import com.capstone.pod.exceptions.UserDisableException;
 import com.capstone.pod.jwt.JwtConfig;
 import com.capstone.pod.repositories.CredentialRepository;
 import com.capstone.pod.repositories.RoleRepository;
 import com.capstone.pod.repositories.UserRepository;
 import com.capstone.pod.services.AuthService;
-import com.capstone.pod.dto.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -78,6 +81,10 @@ public class AuthServiceImplement implements AuthService {
             if(credentialAuthenticated.getUser() != null ){
             if (!credentialAuthenticated.getUser().getStatus().equals(UserStatus.ACTIVE)) {
                 throw new UserDisableException(UserErrorMessage.USER_UNAVAILABLE);
+            }}
+            if(credentialAuthenticated.getFactory() != null ){
+            if (!credentialAuthenticated.getFactory().isCollaborating()) {
+                throw new UserDisableException(UserErrorMessage.FACTORY_UNAVAILABLE);
             }}
             String token = Utils.buildJWT(authenticate, credentialAuthenticated, secretKey, jwtConfig);
             loginResponseDTO = LoginResponseDto.builder()

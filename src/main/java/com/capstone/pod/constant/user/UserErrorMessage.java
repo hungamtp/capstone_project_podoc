@@ -5,6 +5,7 @@ public final  class UserErrorMessage {
     public static final String EMAIL_NOT_FOUND="Email not found";
     public static final String EMAIL_EXIST="This email is already existed";
     public static final String USER_UNAVAILABLE="This user is not available at this time";
+    public static final String FACTORY_UNAVAILABLE="This factory is not available at this time";
     public static final String USER_NOT_FOUND="Can't not find this user";
     public static final String USER_NAME_EXIST="This user name is already existed";
 
