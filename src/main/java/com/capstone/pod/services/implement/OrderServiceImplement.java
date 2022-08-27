@@ -133,9 +133,10 @@ public class OrderServiceImplement implements OrdersService {
         if (cartDetailList.isEmpty()) throw new CartNotFoundException(ErrorMessage.CART_EMPTY);
         Credential currentCredential = getCredential();
         double totalPrice = 0;
-        String address = currentCredential.getAddress();
-        String phone = currentCredential.getPhone();
-        String customerName = currentCredential.getUser().getLastName() + " " + currentCredential.getUser().getFirstName();
+        String address = shippingInfo.getShippingAddress();
+        String phone = shippingInfo.getPhoneNumber();
+//        String customerName = currentCredential.getUser().getLastName() + " " + currentCredential.getUser().getFirstName();
+        String customerName = shippingInfo.getName();
         Orders order = Orders.builder().address(address).customerName(customerName).phone(phone).user(currentCredential.getUser()).build();
         List<OrderDetail> orderDetails = new ArrayList<>();
         List<PrintingInfo> printingInfos = new ArrayList<>();
@@ -181,9 +182,6 @@ public class OrderServiceImplement implements OrdersService {
 //        sizeColorByFactoryRepository.saveAll(sizeColorByFactories);
         order.setOrderDetails(orderDetails);
         order.setPrice(totalPrice);
-        order.setAddress(shippingInfo.getEmailAddress());
-        order.setPhone(shippingInfo.getPhoneNumber());
-        order.setCustomerName(shippingInfo.getName());
         order.setPaid(false);
         order.setRefunded(false);
         order.setTransactionId("");
