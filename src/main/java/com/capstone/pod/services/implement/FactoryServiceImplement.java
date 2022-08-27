@@ -144,7 +144,7 @@ public class FactoryServiceImplement implements FactoryService {
                        .categoryName(priceByFactories.get(i).getProduct().getCategory().getName())
                        .sizeColors(sizeColorByFactoryRepository.findAllBySizeColorProductId(priceByFactories.get(i).getProduct().getId()).stream().filter(sizeColorByFactory -> sizeColorByFactory.getFactory().getId().equals(credential.getFactory().getId()))
                                .map(sizeColorByFactory -> SizeColorInFactoryDetailDto.builder().size(sizeColorByFactory.getSizeColor().getSize().getName()).colorImage(sizeColorByFactory.getSizeColor().getColor().getName()).quantity(sizeColorByFactory.getQuantity()).build())
-                               .sorted().collect(Collectors.toList()))
+                               .sorted(Comparator.comparing(SizeColorInFactoryDetailDto::getColorImage)).collect(Collectors.toList()))
                        .build();
                productDtoList.add(productDto);
             }
