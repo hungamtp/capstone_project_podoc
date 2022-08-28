@@ -352,8 +352,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     public ViewOtherDesignDto viewDesignDetailsByDesignId(String designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         List<SizeProduct> sizeProducts = designedProduct.getProduct().getSizeProduct();
-        List<SizeProductDto> sizeProductDtos = sizeProducts.stream().map(sizeProduct -> modelMapper.map(sizeProducts,SizeProductDto.class)).collect(Collectors.toList());
-
+        List<SizeProductDto> sizeProductDtos = sizeProducts.stream().map(sizeProduct -> modelMapper.map(sizeProduct,SizeProductDto.class)).collect(Collectors.toList());
         List<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
                 .id(designColor.getColor().getId())
