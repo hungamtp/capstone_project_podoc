@@ -6,7 +6,6 @@ import com.capstone.pod.dto.sizeproduct.AddSizeProductDto;
 import com.capstone.pod.dto.sizeproduct.EditSizeProductDto;
 import com.capstone.pod.services.SizeProductService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +23,19 @@ public class SizeProductController {
     }
 
     @PutMapping
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity update(@RequestBody EditSizeProductDto editSizeProductDto){
         return ResponseEntity.ok().body(sizeProductService.editSizeProduct(editSizeProductDto));
     }
 
     @PostMapping
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity add (@RequestBody AddSizeProductDto addSizeProductDto){
         return ResponseEntity.ok().body(sizeProductService.addSizeProduct(addSizeProductDto));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity delete(@PathVariable String id){
         return ResponseEntity.ok().body(sizeProductService.delete(id));
     }
