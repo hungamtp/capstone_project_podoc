@@ -342,7 +342,9 @@ public class DesignedProductServiceImplement implements DesignedProductService {
                 .collect(Collectors.toList())
                 .stream()
                 .mapToInt(OrderDetail::getQuantity).sum())
-            .imagePreviews(designedProduct.getImagePreviews().stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class)).collect(Collectors.toList()))
+            .imagePreviews(designedProduct.getImagePreviews()
+                .stream().map(imagePreview -> modelMapper.map(imagePreview, ImagePreviewDto.class))
+                .collect(Collectors.toList()))
             .build()).collect(Collectors.toList());
         Page<ViewOtherDesignDto> dtoPage = new PageImpl<>(viewOtherDesignDtos, page, designedProductPage.getTotalElements());
         return dtoPage;
@@ -352,7 +354,19 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     public ViewOtherDesignDto viewDesignDetailsByDesignId(String designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
         List<SizeProduct> sizeProducts = designedProduct.getProduct().getSizeProduct();
-        List<SizeProductDto> sizeProductDtos = sizeProducts.stream().map(sizeProduct -> modelMapper.map(sizeProduct,SizeProductDto.class)).collect(Collectors.toList());
+        for (int i = 0; i < sizeProducts.size(); i++) {
+            for (int j = i + 1; j < sizeProducts.size(); j++) {
+                if (SizeUtils.sizes.get(sizeProducts.get(i).getSize()) != null && SizeUtils.sizes.get(sizeProducts.get(j).getSize()) != null)
+                    if (SizeUtils.sizes.get(sizeProducts.get(i).getSize()) > SizeUtils.sizes.get(sizeProducts.get(j).getSize())) {
+                        var sizeTemp = sizeProducts.get(i);
+                        sizeProducts.set(i, sizeProducts.get(j));
+                        sizeProducts.set(j, sizeTemp);
+                    }
+            }
+        }
+        List<SizeProductDto> sizeProductDtos = sizeProducts.stream()
+            .map(sizeProduct -> modelMapper.map(sizeProduct,SizeProductDto.class))
+            .collect(Collectors.toList());
         List<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
                 .id(designColor.getColor().getId())
