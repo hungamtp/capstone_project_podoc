@@ -14,6 +14,7 @@ import com.capstone.pod.dto.common.PageDTO;
 import com.capstone.pod.dto.designedProduct.*;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
+import com.capstone.pod.dto.sizeproduct.SizeProductDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.exceptions.*;
@@ -350,6 +351,8 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     @Override
     public ViewOtherDesignDto viewDesignDetailsByDesignId(String designId) {
         DesignedProduct designedProduct = designedProductRepository.findById(designId).orElseThrow(() -> new DesignedProductNotExistException(DesignedProductErrorMessage.DESIGNED_PRODUCT_NOT_EXIST));
+        List<SizeProduct> sizeProducts = designedProduct.getProduct().getSizeProduct();
+        List<SizeProductDto> sizeProductDtos = sizeProducts.stream().map(sizeProduct -> modelMapper.map(sizeProducts,SizeProductDto.class)).collect(Collectors.toList());
 
         List<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
@@ -403,7 +406,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             .id(designedProduct.getId()).material(designedProduct.getPriceByFactory().getMaterial())
             .factoryName(designedProduct.getPriceByFactory().getFactory().getName())
             .colorAndSizes(colorAndSizes)
-            .description(designedProduct.getDescription())
+            .description(designedProduct.getDescription()).sizeProductDto(sizeProductDtos)
             .price(price)
             .rateCount(designedProduct.getRatings().size())
             .user(modelMapper.map(designedProduct.getUser(), UserInDesignDto.class))

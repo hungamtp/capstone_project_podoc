@@ -3,6 +3,7 @@ package com.capstone.pod.dto.designedProduct;
 import com.capstone.pod.dto.color.ColorInDesignDto;
 import com.capstone.pod.dto.imagepreview.ImagePreviewDto;
 import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
+import com.capstone.pod.dto.sizeproduct.SizeProductDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import lombok.*;
 
@@ -32,4 +33,5 @@ public class ViewOtherDesignDto {
     private String description;
     private String factoryName;
     Map<String, List<SizeColorDesignedAndFactorySellDto>> colorAndSizes;
+    private List<SizeProductDto> sizeProductDto;
 }
