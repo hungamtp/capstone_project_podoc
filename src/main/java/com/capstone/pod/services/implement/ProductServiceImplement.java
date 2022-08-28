@@ -233,6 +233,7 @@ public class ProductServiceImplement implements ProductService {
             if(factoryProductDetailDTO.isCollaborating()){
             factories.add(factoryProductDetailDTO);}
         }
+        factories = factories.stream().sorted(Comparator.comparing(FactoryProductDetailDto::getPrice)).collect(Collectors.toList());
         return ProductDetailDto.builder()
             .id(product.getId())
             .name(product.getName())
