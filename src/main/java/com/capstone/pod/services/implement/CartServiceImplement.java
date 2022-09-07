@@ -70,7 +70,7 @@ public class CartServiceImplement implements CartService {
         for (var cartDetail : cartDetails) {
             // if checkSizeColorQuantity() return 0 if enough quantity to order
             Integer checkedQuantity = checkSizeColorQuantity(cartDetail.getSize(), cartDetail.getColor(), cartDetail.getDesignedProductId(), cartDetail.getQuantity());
-            if (checkedQuantity != 0) {
+            if (checkedQuantity <= 0) {
                 productHaveNotEnoughQuantity.add(new CartNotEnoughDto(cart.getId(), checkedQuantity));
             }
         }
