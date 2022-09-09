@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.cart;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.constant.role.RolePreAuthorize;
 import com.capstone.pod.dto.cartdetail.AddToCartDto;

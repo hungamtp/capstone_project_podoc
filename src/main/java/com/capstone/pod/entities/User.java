@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table
@@ -36,4 +37,10 @@ public class User{
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     Collection<DesignedProduct> designedProducts;
+
+    @OneToMany(mappedBy = "follower")
+    private List<Follower> followers ;
+
+    @OneToMany(mappedBy = "user")
+    private List<Follower> idol ;
 }

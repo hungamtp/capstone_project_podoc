@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.designedproduct;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.constant.designedproduct.DesignedProductSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;

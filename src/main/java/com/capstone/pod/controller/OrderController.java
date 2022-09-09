@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.order;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.constant.order.OrderSuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;

@@ -98,7 +98,10 @@ public class UserServiceImplement implements UserService {
     @Override
     public UserDto getUserById(String userId) {
         Credential credential = getPermittedCredential(userId);
+        User user = credential.getUser();
         UserDto userDto = modelMapper.map(credential, UserDto.class);
+        userDto.setFollower(user.getFollowers().size());
+        userDto.setFollow(user.getIdol().size());
         return userDto;
     }
     @Override

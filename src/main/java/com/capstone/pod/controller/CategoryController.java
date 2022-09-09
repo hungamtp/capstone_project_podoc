@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.category;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.constant.category.CategorySuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;

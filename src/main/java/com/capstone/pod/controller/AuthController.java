@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.auth;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.constant.auth.AuthSuccessMessage;
 import com.capstone.pod.dto.auth.LoginDto;

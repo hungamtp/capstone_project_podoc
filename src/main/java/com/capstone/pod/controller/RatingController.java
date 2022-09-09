@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.rating;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.dto.rating.AddRatingDTO;
 import com.capstone.pod.services.RatingService;

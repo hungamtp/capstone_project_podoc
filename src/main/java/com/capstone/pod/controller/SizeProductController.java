@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.sizeproduct;
+package com.capstone.pod.controller;
 
 
 import com.capstone.pod.constant.role.RolePreAuthorize;

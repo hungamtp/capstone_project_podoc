@@ -1,4 +1,4 @@
-package com.capstone.pod.controller.factory;
+package com.capstone.pod.controller;
 
 import com.capstone.pod.constant.factory.FactorySuccessMessage;
 import com.capstone.pod.constant.role.RolePreAuthorize;
