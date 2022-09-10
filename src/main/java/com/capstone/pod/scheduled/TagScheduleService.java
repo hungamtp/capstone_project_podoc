@@ -10,10 +10,13 @@ import com.capstone.pod.repositories.DesignedProductRepository;
 import com.capstone.pod.repositories.DesignedProductTagRepository;
 import com.capstone.pod.repositories.TagRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +31,7 @@ public class TagScheduleService {
     private DesignedProductTagRepository designedProductTagRepository;
 
 
-//    @Scheduled(fixedDelay = 5000)
+    //    @Scheduled(fixedDelay = 5000)
     // run after 5s
     @Scheduled(cron = "0 0 0 * * *")
     public void scheduledMethod() {
@@ -44,7 +47,7 @@ public class TagScheduleService {
             .collect(Collectors.toList());
 
         for (var design : bestSeller) {
-            if(!designedProductTagRepository.findByDesignedProductAndTag(design ,tag).isPresent()){
+            if (!designedProductTagRepository.findByDesignedProductAndTag(design, tag).isPresent()) {
                 designedProductTagRepository.save(DesignedProductTag.builder()
                     .tag(tag)
                     .designedProduct(design)
@@ -53,17 +56,17 @@ public class TagScheduleService {
         }
 
         boolean isOutDate = true;
-        for(var design : oldBestSeller){
+        for (var design : oldBestSeller) {
             isOutDate = true;
-            for (var currentBestSeller : bestSeller){
-                if(currentBestSeller.getId().equals(design.getId())){
+            for (var currentBestSeller : bestSeller) {
+                if (currentBestSeller.getId().equals(design.getId())) {
                     isOutDate = false;
                     continue;
                 }
             }
 
-            if (isOutDate){
-                DesignedProductTag designedProductTag = designedProductTagRepository.findByDesignedProductAndTag(design ,tag).orElseThrow(
+            if (isOutDate) {
+                DesignedProductTag designedProductTag = designedProductTagRepository.findByDesignedProductAndTag(design, tag).orElseThrow(
                     () -> new EntityNotFoundException("NO TAG")
                 );
 
@@ -71,6 +74,11 @@ public class TagScheduleService {
             }
         }
         System.out.println("UPDATE TAG BEST-SELLER");
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void updateNewTagForDesignedProduct() {
+        designedProductTagRepository.deleteAllByCreatedDateBefore(LocalDate.now().minusDays(7));
     }
 
 }
