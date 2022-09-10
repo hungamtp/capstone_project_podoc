@@ -17,6 +17,7 @@ import com.capstone.pod.dto.sizecolor.SizeColorDesignedAndFactorySellDto;
 import com.capstone.pod.dto.sizeproduct.SizeProductDto;
 import com.capstone.pod.dto.user.UserInDesignDto;
 import com.capstone.pod.entities.*;
+import com.capstone.pod.enums.TagName;
 import com.capstone.pod.exceptions.*;
 import com.capstone.pod.repositories.*;
 import com.capstone.pod.services.DesignedProductService;
@@ -53,6 +54,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
     private final BluePrintRepository bluePrintRepository;
     private final DesignInfoRepository designInfoRepository;
     private final PlaceHolderRepository placeHolderRepository;
+    private final TagRepository tagRepository;
 
 
     private User getCurrentUser() {
@@ -365,7 +367,7 @@ public class DesignedProductServiceImplement implements DesignedProductService {
             }
         }
         List<SizeProductDto> sizeProductDtos = sizeProducts.stream()
-            .map(sizeProduct -> modelMapper.map(sizeProduct,SizeProductDto.class))
+            .map(sizeProduct -> modelMapper.map(sizeProduct, SizeProductDto.class))
             .collect(Collectors.toList());
         List<ColorInDesignDto> colors = designedProduct.getDesignColors().stream()
             .map(designColor -> ColorInDesignDto.builder()
@@ -379,8 +381,9 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         Set<SizeColorByFactory> sizeColorByFactories = new HashSet<>();
         for (int i = 0; i < sizeColors.size(); i++) {
             for (int j = 0; j < sizeColors.get(i).getSizeColorByFactories().size(); j++) {
-                if(designedProduct.getPriceByFactory().getFactory().equals(sizeColors.get(i).getSizeColorByFactories().get(j).getFactory())){
-                sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));}
+                if (designedProduct.getPriceByFactory().getFactory().equals(sizeColors.get(i).getSizeColorByFactories().get(j).getFactory())) {
+                    sizeColorByFactories.add(sizeColors.get(i).getSizeColorByFactories().get(j));
+                }
             }
         }
         List<SizeColor> sizeColorFactoryHave = sizeColorByFactories.stream().map(sizeColorByFactory -> sizeColorByFactory.getSizeColor()).distinct().collect(Collectors.toList());
@@ -467,6 +470,19 @@ public class DesignedProductServiceImplement implements DesignedProductService {
         }
 
         designedProduct.setPublish(publish);
+        if (designedProduct.isPublish1St()) {
+            Tag newTag = tagRepository.findByName(TagName.MOI).orElseThrow(
+                () -> new EntityNotFoundException(EntityName.TAG + "_" + ErrorMessage.NOT_FOUND)
+            );
+            designedProduct.getDesignedProductTags().add(
+                DesignedProductTag.builder()
+                    .tag(newTag)
+                    .designedProduct(designedProduct)
+                    .build()
+            );
+        }
+        designedProduct.setPublish1St(false);
+
         designedProductRepository.save(designedProduct);
         return true;
     }

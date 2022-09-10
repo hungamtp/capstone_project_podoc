@@ -26,6 +26,7 @@ public class DesignedProduct  extends AuditableDateTime {
     private String description;
     private double designedPrice;
     private boolean publish;
+    private boolean publish1St;
 
 
     @OneToMany(mappedBy = "designedProduct",cascade = CascadeType.ALL)

@@ -25,6 +25,9 @@ public class Factory{
     private double tradeDiscount;
     private String location;
 
+    @OneToMany
+    private List<TradeDiscount> tradeDiscounts;
+
     @OneToOne(mappedBy = "factory")
     private Credential credential;
 
