@@ -17,7 +17,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     // the request will be blocked here and be canceled if return false
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        log.info("----------------interceptor----------------");
         return true;
     }
 
