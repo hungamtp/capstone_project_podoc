@@ -21,12 +21,12 @@ public class PaymentAspect {
 //        log.info("After called " + joinPoint.toString());
     }
 
-    @Around("execution(* com.capstone.pod.controller.*.*(..))")
-    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info(" before called " + joinPoint.toString());
-        joinPoint.proceed(); // above code will be executed like @Before and below like @After
-        log.info(" after called in around" + joinPoint.toString());
-    }
+//    @Around("execution(* com.capstone.pod.controller.*.*(..))")
+//    public void around(ProceedingJoinPoint joinPoint) throws Throwable {
+//        log.info(" before called " + joinPoint.toString());
+//        joinPoint.proceed(); // above code will be executed like @Before and below like @After
+//        log.info(" after called in around" + joinPoint.toString());
+//    }
 
 
     // run when the method is done successfully
