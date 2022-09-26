@@ -3,6 +3,9 @@ package com.capstone.pod.entities;
 import com.capstone.pod.dto.support.AuditableDateTime;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -23,13 +26,16 @@ import java.util.List;
         @Index(columnList = "name , isDeleted , isPublic")
     }
 )
+@Indexed
 public class Product extends AuditableDateTime {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(length = 36)
     private String id;
+    @Field(termVector = TermVector.YES)
     private String name;
+    @Field(termVector = TermVector.YES)
     private String description;
     private boolean isDeleted;
     private boolean isPublic;

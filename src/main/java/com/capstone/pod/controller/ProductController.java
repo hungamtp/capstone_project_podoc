@@ -11,7 +11,12 @@ import com.capstone.pod.dto.sizecolor.SizeColorDto;
 import com.capstone.pod.dto.sizecolor.SizeColorInRawProductDto;
 import com.capstone.pod.dto.sizecolor.SizeColorReturnDto;
 import com.capstone.pod.dto.utils.Utils;
+import com.capstone.pod.entities.DesignedProduct;
+import com.capstone.pod.entities.Product;
 import com.capstone.pod.entities.Product_;
+import com.capstone.pod.repositories.DesignedProductRepository;
+import com.capstone.pod.repositories.impl.DesignedProductRepositoryCustomImpl;
+import com.capstone.pod.repositories.impl.projection.P;
 import com.capstone.pod.services.ProductService;
 import com.capstone.pod.services.SizeColorService;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +42,7 @@ import java.util.Optional;
 public class ProductController {
     private final ProductService productService;
     private final SizeColorService sizeColorService;
+    private final DesignedProductRepository designedProductRepository;
     @PostMapping
     @PreAuthorize(RolePreAuthorize.ROLE_ADMIN)
     public ResponseEntity<ResponseDto> addProduct(@Validated @RequestBody AddProductDto addProductDto){
@@ -191,6 +197,15 @@ public class ProductController {
     public ResponseEntity<ResponseDto> getSizeColorByRawProductId(@PathVariable(name = "id") String id){
         ResponseDto<List<SizeColorInRawProductDto>> responseDto = new ResponseDto();
         List<SizeColorInRawProductDto> sizeColorDtos = productService.getColorSizeMapByColorByProductId(id);
+        responseDto.setData(sizeColorDtos);
+        responseDto.setSuccessMessage(ProductSuccessMessage.GET_SIZES_COLORS_SUCCESS);
+        return ResponseEntity.ok().body(responseDto);
+    }
+
+    @GetMapping("demo")
+    public ResponseEntity<ResponseDto> demoFullTextSearch(@RequestBody String search) throws InterruptedException {
+        ResponseDto<List<P>> responseDto = new ResponseDto();
+        var sizeColorDtos = designedProductRepository.search(search);
         responseDto.setData(sizeColorDtos);
         responseDto.setSuccessMessage(ProductSuccessMessage.GET_SIZES_COLORS_SUCCESS);
         return ResponseEntity.ok().body(responseDto);

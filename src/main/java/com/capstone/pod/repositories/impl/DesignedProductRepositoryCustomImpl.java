@@ -1,8 +1,11 @@
 package com.capstone.pod.repositories.impl;
 
-import com.capstone.pod.dto.designedProduct.DesignedProductDetailDto;
 import com.capstone.pod.entities.*;
 import com.capstone.pod.repositories.DesignedProductRepositoryCustom;
+import com.capstone.pod.repositories.impl.projection.P;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -10,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class DesignedProductRepositoryCustomImpl implements DesignedProductRepositoryCustom {
@@ -132,6 +136,36 @@ public class DesignedProductRepositoryCustomImpl implements DesignedProductRepos
         query.orderBy(orderList).where(productIdEqual, publishTrue, productIsDelete, isPublicTrue, isCollaborating, isCancel, isPaid, orderDetailIsCancel);
         return entityManager.createQuery(query).setMaxResults(4).getResultList();
     }
+
+    @Override
+    public List<P> search(String productId) throws InterruptedException {
+        FullTextEntityManager fullTextEntityManager
+            = Search.getFullTextEntityManager(entityManager);
+        fullTextEntityManager.createIndexer()
+            .startAndWait();
+        int indexSize = fullTextEntityManager.getSearchFactory()
+            .getStatistics()
+            .getNumberOfIndexedEntities(Product.class.getName());
+        System.out.println(indexSize);
+        QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
+            .buildQueryBuilder()
+            .forEntity(Product.class)
+            .get();
+        org.apache.lucene.search.Query query = queryBuilder
+            .keyword()
+            .onField(Product_.DESCRIPTION)
+            .matching(productId)
+            .createQuery();
+
+        org.hibernate.search.jpa.FullTextQuery jpaQuery
+            = fullTextEntityManager.createFullTextQuery(query, Product.class);
+
+        List<Product> results = jpaQuery.getResultList();
+        List<P> re = results.stream().map(p -> new P(p.getId() , p.getName() , p.getDescription())).collect(Collectors.toList());
+        return re;
+    }
+
+
 }
 
 
