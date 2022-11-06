@@ -41,7 +41,6 @@ public class AuthServiceImplement implements AuthService {
     private final RoleRepository roleRepository;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
-
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final ModelMapper modelMapper;
