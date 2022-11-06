@@ -41,11 +41,12 @@ public class AuthServiceImplement implements AuthService {
     private final RoleRepository roleRepository;
     private final SecretKey secretKey;
     private final JwtConfig jwtConfig;
+
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
-        @Override
+    @Override
     public RegisterResponseDto register(RegisterDto registerDto){
        Optional<Credential> optionalUser= credentialRepository.findCredentialByEmail(registerDto.getEmail());
         if(optionalUser.isPresent()){
